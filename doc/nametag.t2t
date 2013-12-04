@@ -1,0 +1,51 @@
+NameTag: Name Entity Recognizer
+Version 0.9
+
+%!encoding: utf-8
+%!options: --toc --css-sugar
+%!style(tex): nametag.sty
+
++ Introduction +
+
+
++ Release +
+
+++ Download ++
+
+++ Roadmap ++
+
+++ License ++
+
+++ Platforms and Requirements ++
+
+
++ MorphoDiTa User's Manual +
+
+%web% [MorphoDiTa User's Manual on separate page. nametag/users-manual]
+%not_web% %!include: nametag_user.t2t
+
+
++ MorphoDiTa API +
+
+%web% [MorphoDiTa API on separate page. nametag/api]
+%not_web% %!include: nametag_api.t2t
+
+
++ Contact +
+
+Authors:
+- [Milan Straka http://ufal.mff.cuni.cz/milan-straka], straka@ufal.mff.cuni.cz
+- [Jana Straková http://ufal.mff.cuni.cz/jana-strakova], strakova@ufal.mff.cuni.cz
+
+
+[NameTag website http://ufal.mff.cuni.cz/nametag].
+
+
++ Acknowledgements +
+
+This work has been using language resources developed and/or stored and/or distributed by the LINDAT-Clarin project of the Ministry of Education of the Czech Republic (project LM2010013).
+
+
++ References +
+
+++ Bibtex for referencing ++
