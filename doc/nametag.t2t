@@ -7,29 +7,64 @@ Version 0.9
 
 + Introduction +
 
+NameTag is an open-source tool for named entity recognition (NER). NameTag
+identifies proper names in text and classifies them into predefined categories,
+such as names of persons, locations, organizations, etc. NameTag is distributed
+as a standalone tool or a library, along with trained linguistic models. In the
+Czech language, NameTag achieves state-of-the-art performance 
+([Straková et al. 2013 http://ufallab.ms.mff.cuni.cz:23680/~straka/papers/2013-tsd_ner.pdf]).
+It is free for non-commercial purposes and is distributed under
+[LGPL http://www.gnu.org/licenses/lgpl.html] (source code)
+and [CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/] (models).
 
 + Release +
 
 ++ Download ++
 
+NameTag is currently undergoing beta testing. Please let us know if you wish to participate. The beta version includes:
+
+- named entity recognizer commandline tool
+- C++ library
+- Czech models trained on [CNEC 1.0 http://ufal.mff.cuni.cz/cnec/]
+
+
 ++ Roadmap ++
+
+- Jan 2014: NameTag 1.0 release
+- Feb 2014: training custom models available
+- March 2014: Java, Perl, Python language bindings
+
+NameTag will be available either as pre-compiled binaries and models from [LINDAT-Clarin http://ufal-point.mff.cuni.cz/lindat/] infrastructure or as open-source from [GitHub https://github.com/]. If you use this tool for scientific work, please give credit to us by referencing
+[NameTag website http://ufal.mff.cuni.cz/nametag] and 
+[Straková et al. 2013 http://ufallab.ms.mff.cuni.cz:23680/~straka/papers/2013-tsd_ner.pdf].
 
 ++ License ++
 
+NameTag is an open-source project and is freely available for non-commercial
+purposes. The source code is distributed under 
+[LGPL http://www.gnu.org/licenses/lgpl.html] and the pre-compiled binaries and the
+associated models and data under 
+[CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/]. If you use this tool for
+scientific work, please give credit to us by referencing 
+[NameTag website http://ufal.mff.cuni.cz/nametag] and 
+[Straková et al. 2013 http://ufallab.ms.mff.cuni.cz:23680/~straka/papers/2013-tsd_ner.pdf].
+
 ++ Platforms and Requirements ++
 
+NameTag is available as a standalone tool and as a library for Linux/Windows.
+It does not require any additional libraries. As any supervised machine
+learning tool, it needs trained linguistic models to perform named entity
+recognition. The models for the Czech language are available with the tool.
 
-+ MorphoDiTa User's Manual +
+%+ NameTag User's Manual +
 
-%web% [MorphoDiTa User's Manual on separate page. nametag/users-manual]
-%not_web% %!include: nametag_user.t2t
+%%web% [NameTag User's Manual on separate page. nametag/users-manual]
+%%not_web% %!include: nametag_user.t2t
 
+%+ NameTag API +
 
-+ MorphoDiTa API +
-
-%web% [MorphoDiTa API on separate page. nametag/api]
-%not_web% %!include: nametag_api.t2t
-
+%%web% [MorphoDiTa API on separate page. nametag/api]
+%%not_web% %!include: nametag_api.t2t
 
 + Contact +
 
@@ -40,12 +75,32 @@ Authors:
 
 [NameTag website http://ufal.mff.cuni.cz/nametag].
 
-
 + Acknowledgements +
 
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT-Clarin project of the Ministry of Education of the Czech Republic (project LM2010013).
 
-
 + References +
 
+Straková Jana, Straka Milan, Hajič Jan: //[A New State-of-The-Art Czech Named Entity Recognizer http://ufallab.ms.mff.cuni.cz:23680/~straka/papers/2013-tsd_ner.pdf].// In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
+
 ++ Bibtex for referencing ++
+
+```
+@inproceedings{ biblio:StStANew2013,
+booktitle = {Text, Speech and Dialogue: 16th International Conference, {TSD} 2013. Proceedings},
+series = {Lecture Notes in Computer Science},
+title = {A New State-of-The-Art Czech Named Entity Recognizer},
+editor = {Ivan Habernal and V{\'{a}}clav Matou{\v{s}}ek},
+author = {Jana Strakov{\'{a}} and Milan Straka and Jan Haji{\v{c}}},
+year = {2013},
+publisher = {Springer Verlag},
+organization = {Z{\'{a}}pado{\v{c}}esk{\'{a}} univerzita v Plzni},
+address = {Berlin / Heidelberg},
+venue = {Plze{\v{n}}, hotel Angelo},
+series = {Lecture Notes in Artificial Intelligence},
+volume = {8082},
+pages = {68--75},
+isbn = {978-3-642-40584-6},
+issn = {0302-9743},
+}
+```

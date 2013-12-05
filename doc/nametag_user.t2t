@@ -3,4 +3,64 @@ NameTag User's Manual
 
 %!encoding: utf-8
 
-The user's manual will be here.
+In a natural language text, the task of named entity recognition (NER) is to
+identify proper names such as names of persons, organizations and locations.
+NameTag recognizes named entities in an unprocessed text using 
+[MorphoDiTa http://ufal.mff.cuni.cz/morphodita].
+MorphoDiTa library tokenizes the text and performs morphologic analysis and tagging
+and NameTag identifies and classifies named entities by an algorithm described in 
+[Straková et al. 2013 http://ufallab.ms.mff.cuni.cz:23680/~straka/papers/2013-tsd_ner.pdf].
+NameTag can also performs NER in custom tokenized and morphologically analyzed and
+tagged texts.  
+
+This section describes the commandline tool and the model. The C++ library with
+bindings for other languages is described elsewhere, either in NameTag API
+Tutorial or in NameTag API Reference.
+
+++ Models ++
+
+Like any supervised machine learning tool, NameTag needs a trained linguistic
+model. Czech model trained on [CNEC 1.0 http://ufal.mff.cuni.cz/cnec/] is
+distributed with the tool. All models are distributed under the 
+[CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/] licence.
+Please make sure you are using the linguistic models in a version corresponding
+to your NameTag release. The best way to assure this is to use the most
+current NameTag release with the most current model release.
+
+++ Czech NER ++
+
+Czech models are trained on the training portion of the [Czech Named Entity Corpus 1.0 http://ufal.mff.cuni.cz/cnec/].
+The corpus uses a detailed named entity typology. NameTag recognizes these named entity types in Czech:
+
+++ NameTag Commandline Tool ++
+
+NameTag commandline tool accepts two input formats: an unprocessed, raw text
+and a custom tokenized and morphologically processed vertical format. Name Tag
+commandline tool accepts input on standard input and prints to standard output.
+All inputs and outputs are assumed in UTF-8.
+
++++ Raw Text Input Format +++
+
+An example of an unprocessed text input format, file ``sample.txt``:
+
+```
+Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
+```
+
+NameTag is run by:
+
+```
+cat sample.txt | ./run_ner <model>
+```
+
+A NameTag identified a first name (``pf``), a surname (``ps``) and a person name container (``P``) in the sample text:
+
+```
+<ne type='P'><ne type='pf'>Václav</ne> <ne type='ps'>Havel</ne></ne> byl český dramatik, esejista, kritik komunistického režimu a později politik.
+```
+
++++ Vertical Input Format +++
+
+For users who wish to perform their own tokenization and morphologic analysis, NameTag accepts tokenized and morphologically analyzed text in a CoNLL-style vertical format:
+
+TODO
