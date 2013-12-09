@@ -33,7 +33,7 @@ bool bilou_ner::load(FILE* f) {
   return true;
 }
 
-void bilou_ner::recognize(const vector<raw_form>& forms, vector<named_entity>& entities) const {
+void bilou_ner::recognize(const vector<string_piece>& forms, vector<named_entity>& entities) const {
   entities.clear();
   if (forms.empty() || !tagger || !named_entities.size()) return;
 

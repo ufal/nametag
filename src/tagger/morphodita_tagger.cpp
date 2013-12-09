@@ -46,7 +46,7 @@ bool morphodita_tagger::create_and_encode(const string& params, FILE* f) {
   return true;
 }
 
-void morphodita_tagger::tag(const vector<raw_form>& forms, ner_sentence& sentence) const {
+void morphodita_tagger::tag(const vector<string_piece>& forms, ner_sentence& sentence) const {
   sentence.resize(0);
   if (!tagger || !morpho) return;
 
@@ -55,20 +55,17 @@ void morphodita_tagger::tag(const vector<raw_form>& forms, ner_sentence& sentenc
   if (!c) c = new cache();
 
   // Tag
-  c->forms.clear();
-  for (auto& form : forms)
-    c->forms.emplace_back(form.form, form.form_len);
-  tagger->tag(c->forms, c->tags);
+  tagger->tag(forms, c->tags);
 
   // Fill sentence
   if (c->tags.size() >= forms.size()) {
     sentence.resize(forms.size());
     for (unsigned i = 0; i < forms.size(); i++) {
-      sentence.words[i].form.assign(forms[i].form, forms[i].form_len);
+      sentence.words[i].form.assign(forms[i].str, forms[i].len);
       const string& lemma = c->tags[i].lemma;
-      unsigned raw_lemma_len = morpho->raw_lemma_len(lemma.c_str(), lemma.size());
+      unsigned raw_lemma_len = morpho->raw_lemma_len(lemma);
       sentence.words[i].raw_lemma = raw_lemma_len == lemma.size() ? lemma : lemma.substr(0, raw_lemma_len);
-      unsigned lemma_id_len = morpho->lemma_id_len(lemma.c_str(), lemma.size());
+      unsigned lemma_id_len = morpho->lemma_id_len(lemma);
       sentence.words[i].lemma_id = lemma_id_len == lemma.size() ? lemma : lemma.substr(0, lemma_id_len);
       sentence.words[i].lemma_comments = lemma_id_len == lemma.size() ? string() : lemma.substr(lemma_id_len);
       sentence.words[i].tag = c->tags[i].tag;

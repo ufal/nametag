@@ -30,31 +30,30 @@ bool external_tagger::create_and_encode(const string& /*params*/, FILE* /*f*/) {
   return true;
 }
 
-void external_tagger::tag(const vector<raw_form>& forms, ner_sentence& sentence) const {
+void external_tagger::tag(const vector<string_piece>& forms, ner_sentence& sentence) const {
   sentence.resize(forms.size());
   for (unsigned i = 0; i < forms.size(); i++) {
-    const char* form = forms[i].form;
-    int form_len = forms[i].form_len;
+    string_piece form = forms[i];
 
-    int tab = small_strnchrpos(form, '\t', form_len);
-    if (tab < form_len) {
-      sentence.words[i].form.assign(form, tab);
-      form_len -= tab + 1;
-      form += tab + 1;
+    size_t tab = small_strnchrpos(form.str, '\t', form.len);
+    if (tab < form.len) {
+      sentence.words[i].form.assign(form.str, tab);
+      form.len -= tab + 1;
+      form.str += tab + 1;
 
-      tab = small_strnchrpos(form, '\t', form_len);
-      if (tab < form_len) {
-        sentence.words[i].raw_lemma.assign(form, tab);
-        form_len -= tab + 1;
-        form += tab + 1;
+      tab = small_strnchrpos(form.str, '\t', form.len);
+      if (tab < form.len) {
+        sentence.words[i].raw_lemma.assign(form.str, tab);
+        form.len -= tab + 1;
+        form.str += tab + 1;
 
-        sentence.words[i].tag.assign(form, small_strnchrpos(form, '\t', form_len));
+        sentence.words[i].tag.assign(form.str, small_strnchrpos(form.str, '\t', form.len));
       } else {
-        sentence.words[i].raw_lemma.assign(form, form_len);
+        sentence.words[i].raw_lemma.assign(form.str, form.len);
         sentence.words[i].tag.clear();
       }
     } else {
-      sentence.words[i].form.assign(form, form_len);
+      sentence.words[i].form.assign(form.str, form.len);
       sentence.words[i].raw_lemma = sentence.words[i].form;
       sentence.words[i].tag.clear();
     }

@@ -31,7 +31,7 @@ namespace nametag {
 
 class morphodita_tagger : public tagger {
  public:
-  virtual void tag(const vector<raw_form>& forms, ner_sentence& sentence) const override;
+  virtual void tag(const vector<string_piece>& forms, ner_sentence& sentence) const override;
 
  protected:
   virtual bool load(FILE* f) override;
@@ -42,7 +42,6 @@ class morphodita_tagger : public tagger {
   const ufal::morphodita::morpho* morpho;
 
   struct cache {
-    vector<ufal::morphodita::raw_form> forms;
     vector<ufal::morphodita::tagged_lemma> tags;
   };
   mutable threadsafe_stack<cache> caches;

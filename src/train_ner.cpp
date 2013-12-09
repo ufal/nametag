@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
   if (!ner_ids::parse(argv[1], id)) runtime_errorf("Cannot parse ner_identifier '%s'!\n", argv[1]);
 
   switch (id) {
-    case ner_ids::BILOU_NER:
+    case ner_ids::CZECH_NER:
       {
         if (argc < 9) runtime_errorf("Usage: %s %s tagger_id[:tagger_options] features iterations missing_weight initial_alpha final_alpha gaussian [heldout_data]  ", argv[0], argv[1]);
 

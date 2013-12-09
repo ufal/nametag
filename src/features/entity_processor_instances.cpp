@@ -43,26 +43,26 @@ BEGIN_ENTITY_PROCESSOR(CzechAddContainers)
 
     for (unsigned i = 0; i < entities.size(); i++) {
       // P if ps+ pf+
-      if (entities[i].type.compare("pf") == 0 && (!i || entities[i-1].start + entities[i-1].len < entities[i].start || entities[i-1].type.compare("pf") != 0)) {
+      if (entities[i].type.compare("pf") == 0 && (!i || entities[i-1].start + entities[i-1].length < entities[i].start || entities[i-1].type.compare("pf") != 0)) {
         unsigned j = i + 1;
-        while (j < entities.size() && entities[j].start == entities[j-1].start + entities[j-1].len && entities[j].type.compare("pf") == 0) j++;
-        if (j < entities.size() && entities[j].start == entities[j-1].start + entities[j-1].len && entities[j].type.compare("ps") == 0) {
+        while (j < entities.size() && entities[j].start == entities[j-1].start + entities[j-1].length && entities[j].type.compare("pf") == 0) j++;
+        if (j < entities.size() && entities[j].start == entities[j-1].start + entities[j-1].length && entities[j].type.compare("ps") == 0) {
           j++;
-          while (j < entities.size() && entities[j].start == entities[j-1].start + entities[j-1].len && entities[j].type.compare("ps") == 0) j++;
-          buffer.emplace_back(entities[i].start, entities[j - 1].start + entities[j - 1].len - entities[i].start, "P");
+          while (j < entities.size() && entities[j].start == entities[j-1].start + entities[j-1].length && entities[j].type.compare("ps") == 0) j++;
+          buffer.emplace_back(entities[i].start, entities[j - 1].start + entities[j - 1].length - entities[i].start, "P");
         }
       }
 
       // T if td tm ty | td tm
-      if (entities[i].type.compare("td") == 0 && i+1 < entities.size() && entities[i+1].start == entities[i].start + entities[i].len && entities[i+1].type.compare("tm") == 0) {
+      if (entities[i].type.compare("td") == 0 && i+1 < entities.size() && entities[i+1].start == entities[i].start + entities[i].length && entities[i+1].type.compare("tm") == 0) {
         unsigned j = i + 2;
-        if (j < entities.size() && entities[j].start == entities[j-1].start + entities[j-1].len && entities[j].type.compare("ty") == 0) j++;
-        buffer.emplace_back(entities[i].start, entities[j - 1].start + entities[j - 1].len - entities[i].start, "T");
+        if (j < entities.size() && entities[j].start == entities[j-1].start + entities[j-1].length && entities[j].type.compare("ty") == 0) j++;
+        buffer.emplace_back(entities[i].start, entities[j - 1].start + entities[j - 1].length - entities[i].start, "T");
       }
       // T if !td tm ty
-      if (entities[i].type.compare("tm") == 0 && (!i || entities[i-1].start + entities[i-1].len < entities[i].start || entities[i-1].type.compare("td") != 0))
-        if (i+1 < entities.size() && entities[i+1].start == entities[i].start + entities[i].len && entities[i+1].type.compare("ty") == 0)
-          buffer.emplace_back(entities[i].start, entities[i + 1].start + entities[i + 1].len - entities[i].start, "T");
+      if (entities[i].type.compare("tm") == 0 && (!i || entities[i-1].start + entities[i-1].length < entities[i].start || entities[i-1].type.compare("td") != 0))
+        if (i+1 < entities.size() && entities[i+1].start == entities[i].start + entities[i].length && entities[i+1].type.compare("ty") == 0)
+          buffer.emplace_back(entities[i].start, entities[i + 1].start + entities[i + 1].length - entities[i].start, "T");
 
       buffer.push_back(entities[i]);
     }

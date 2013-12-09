@@ -25,10 +25,10 @@ namespace nametag {
 
 class ner_ids {
  public:
-  enum ner_id { BILOU_NER = 0 };
+  enum ner_id { CZECH_NER = 0 };
 
   static bool parse(const string& str, ner_id& id) {
-    if (str == "bilou") return id = BILOU_NER, true;
+    if (str == "czech") return id = CZECH_NER, true;
     return false;
   }
 };

@@ -19,23 +19,20 @@
 #pragma once
 
 #include "common.h"
+#include "tokenizer/tokenizer.h"
+#include "utils/string_piece.h"
+#include "utils/threadsafe_stack.h"
 
 namespace ufal {
 namespace nametag {
 
-struct EXPORT_ATTRIBUTES raw_form {
-  const char* form;
-  int form_len;
-
-  raw_form(const char* form, int form_len) : form(form), form_len(form_len) {}
-};
-
-struct EXPORT_ATTRIBUTES named_entity {
-  int start;
-  int len;
+struct named_entity {
+  size_t start;
+  size_t length;
   string type;
 
-  named_entity(int start, int len, const string& type) : start(start), len(len), type(type) {}
+  named_entity() {}
+  named_entity(size_t start, size_t length, const string& type) : start(start), length(length), type(type) {}
 };
 
 class EXPORT_ATTRIBUTES ner {
@@ -45,7 +42,27 @@ class EXPORT_ATTRIBUTES ner {
   static ner* load(FILE* f);
   static ner* load(const char* fname);
 
-  virtual void recognize(const vector<raw_form>& forms, vector<named_entity>& entities) const = 0;
+  // Perform named entity recognition on a tokenizes sentence and return found
+  // named entities in the given vector.
+  virtual void recognize(const vector<string_piece>& forms, vector<named_entity>& entities) const = 0;
+
+  // Perform tokenization and named entity recognition and return found named
+  // entities in the given vector. Return the entity ranges either in UTF8
+  // bytes, Unicode characters or both.
+  void tokenize_and_recognize(const char* text, vector<named_entity>* entities_utf8, vector<named_entity>* entities_unicode) const;
+
+ protected:
+  virtual tokenizer* new_tokenizer() const = 0;
+
+  struct cache {
+    unique_ptr<tokenizer> t;
+    vector<string_piece> forms;
+    vector<token_range> tokens;
+    vector<named_entity> entities;
+
+    cache(const ner& self) : t(self.new_tokenizer()) {}
+  };
+  mutable threadsafe_stack<cache> caches;
 };
 
 } // namespace nametag

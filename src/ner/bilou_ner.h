@@ -33,7 +33,7 @@ class bilou_ner : public ner {
  public:
   bool load(FILE* f);
 
-  virtual void recognize(const vector<raw_form>& forms, vector<named_entity>& entities) const override;
+  virtual void recognize(const vector<string_piece>& forms, vector<named_entity>& entities) const override;
 
  private:
   entity_map named_entities;

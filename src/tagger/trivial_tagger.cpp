@@ -29,10 +29,10 @@ bool trivial_tagger::create_and_encode(const string& /*params*/, FILE* /*f*/) {
   return true;
 }
 
-void trivial_tagger::tag(const vector<raw_form>& forms, ner_sentence& sentence) const {
+void trivial_tagger::tag(const vector<string_piece>& forms, ner_sentence& sentence) const {
   sentence.resize(forms.size());
   for (unsigned i = 0; i < forms.size(); i++) {
-    sentence.words[i].form.assign(forms[i].form, forms[i].form_len);
+    sentence.words[i].form.assign(forms[i].str, forms[i].len);
     sentence.words[i].raw_lemma = sentence.words[i].form;
     sentence.words[i].lemma_id = sentence.words[i].form;
     sentence.words[i].lemma_comments.clear();

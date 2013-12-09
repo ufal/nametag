@@ -16,33 +16,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
-
-#include "common.h"
-#include "features/ner_sentence.h"
-#include "ner/ner.h"
-#include "tagger_ids.h"
+#include "czech_ner.h"
+#include "tokenizer/czech_tokenizer.h"
 
 namespace ufal {
 namespace nametag {
 
-class tagger {
- public:
-  virtual ~tagger() {}
-
-  virtual void tag(const vector<string_piece>& forms, ner_sentence& sentence) const = 0;
-
-  // Factory methods
-  static tagger* load_instance(FILE* f);
-  static tagger* create_and_encode_instance(const string& tagger_id_and_params, FILE* f);
-
- protected:
-  virtual bool load(FILE* f) = 0;
-  virtual bool create_and_encode(const string& params, FILE* f) = 0;
-
- private:
-  static tagger* create(tagger_id id);
-};
+tokenizer* czech_ner::new_tokenizer() const {
+  return new czech_tokenizer();
+}
 
 } // namespace nametag
 } // namespace ufal

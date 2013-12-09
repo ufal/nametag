@@ -28,7 +28,7 @@ class trivial_tagger : public tagger {
  public:
   virtual bool load(FILE* f) override;
   virtual bool create_and_encode(const string& params, FILE* f) override;
-  virtual void tag(const vector<raw_form>& forms, ner_sentence& sentence) const override;
+  virtual void tag(const vector<string_piece>& forms, ner_sentence& sentence) const override;
 };
 
 } // namespace nametag

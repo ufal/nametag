@@ -2,8 +2,6 @@ NameTag: Name Entity Recognizer
 Version 0.9
 
 %!encoding: utf-8
-%!options: --toc --css-sugar
-%!style(tex): nametag.sty
 
 + Introduction +
 

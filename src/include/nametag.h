@@ -33,19 +33,23 @@
 namespace ufal {
 namespace nametag {
 
-struct NAMETAG_IMPORT raw_form {
-  const char* form;
-  int form_len;
+struct string_piece {
+  const char* str;
+  size_t len;
 
-  raw_form(const char* form, int form_len) : form(form), form_len(form_len) {}
+  string_piece() : str(NULL), len(0) {}
+  string_piece(const char* str) : str(str), len(strlen(str)) {}
+  string_piece(const char* str, size_t len) : str(str), len(len) {}
+  string_piece(const std::string& str) : str(str.c_str()), len(str.size()) {}
 };
 
-struct NAMETAG_IMPORT named_entity {
+struct named_entity {
   int start;
-  int len;
+  int length;
   string type;
 
-  named_entity(int start, int len, const string& type) : start(start), len(len), type(type) {}
+  named_entity() {}
+  named_entity(size_t start, size_t length, const string& type) : start(start), length(length), type(type) {}
 };
 
 class NAMETAG_IMPORT ner {
@@ -55,12 +59,15 @@ class NAMETAG_IMPORT ner {
   static ner* load(FILE* f);
   static ner* load(const char* fname);
 
-  virtual void recognize(const vector<raw_form>& forms, vector<named_entity>& entities) const = 0;
+  // Perform named entity recognition on a tokenizes sentence and return found
+  // named entities in the given vector.
+  virtual void recognize(const vector<string_piece>& forms, vector<named_entity>& entities) const = 0;
+
+  // Perform tokenization and named entity recognition and return found named
+  // entities in the given vector. Return the entity ranges either in UTF8
+  // bytes, Unicode characters or both.
+  void tokenize_and_recognize(const char* text, vector<named_entity>* entities_utf8, vector<named_entity>* entities_unicode) const;
 };
 
 } // namespace nametag
 } // namespace ufal
-
-extern "C" {
-
-}

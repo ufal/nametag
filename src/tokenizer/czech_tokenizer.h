@@ -19,29 +19,22 @@
 #pragma once
 
 #include "common.h"
-#include "features/ner_sentence.h"
-#include "ner/ner.h"
-#include "tagger_ids.h"
+#include "tokenizer.h"
 
 namespace ufal {
 namespace nametag {
 
-class tagger {
+class czech_tokenizer : public tokenizer {
  public:
-  virtual ~tagger() {}
+  virtual void set_text(const char* text) override;
 
-  virtual void tag(const vector<string_piece>& forms, ner_sentence& sentence) const = 0;
-
-  // Factory methods
-  static tagger* load_instance(FILE* f);
-  static tagger* create_and_encode_instance(const string& tagger_id_and_params, FILE* f);
-
- protected:
-  virtual bool load(FILE* f) = 0;
-  virtual bool create_and_encode(const string& params, FILE* f) = 0;
+  virtual bool next_sentence(vector<string_piece>* forms, vector<token_range>* tokens) override;
 
  private:
-  static tagger* create(tagger_id id);
+  bool split_hyphenated_words;
+
+  const char* text;
+  size_t chars;
 };
 
 } // namespace nametag

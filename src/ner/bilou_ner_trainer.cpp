@@ -36,8 +36,8 @@ struct labelled_sentence {
 };
 
 static void load_data(FILE* f, const tagger& tagger, vector<labelled_sentence>& data, entity_map& entity_map, bool add_entities) {
-  vector<string> forms, entities;
-  vector<raw_form> raw_forms;
+  vector<string> words, entities;
+  vector<string_piece> forms;
 
   data.clear();
 
@@ -46,14 +46,11 @@ static void load_data(FILE* f, const tagger& tagger, vector<labelled_sentence>& 
   for (bool eof; true; ) {
     eof = !getline(f, line);
     if (eof || line.empty()) {
-      if (!forms.empty()) {
+      if (!words.empty()) {
         // Tag the sentence
-        for (auto& form : forms)
-          raw_forms.emplace_back(form.c_str(), form.size());
-
         data.emplace_back();
         auto& sentence = data.back();
-        tagger.tag(raw_forms, sentence.sentence);
+        tagger.tag(forms, sentence.sentence);
 
         // Decode the entities names and ranges
         for (unsigned i = 0; i < entities.size(); i++)
@@ -69,15 +66,16 @@ static void load_data(FILE* f, const tagger& tagger, vector<labelled_sentence>& 
             runtime_errorf("Cannot parse entity type %s!", entities[i].c_str());
 
         // Start a new sentence
+        words.clear();
         forms.clear();
         entities.clear();
-        raw_forms.clear();
       }
       if (eof) break;
     } else {
       split(line, '\t', tokens);
       if (tokens.size() != 2) runtime_errorf("The NER data line '%s' does not contain two columns!", line.c_str());
-      forms.emplace_back(tokens[0]);
+      words.emplace_back(tokens[0]);
+      forms.emplace_back(words.back());
       entities.emplace_back(tokens[1]);
     }
   }

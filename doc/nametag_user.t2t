@@ -5,13 +5,13 @@ NameTag User's Manual
 
 In a natural language text, the task of named entity recognition (NER) is to
 identify proper names such as names of persons, organizations and locations.
-NameTag recognizes named entities in an unprocessed text using 
+NameTag recognizes named entities in an unprocessed text using
 [MorphoDiTa http://ufal.mff.cuni.cz/morphodita].
 MorphoDiTa library tokenizes the text and performs morphologic analysis and tagging
-and NameTag identifies and classifies named entities by an algorithm described in 
+and NameTag identifies and classifies named entities by an algorithm described in
 [Straková et al. 2013 http://ufallab.ms.mff.cuni.cz:23680/~straka/papers/2013-tsd_ner.pdf].
 NameTag can also performs NER in custom tokenized and morphologically analyzed and
-tagged texts.  
+tagged texts.
 
 This section describes the commandline tool and the model. The C++ library with
 bindings for other languages is described elsewhere, either in NameTag API
@@ -21,7 +21,7 @@ Tutorial or in NameTag API Reference.
 
 Like any supervised machine learning tool, NameTag needs a trained linguistic
 model. Czech model trained on [CNEC 1.0 http://ufal.mff.cuni.cz/cnec/] is
-distributed with the tool. All models are distributed under the 
+distributed with the tool. All models are distributed under the
 [CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/] licence.
 Please make sure you are using the linguistic models in a version corresponding
 to your NameTag release. The best way to assure this is to use the most
@@ -50,7 +50,7 @@ Václav Havel byl český dramatik, esejista, kritik komunistického režimu a p
 NameTag is run by:
 
 ```
-cat sample.txt | ./run_ner <model>
+cat sample.txt | ./run_ner -t <model>
 ```
 
 A NameTag identified a first name (``pf``), a surname (``ps``) and a person name container (``P``) in the sample text:
