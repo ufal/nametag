@@ -1,0 +1,3 @@
+include ../../morphodita/src/Makefile.options
+
+SWIG_FLAGS=-O -c++ -outcurrentdir
