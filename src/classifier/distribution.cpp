@@ -21,7 +21,7 @@
 #include "distribution.h"
 
 namespace ufal {
-namespace utils {
+namespace nametag {
 
 int distribution::uniform(int min, int max) {
   unsigned range = max - min;
@@ -60,5 +60,5 @@ unsigned distribution::random_seed() {
   return chrono::high_resolution_clock::now().time_since_epoch().count();
 }
 
-} // namespace utils
+} // namespace nametag
 } // namespace ufal

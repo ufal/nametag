@@ -18,23 +18,24 @@
 
 #pragma once
 
+#include <random>
+
 #include "common.h"
-#include "tokenizer.h"
 
 namespace ufal {
 namespace nametag {
 
-class czech_tokenizer : public tokenizer {
+class distribution {
  public:
-  virtual void set_text(const char* text) override;
+  distribution(unsigned seed) : g(seed) {}
 
-  virtual bool next_sentence(vector<string_piece>* forms, vector<token_range>* tokens) override;
+  int uniform(int min, int max);
+  double real(double min = 0., double max = 1.);
+  void permutation(int min, int max, vector<int>& perm);
 
+  static unsigned random_seed();
  private:
-  bool split_hyphenated_words;
-
-  const char* text;
-  size_t chars;
+  mt19937 g;
 };
 
 } // namespace nametag
