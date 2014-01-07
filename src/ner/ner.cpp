@@ -47,26 +47,22 @@ ner* ner::load(const char* fname) {
   return load(f);
 }
 
-void ner::tokenize_and_recognize(const char* text, vector<named_entity>* entities_utf8, vector<named_entity>* entities_unicode) const {
-  if (!entities_utf8 && !entities_unicode) return;
-
-  if (entities_utf8) entities_utf8->clear();
-  if (entities_unicode) entities_unicode->clear();
+void ner::tokenize_and_recognize(const char* text, vector<named_entity>& entities, bool unicode_offsets) const {
+  entities.clear();
 
   cache* c = caches.pop();
   if (!c) c = new cache(*this);
 
   c->t->set_text(text);
-  while (c->t->next_sentence(&c->forms, entities_unicode ? &c->tokens : nullptr)) {
+  while (c->t->next_sentence(&c->forms, unicode_offsets ? &c->tokens : nullptr)) {
     recognize(c->forms, c->entities);
-    for (auto& entity : c->entities) {
-      if (entities_utf8)
-        entities_utf8->emplace_back(c->forms[entity.start].str - text, c->forms[entity.start + entity.length - 1].str - text +
-                                    c->forms[entity.start + entity.length - 1].len - (c->forms[entity.start].str - text), entity.type);
-      if (entities_unicode)
-        entities_unicode->emplace_back(c->tokens[entity.start].start, c->tokens[entity.start + entity.length - 1].start +
-                                       c->tokens[entity.start + entity.length - 1].length - c->tokens[entity.start].start, entity.type);
-    }
+    for (auto& entity : c->entities)
+      if (unicode_offsets)
+        entities.emplace_back(c->tokens[entity.start].start, c->tokens[entity.start + entity.length - 1].start +
+                              c->tokens[entity.start + entity.length - 1].length - c->tokens[entity.start].start, entity.type);
+      else
+        entities.emplace_back(c->forms[entity.start].str - text, c->forms[entity.start + entity.length - 1].str - text +
+                              c->forms[entity.start + entity.length - 1].len - (c->forms[entity.start].str - text), entity.type);
   }
 
   caches.push(c);

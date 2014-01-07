@@ -109,7 +109,7 @@ void recognize_untokenized(const ner& recognizer) {
 
     // Tokenize the text and find named entities
     size_t unprinted = 0;
-    recognizer.tokenize_and_recognize(text.c_str(), &entities, nullptr);
+    recognizer.tokenize_and_recognize(text.c_str(), entities);
     for (auto& entity : entities) {
       // Close entities that end sooned than current entity
       while (!entity_ends.empty() && entity_ends.back() < entity.start) {
