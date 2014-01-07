@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 
   int argi = 1;
   if (argi < argc && strcmp(argv[argi], "-v") == 0) argi++, use_vertical = true;
-  if (argi + 1 < argc) runtime_errorf("Usage: %s [-v] ner_model", argv[0]);
+  if (argi >= argc) runtime_errorf("Usage: %s [-v] ner_model", argv[0]);
 
   eprintf("Loading ner: ");
   unique_ptr<ner> recognizer(ner::load(argv[argi]));
