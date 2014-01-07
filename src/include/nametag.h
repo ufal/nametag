@@ -46,10 +46,10 @@ struct string_piece {
 struct named_entity {
   int start;
   int length;
-  string type;
+  std::string type;
 
   named_entity() {}
-  named_entity(size_t start, size_t length, const string& type) : start(start), length(length), type(type) {}
+  named_entity(size_t start, size_t length, const std::string& type) : start(start), length(length), type(type) {}
 };
 
 class NAMETAG_IMPORT ner {
@@ -61,13 +61,15 @@ class NAMETAG_IMPORT ner {
 
   // Perform named entity recognition on a tokenizes sentence and return found
   // named entities in the given vector.
-  virtual void recognize(const vector<string_piece>& forms, vector<named_entity>& entities) const = 0;
+  virtual void recognize(const std::vector<string_piece>& forms, std::vector<named_entity>& entities) const = 0;
 
   // Perform tokenization and named entity recognition and return found named
   // entities in the given vector. Return the entity ranges either in UTF8
   // bytes or Unicode characters as requested.
-  void tokenize_and_recognize(const char* text, vector<named_entity>& entities, bool unicode_offsets = false) const;
+  void tokenize_and_recognize(const char* text, std::vector<named_entity>& entities, bool unicode_offsets = false) const;
 };
 
 } // namespace nametag
 } // namespace ufal
+
+#endif
