@@ -1,3 +1,6 @@
 .objs/
 run_ner
 train_ner
+libnametag.a
+libnametag.dyn.a
+libnametag.so
