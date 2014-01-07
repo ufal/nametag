@@ -19,15 +19,18 @@
 #pragma once
 
 #include "common.h"
-#include "string_piece.h"
-
-#include "morphodita.h"
+#include "utf8_tokenizer.h"
 
 namespace ufal {
 namespace nametag {
 
-typedef ufal::morphodita::token_range token_range;
-typedef ufal::morphodita::tokenizer tokenizer;
+class czech_tokenizer : public utf8_tokenizer {
+ public:
+  virtual bool next_sentence(vector<string_piece>& forms) override;
+
+ private:
+  string buffer;
+};
 
 } // namespace nametag
 } // namespace ufal

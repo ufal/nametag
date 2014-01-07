@@ -20,7 +20,6 @@
 
 #include "common.h"
 #include "tokenizer/tokenizer.h"
-#include "utils/string_piece.h"
 #include "utils/threadsafe_stack.h"
 
 namespace ufal {

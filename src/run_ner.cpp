@@ -29,11 +29,11 @@ static void recognize_vertical(const ner& recognizer);
 static void recognize_untokenized(const ner& recognizer);
 
 int main(int argc, char* argv[]) {
-  bool use_tokenizer = false;
+  bool use_vertical = false;
 
   int argi = 1;
-  if (argi < argc && strcmp(argv[argi], "-t") == 0) argi++, use_tokenizer = true;
-  if (argi + 1 < argc) runtime_errorf("Usage: %s [-t] ner_model", argv[0]);
+  if (argi < argc && strcmp(argv[argi], "-v") == 0) argi++, use_vertical = true;
+  if (argi + 1 < argc) runtime_errorf("Usage: %s [-v] ner_model", argv[0]);
 
   eprintf("Loading ner: ");
   unique_ptr<ner> recognizer(ner::load(argv[argi]));
@@ -42,8 +42,8 @@ int main(int argc, char* argv[]) {
 
   eprintf("Recognizing: ");
   clock_t now = clock();
-  if (use_tokenizer) recognize_untokenized(*recognizer);
-  else recognize_vertical(*recognizer);
+  if (use_vertical) recognize_vertical(*recognizer);
+  else recognize_untokenized(*recognizer);
   eprintf("done, in %.3f seconds.\n", (clock() - now) / double(CLOCKS_PER_SEC));
 
   return 0;
@@ -143,12 +143,12 @@ void recognize_untokenized(const ner& recognizer) {
 void encode_entities_and_print(const char* text, size_t length) {
   const char* to_print = text;
   while (length) {
-    while (length && *text != '<' && *text != '>' && *text != '&')
+    while (length && *text != '<' && *text != '>' && *text != '&' && *text != '"')
       text++, length--;
 
     if (length) {
       if (to_print < text) fwrite(to_print, 1, text - to_print, stdout);
-      fputs(*text == '<' ? "&lt;" : *text == '>' ? "&gt;" : "&amp;", stdout);
+      fputs(*text == '<' ? "&lt;" : *text == '>' ? "&gt;" : *text == '&' ? "&amp;" : "&quot;", stdout);
       text++, length--;
       to_print = text;
     }
