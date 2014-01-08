@@ -24,32 +24,6 @@
 namespace ufal {
 namespace nametag {
 
-// Feature template -- factory
-entity_processor::factory_map& entity_processor::factory() {
-  static factory_map map;
-  return map;
-}
-
-entity_processor* entity_processor::create(const string& name) {
-  auto it = factory().find(name);
-  return it != factory().end() ? it->second() : nullptr;
-}
-
-entity_processor* entity_processor::load_instance(binary_decoder& data) {
-  unsigned len = data.next_1B();
-  unique_ptr<entity_processor> res(create(string(data.next<char>(len), len)));
-  if (!res) return nullptr;
-
-  res->load(data);
-  return res.release();
-}
-
-void entity_processor::save_instance(binary_encoder& enc) {
-  enc.add_1B(name().size());
-  enc.add_str(name());
-  save(enc);
-}
-
 // Feature template -- methods and virtual methods
 entity_processor::~entity_processor() {}
 
@@ -61,6 +35,9 @@ void entity_processor::load(binary_decoder& /*data*/) {
 }
 
 void entity_processor::save(binary_encoder& /*enc*/) {
+}
+
+void entity_processor::freeze(entity_map& /*entities*/) {
 }
 
 } // namespace nametag

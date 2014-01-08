@@ -24,18 +24,6 @@
 namespace ufal {
 namespace nametag {
 
-// Macro for defining the instances
-#define BEGIN_FORM_PROCESSOR(Name)                                               \
-class Name##_form_processor : public form_processor {                            \
-  typedef form_processor super;                                                  \
- public:                                                                         \
-  virtual const string& name() const { static string name(#Name); return name; }
-
-#define END_FORM_PROCESSOR(Name)                                                             \
-};                                                                                           \
-static form_processor::registrator<Name##_form_processor> Name##_form_processor_registrator;
-
-
 // Helper functions defined as macros so that they can access arguments without passing them
 #define apply_in_window(I, Feature) {                                          \
   ner_feature _feature = (Feature);                                            \
@@ -57,9 +45,11 @@ static form_processor::registrator<Name##_form_processor> Name##_form_processor_
 //////////////////////////////////////////////////////////
 // Form processor instances (ordered lexicographically) //
 //////////////////////////////////////////////////////////
+namespace form_processors {
 
 // PreviousEntity
-BEGIN_FORM_PROCESSOR(PreviousEntity)
+class previous_entity : public form_processor {
+ public:
   virtual void process_form(int form, ner_sentence& sentence, ner_feature offset, string& /*buffer*/) const override {
     if (form == 0) {
       apply_outer_words_in_window(lookup_empty());
@@ -68,7 +58,15 @@ BEGIN_FORM_PROCESSOR(PreviousEntity)
       apply_in_window(form, lookup(sentence.words[form-1].form + to_string(probs.bilou[probs.best].entity * bilou_type_total + probs.best)));
     }
   }
-END_FORM_PROCESSOR(PreviousEntity)
+};
+
+} // namespace form_processors
+
+// Form processor factory method
+form_processor* form_processor::create(const string& name) {
+  if (name.compare("PreviousEntity") == 0) return new form_processors::previous_entity();
+  return nullptr;
+}
 
 } // namespace nametag
 } // namespace ufal

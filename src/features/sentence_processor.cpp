@@ -24,32 +24,6 @@
 namespace ufal {
 namespace nametag {
 
-// Sentence processor -- factory
-sentence_processor::factory_map& sentence_processor::factory() {
-  static factory_map map;
-  return map;
-}
-
-sentence_processor* sentence_processor::create(const string& name) {
-  auto it = factory().find(name);
-  return it != factory().end() ? it->second() : nullptr;
-}
-
-sentence_processor* sentence_processor::load_instance(binary_decoder& data) {
-  unsigned len = data.next_1B();
-  unique_ptr<sentence_processor> res(create(string(data.next<char>(len), len)));
-  if (!res) return nullptr;
-
-  res->load(data);
-  return res.release();
-}
-
-void sentence_processor::save_instance(binary_encoder& enc) {
-  enc.add_1B(name().size());
-  enc.add_str(name());
-  save(enc);
-}
-
 // Sentence processor -- methods and virtual methods
 sentence_processor::~sentence_processor() {}
 

@@ -18,9 +18,6 @@
 
 #pragma once
 
-#include <functional>
-#include <unordered_map>
-
 #include "common.h"
 #include "ner_sentence.h"
 #include "ner/entity_map.h"
@@ -35,23 +32,15 @@ class entity_processor {
  public:
   virtual ~entity_processor();
 
-  virtual const string& name() const = 0;
   virtual bool init(const vector<string>& args);
   virtual void load(binary_decoder& data);
   virtual void save(binary_encoder& enc);
+  virtual void freeze(entity_map& entities);
 
   virtual void process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const = 0;
 
-  // Factory methods
- public:
+  // Factory method
   static entity_processor* create(const string& name);
-  static entity_processor* load_instance(binary_decoder& data);
-  void save_instance(binary_encoder& enc);
-  template <class T> class registrator { public: registrator() { factory()[T().name()] = []()->entity_processor*{ return new T(); }; }};
-
- private:
-  typedef unordered_map<string, function<entity_processor*()>> factory_map;
-  static factory_map& factory();
 };
 
 } // namespace nametag

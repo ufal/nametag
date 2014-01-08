@@ -43,22 +43,30 @@ class feature_templates {
 
  private:
   struct sentence_processor_info {
+    string name;
     unique_ptr<sentence_processor> processor;
     ner_feature offset;
 
-    sentence_processor_info(sentence_processor* processor = nullptr, ner_feature offset = 0) : processor(processor), offset(offset) {}
+    sentence_processor_info(const string& name, sentence_processor* processor, ner_feature offset = 0) : name(name), processor(processor), offset(offset) {}
   };
   vector<sentence_processor_info> sentence_processors;
 
   struct form_processor_info {
+    string name;
     unique_ptr<form_processor> processor;
     ner_feature offset;
 
-    form_processor_info(form_processor* processor = nullptr, ner_feature offset = 0) : processor(processor), offset(offset) {}
+    form_processor_info(const string& name, form_processor* processor, ner_feature offset = 0) : name(name), processor(processor), offset(offset) {}
   };
   vector<form_processor_info> form_processors;
 
-  vector<unique_ptr<entity_processor>> entity_processors;
+  struct entity_processor_info {
+    string name;
+    unique_ptr<entity_processor> processor;
+
+    entity_processor_info(const string& name, entity_processor* processor) : name(name), processor(processor) {}
+  };
+  vector<entity_processor_info> entity_processors;
 };
 
 } // namespace nametag

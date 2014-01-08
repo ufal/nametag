@@ -39,37 +39,38 @@ void feature_templates::parse(FILE* f) {
     split(tokens[0], '/', token0_parts);
     if (token0_parts.size() < 1 || token0_parts.size() > 2) runtime_errorf("Bad feature template description at line '%s' of feature templates file!", line.c_str());
 
+    string template_name = token0_parts[0];
     int window = token0_parts.size() > 1 ? (unsigned) stoi(token0_parts[1]) : 0;
     vector<string> args;
     for (unsigned i = 1; i < tokens.size(); i++)
       args.emplace_back(tokens[i]);
 
     // Try sentence processor
-    auto* maybe_sentence_processor = sentence_processor::create(token0_parts[0]);
+    auto* maybe_sentence_processor = sentence_processor::create(template_name);
     if (maybe_sentence_processor) {
-      if (!maybe_sentence_processor->init(window, args)) runtime_errorf("Cannot initialize feature template sentence processor '%s' from line '%s' of feature templates file!", token0_parts[0].c_str(), line.c_str());
-      sentence_processors.emplace_back(maybe_sentence_processor);
+      if (!maybe_sentence_processor->init(window, args)) runtime_errorf("Cannot initialize feature template sentence processor '%s' from line '%s' of feature templates file!", template_name.c_str(), line.c_str());
+      sentence_processors.emplace_back(template_name, maybe_sentence_processor);
       continue;
     }
 
     // Try form processor
-    auto* maybe_form_processor = form_processor::create(token0_parts[0]);
+    auto* maybe_form_processor = form_processor::create(template_name);
     if (maybe_form_processor) {
-      if (!maybe_form_processor->init(window, args)) runtime_errorf("Cannot initialize feature template form processor '%s' from line '%s' of feature templates file!", token0_parts[0].c_str(), line.c_str());
-      form_processors.emplace_back(maybe_form_processor);
+      if (!maybe_form_processor->init(window, args)) runtime_errorf("Cannot initialize feature template form processor '%s' from line '%s' of feature templates file!", template_name.c_str(), line.c_str());
+      form_processors.emplace_back(template_name, maybe_form_processor);
       continue;
     }
 
     // Try entity processor
-    auto* maybe_entity_processor = entity_processor::create(token0_parts[0]);
+    auto* maybe_entity_processor = entity_processor::create(template_name);
     if (maybe_entity_processor) {
-      if (!maybe_entity_processor->init(args)) runtime_errorf("Cannot initialize feature template entity processor '%s' from line '%s' of feature templates file!", token0_parts[0].c_str(), line.c_str());
-      entity_processors.emplace_back(maybe_entity_processor);
+      if (!maybe_entity_processor->init(args)) runtime_errorf("Cannot initialize feature template entity processor '%s' from line '%s' of feature templates file!", template_name.c_str(), line.c_str());
+      entity_processors.emplace_back(template_name, maybe_entity_processor);
       continue;
     }
 
     // Fail
-    runtime_errorf("Cannot create feature template '%s' from line '%s' of feature templates file!", token0_parts[0].c_str(), line.c_str());
+    runtime_errorf("Cannot create feature template '%s' from line '%s' of feature templates file!", template_name.c_str(), line.c_str());
   }
 }
 
@@ -86,6 +87,9 @@ ner_feature feature_templates::freeze(entity_map& entities) {
     offset += processor.processor->freeze(entities);
   }
 
+  for (auto& processor : entity_processors)
+    processor.processor->freeze(entities);
+
   return offset;
 }
 
@@ -94,19 +98,26 @@ bool feature_templates::save(FILE* f) {
 
   enc.add_4B(sentence_processors.size());
   for (auto& processor : sentence_processors) {
-    processor.processor->save_instance(enc);
+    enc.add_1B(processor.name.size());
+    enc.add_str(processor.name);
+    processor.processor->save(enc);
     enc.add_4B(processor.offset);
   }
 
   enc.add_4B(form_processors.size());
   for (auto& processor : form_processors) {
-    processor.processor->save_instance(enc);
+    enc.add_1B(processor.name.size());
+    enc.add_str(processor.name);
+    processor.processor->save(enc);
     enc.add_4B(processor.offset);
   }
 
   enc.add_4B(entity_processors.size());
-  for (auto& processor : entity_processors)
-    processor->save_instance(enc);
+  for (auto& processor : entity_processors) {
+    enc.add_1B(processor.name.size());
+    enc.add_str(processor.name);
+    processor.processor->save(enc);
+  }
 
   return compressor::save(f, enc);
 }

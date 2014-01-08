@@ -21,23 +21,14 @@
 namespace ufal {
 namespace nametag {
 
-// Macro for defining the instances
-#define BEGIN_ENTITY_PROCESSOR(Name)                                             \
-class Name##_entity_processor : public entity_processor {                        \
-  typedef entity_processor super;                                                \
- public:                                                                         \
-  virtual const string& name() const { static string name(#Name); return name; }
+////////////////////////////////////////////////////////////
+// Entity processor instances (ordered lexicographically) //
+////////////////////////////////////////////////////////////
+namespace entity_processors {
 
-#define END_ENTITY_PROCESSOR(Name)                                                     \
-};                                                                                     \
-static entity_processor::registrator<Name##_entity_processor> Name##_entity_processor;
-
-
-////////////////////////
-// CzechAddContainers //
-////////////////////////
-
-BEGIN_ENTITY_PROCESSOR(CzechAddContainers)
+// CzechAddContainers
+class czech_add_containers : public entity_processor {
+ public:
   virtual void process_entities(ner_sentence& /*sentence*/, vector<named_entity>& entities, vector<named_entity>& buffer) const override {
     buffer.clear();
 
@@ -69,7 +60,15 @@ BEGIN_ENTITY_PROCESSOR(CzechAddContainers)
 
     if (buffer.size() > entities.size()) entities = buffer;
   }
-END_ENTITY_PROCESSOR(CzechAddContainers)
+};
+
+} // namespace entity_processors
+
+// Entity processor factory method
+entity_processor* entity_processor::create(const string& name) {
+  if (name.compare("CzechAddContainers") == 0) return new entity_processors::czech_add_containers();
+  return nullptr;
+}
 
 } // namespace nametag
 } // namespace ufal

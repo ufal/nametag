@@ -18,9 +18,6 @@
 
 #pragma once
 
-#include <functional>
-#include <unordered_map>
-
 #include "common.h"
 #include "ner_sentence.h"
 #include "ner/entity_map.h"
@@ -34,7 +31,6 @@ class sentence_processor {
  public:
   virtual ~sentence_processor();
 
-  virtual const string& name() const = 0;
   virtual bool init(int window, const vector<string>& args);
   virtual void load(binary_decoder& data);
   virtual void save(binary_encoder& enc);
@@ -59,16 +55,9 @@ class sentence_processor {
  private:
   bool adding_features = false;
 
-  // Factory methods
+  // Factory method
  public:
   static sentence_processor* create(const string& name);
-  static sentence_processor* load_instance(binary_decoder& data);
-  void save_instance(binary_encoder& enc);
-  template <class T> class registrator { public: registrator() { factory()[T().name()] = []()->sentence_processor*{ return new T(); }; }};
-
- private:
-  typedef unordered_map<string, function<sentence_processor*()>> factory_map;
-  static factory_map& factory();
 };
 
 } // namespace nametag

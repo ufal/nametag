@@ -26,18 +26,6 @@
 namespace ufal {
 namespace nametag {
 
-// Macro for defining the instances
-#define BEGIN_SENTENCE_PROCESSOR(Name)                                           \
-class Name##_sentence_processor : public sentence_processor {                    \
-  typedef sentence_processor super;                                              \
- public:                                                                         \
-  virtual const string& name() const { static string name(#Name); return name; }
-
-#define END_SENTENCE_PROCESSOR(Name)                                                                     \
-};                                                                                                       \
-static sentence_processor::registrator<Name##_sentence_processor> Name##_sentence_processor_registrator;
-
-
 // Helper functions defined as macros so that they can access arguments without passing them
 #define apply_in_window(I, Feature) {                                                             \
   ner_feature _feature = (Feature);                                                               \
@@ -63,12 +51,13 @@ static sentence_processor::registrator<Name##_sentence_processor> Name##_sentenc
 //////////////////////////////////////////////////////////////
 // Sentence processor instances (ordered lexicographically) //
 //////////////////////////////////////////////////////////////
-
+namespace sentence_processors {
 
 // BrownClusters
-BEGIN_SENTENCE_PROCESSOR(BrownClusters)
+class brown_clusters : public sentence_processor {
+ public:
   virtual bool init(int window, const vector<string>& args) override {
-    if (!super::init(window, args)) return false;
+    if (!sentence_processor::init(window, args)) return false;
     if (args.size() < 1) return eprintf("BrownCluster requires a cluster file as the first argument!\n"), false;
 
     map.clear();
@@ -112,7 +101,7 @@ BEGIN_SENTENCE_PROCESSOR(BrownClusters)
   }
 
   virtual void load(binary_decoder& data) override {
-    super::load(data);
+    sentence_processor::load(data);
 
     clusters.resize(data.next_4B());
     for (auto& cluster : clusters) {
@@ -123,7 +112,7 @@ BEGIN_SENTENCE_PROCESSOR(BrownClusters)
   }
 
   virtual void save(binary_encoder& enc) override {
-    super::save(enc);
+    sentence_processor::save(enc);
 
     enc.add_4B(clusters.size());
     for (auto& cluster : clusters) {
@@ -134,7 +123,7 @@ BEGIN_SENTENCE_PROCESSOR(BrownClusters)
   }
 
   ner_feature freeze(entity_map& entities) {
-    super::freeze(entities);
+    sentence_processor::freeze(entities);
     return total_features;
   }
 
@@ -152,11 +141,12 @@ BEGIN_SENTENCE_PROCESSOR(BrownClusters)
  private:
   ner_feature total_features;
   vector<vector<ner_feature>> clusters;
-END_SENTENCE_PROCESSOR(BrownClusters)
+};
 
 
 // CzechLemmaTerm
-BEGIN_SENTENCE_PROCESSOR(CzechLemmaTerm)
+class czech_lemma_term : public sentence_processor {
+ public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature offset, string& buffer) const override {
     for (unsigned i = 0; i < sentence.size; i++) {
       for (unsigned pos = 0; pos + 2 < sentence.words[i].lemma_comments.size(); pos++)
@@ -166,26 +156,28 @@ BEGIN_SENTENCE_PROCESSOR(CzechLemmaTerm)
         }
     }
   }
-END_SENTENCE_PROCESSOR(CzechLemmaTerm)
+};
 
 
 // Form
-BEGIN_SENTENCE_PROCESSOR(Form)
+class form : public sentence_processor {
+ public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature offset, string& /*buffer*/) const override {
     for (unsigned i = 0; i < sentence.size; i++)
       apply_in_window(i, lookup(sentence.words[i].form));
 
     apply_outer_words_in_window(lookup_empty());
   }
-END_SENTENCE_PROCESSOR(Form)
+};
 
 
 // Gazeteers
-BEGIN_SENTENCE_PROCESSOR(Gazeteers)
+class gazeteers : public sentence_processor {
+ public:
   enum { G = 0, U = 1, B = 2, L = 3, I = 4 };
 
   virtual bool init(int window, const vector<string>& args) override {
-    if (!super::init(window, args)) return false;
+    if (!sentence_processor::init(window, args)) return false;
 
     total_features = 0;
     gazeteers.clear();
@@ -225,7 +217,7 @@ BEGIN_SENTENCE_PROCESSOR(Gazeteers)
   }
 
   virtual void load(binary_decoder& data) override {
-    super::load(data);
+    sentence_processor::load(data);
 
     gazeteers.resize(data.next_4B());
     for (auto& gazeteer : gazeteers) {
@@ -237,7 +229,7 @@ BEGIN_SENTENCE_PROCESSOR(Gazeteers)
   }
 
   virtual void save(binary_encoder& enc) override {
-    super::save(enc);
+    sentence_processor::save(enc);
 
     enc.add_4B(gazeteers.size());
     for (auto& gazeteer : gazeteers) {
@@ -249,7 +241,7 @@ BEGIN_SENTENCE_PROCESSOR(Gazeteers)
   }
 
   virtual ner_feature freeze(entity_map& entities) override {
-    super::freeze(entities);
+    sentence_processor::freeze(entities);
     return total_features;
   }
 
@@ -271,7 +263,7 @@ BEGIN_SENTENCE_PROCESSOR(Gazeteers)
         it = map.find(buffer);
         if (it == map.end()) break;
 
-        // APply regular gazeteer feature G + position specific gazeteers B, I, L
+        // Apply regular gazeteer feature G + position specific gazeteers B, I, L
         for (auto& feature : gazeteers[it->second].features)
           for (unsigned g = i; g <= j; g++) {
             apply_in_window(g, feature + G * (2*window + 1));
@@ -288,33 +280,36 @@ BEGIN_SENTENCE_PROCESSOR(Gazeteers)
     bool prefix_of_longer;
   };
   vector<gazeteer_info> gazeteers;
-END_SENTENCE_PROCESSOR(Gazeteers)
+};
 
 
 // Lemma
-BEGIN_SENTENCE_PROCESSOR(Lemma)
+class lemma : public sentence_processor {
+ public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature offset, string& /*buffer*/) const override {
     for (unsigned i = 0; i < sentence.size; i++)
       apply_in_window(i, lookup(sentence.words[i].lemma_id));
 
     apply_outer_words_in_window(lookup_empty());
   }
-END_SENTENCE_PROCESSOR(Lemma)
+};
 
 
 // RawLemma
-BEGIN_SENTENCE_PROCESSOR(RawLemma)
+class raw_lemma : public sentence_processor {
+ public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature offset, string& /*buffer*/) const override {
     for (unsigned i = 0; i < sentence.size; i++)
       apply_in_window(i, lookup(sentence.words[i].raw_lemma));
 
     apply_outer_words_in_window(lookup_empty());
   }
-END_SENTENCE_PROCESSOR(RawLemma)
+};
 
 
 // RawLemmaCapitalization
-BEGIN_SENTENCE_PROCESSOR(RawLemmaCapitalization)
+class raw_lemma_capitalization : public sentence_processor {
+ public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature offset, string& /*buffer*/) const override {
     for (unsigned i = 0; i < sentence.size; i++) {
       bool was_upper = false, was_lower = false;
@@ -334,29 +329,45 @@ BEGIN_SENTENCE_PROCESSOR(RawLemmaCapitalization)
 
   virtual ner_feature freeze(entity_map& entities) override {
     lookup_cap_features();
-    return super::freeze(entities);
+    return sentence_processor::freeze(entities);
   }
 
   virtual void load(binary_decoder& data) override {
-    super::load(data);
+    sentence_processor::load(data);
     lookup_cap_features();
   }
 
  private:
   ner_feature fst_cap, all_cap, mixed_cap;
   void lookup_cap_features() { fst_cap = lookup("f"); all_cap = lookup("a"); mixed_cap = lookup("m"); }
-END_SENTENCE_PROCESSOR(RawLemmaCapitalization)
+};
 
 
 // Tag
-BEGIN_SENTENCE_PROCESSOR(Tag)
+class tag : public sentence_processor {
+ public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature offset, string& /*buffer*/) const override {
     for (unsigned i = 0; i < sentence.size; i++)
       apply_in_window(i, lookup(sentence.words[i].tag));
 
     apply_outer_words_in_window(lookup_empty());
   }
-END_SENTENCE_PROCESSOR(Tag)
+};
+
+} // namespace sentence_processors
+
+// Sentence processor factory method
+sentence_processor* sentence_processor::create(const string& name) {
+  if (name.compare("BrownClusters") == 0) return new sentence_processors::brown_clusters();
+  if (name.compare("CzechLemmaTerm") == 0) return new sentence_processors::czech_lemma_term();
+  if (name.compare("Form") == 0) return new sentence_processors::form();
+  if (name.compare("Gazeteers") == 0) return new sentence_processors::gazeteers();
+  if (name.compare("Lemma") == 0) return new sentence_processors::lemma();
+  if (name.compare("RawLemma") == 0) return new sentence_processors::raw_lemma();
+  if (name.compare("RawLemmaCapitalization") == 0) return new sentence_processors::raw_lemma_capitalization();
+  if (name.compare("Tag") == 0) return new sentence_processors::tag();
+  return nullptr;
+}
 
 } // namespace nametag
 } // namespace ufal

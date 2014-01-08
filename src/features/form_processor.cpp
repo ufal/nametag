@@ -24,32 +24,6 @@
 namespace ufal {
 namespace nametag {
 
-// Form processor -- factory
-form_processor::factory_map& form_processor::factory() {
-  static factory_map map;
-  return map;
-}
-
-form_processor* form_processor::create(const string& name) {
-  auto it = factory().find(name);
-  return it != factory().end() ? it->second() : nullptr;
-}
-
-form_processor* form_processor::load_instance(binary_decoder& data) {
-  unsigned len = data.next_1B();
-  unique_ptr<form_processor> res(create(string(data.next<char>(len), len)));
-  if (!res) return nullptr;
-
-  res->load(data);
-  return res.release();
-}
-
-void form_processor::save_instance(binary_encoder& enc) {
-  enc.add_1B(name().size());
-  enc.add_str(name());
-  save(enc);
-}
-
 // Form processor -- methods and virtual methods
 form_processor::~form_processor() {}
 

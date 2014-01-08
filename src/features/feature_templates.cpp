@@ -28,21 +28,35 @@ bool feature_templates::load(FILE* f) {
   if (!compressor::load(f, data)) return false;
 
   try {
-    sentence_processors.resize(data.next_4B());
-    for (auto& processor : sentence_processors) {
-      processor.processor.reset(sentence_processor::load_instance(data));
-      processor.offset = data.next_4B();
+    sentence_processors.clear();
+    for (unsigned i = data.next_4B(); i; i--) {
+      unsigned name_len = data.next_1B();
+      string name(data.next<char>(name_len), name_len);
+      unique_ptr<sentence_processor> processor(sentence_processor::create(name));
+      if (!processor) return false;
+      processor->load(data);
+      sentence_processors.emplace_back(name, processor.release(), data.next_4B());
     }
 
-    form_processors.resize(data.next_4B());
-    for (auto& processor : form_processors) {
-      processor.processor.reset(form_processor::load_instance(data));
-      processor.offset = data.next_4B();
+    form_processors.clear();
+    for (unsigned i = data.next_4B(); i; i--) {
+      unsigned name_len = data.next_1B();
+      string name(data.next<char>(name_len), name_len);
+      unique_ptr<form_processor> processor(form_processor::create(name));
+      if (!processor) return false;
+      processor->load(data);
+      form_processors.emplace_back(name, processor.release(), data.next_4B());
     }
 
-    entity_processors.resize(data.next_4B());
-    for (auto& processor : entity_processors)
-      processor.reset(entity_processor::load_instance(data));
+    entity_processors.clear();
+    for (unsigned i = data.next_4B(); i; i--) {
+      unsigned name_len = data.next_1B();
+      string name(data.next<char>(name_len), name_len);
+      unique_ptr<entity_processor> processor(entity_processor::create(name));
+      if (!processor) return false;
+      processor->load(data);
+      entity_processors.emplace_back(name, processor.release());
+    }
   } catch (binary_decoder_error&) {
     return false;
   }
@@ -69,7 +83,7 @@ void feature_templates::process_form(int form, ner_sentence& sentence, string& b
 
 void feature_templates::process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const {
   for (auto& processor : entity_processors)
-    processor->process_entities(sentence, entities, buffer);
+    processor.processor->process_entities(sentence, entities, buffer);
 }
 
 } // namespace nametag
