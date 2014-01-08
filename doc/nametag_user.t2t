@@ -9,58 +9,91 @@ NameTag recognizes named entities in an unprocessed text using
 [MorphoDiTa http://ufal.mff.cuni.cz/morphodita].
 MorphoDiTa library tokenizes the text and performs morphologic analysis and tagging
 and NameTag identifies and classifies named entities by an algorithm described in
-[Straková et al. 2013 http://ufallab.ms.mff.cuni.cz:23680/~straka/papers/2013-tsd_ner.pdf].
+[Straková et al. 2013 http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf].
 NameTag can also performs NER in custom tokenized and morphologically analyzed and
 tagged texts.
 
-This section describes the commandline tool and the model. The C++ library with
-bindings for other languages is described elsewhere, either in NameTag API
-Tutorial or in NameTag API Reference.
+This section describes the command line tool and the model.
 
 ++ Models ++
 
 Like any supervised machine learning tool, NameTag needs a trained linguistic
-model. Czech model trained on [CNEC 1.0 http://ufal.mff.cuni.cz/cnec/] is
-distributed with the tool. All models are distributed under the
+model. Czech models trained on [CNEC http://ufal.mff.cuni.cz/cnec/] 1.1 and 2.0
+are distributed with the tool. All models are distributed under the
 [CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/] licence.
 Please make sure you are using the linguistic models in a version corresponding
 to your NameTag release. The best way to assure this is to use the most
 current NameTag release with the most current model release.
 
-++ Czech NER ++
 
-Czech models are trained on the training portion of the [Czech Named Entity Corpus 1.0 http://ufal.mff.cuni.cz/cnec/].
-The corpus uses a detailed named entity typology. NameTag recognizes these named entity types in Czech:
++++ Czech NER - CNEC 1.1 +++
 
-++ NameTag Commandline Tool ++
+The model is trained on the training portion of the [Czech Named Entity Corpus 1.1 http://ufal.mff.cuni.cz/cnec/].
+The corpus uses a detailed two-level named entity hierarchy, whose description
+is available in the documentation of the [Czech Named Entity Corpus 1.1
+http://ufal.mff.cuni.cz/cnec/].
 
-NameTag commandline tool accepts two input formats: an unprocessed, raw text
-and a custom tokenized and morphologically processed vertical format. Name Tag
-commandline tool accepts input on standard input and prints to standard output.
-All inputs and outputs are assumed in UTF-8.
 
-+++ Raw Text Input Format +++
++++ Czech NER - CNEC 2.0 +++
 
-An example of an unprocessed text input format, file ``sample.txt``:
+The model is trained on the training portion of the [Czech Named Entity Corpus 2.0 http://ufal.mff.cuni.cz/cnec/].
+The corpus uses a detailed two-level named entity hierarchy, whose description
+is available in the documentation of the [Czech Named Entity Corpus 2.0
+http://ufal.mff.cuni.cz/cnec/]. This hierarchy is an updated version of CNEC
+1.1 hierarchy and is more suitable for automatic named entity recognition.
 
-```
-Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
-```
 
-NameTag is run by:
+++ NameTag Command Line Tool ++
 
-```
-cat sample.txt | ./run_ner -t <model>
-```
+NameTag command line tool accepts two input formats: an unprocessed, raw text
+and a custom tokenized and segmented vertical format. NameTag command line tool
+accepts input on standard input and prints to standard output.  All inputs and
+outputs are assumed in UTF-8.
 
-A NameTag identified a first name (``pf``), a surname (``ps``) and a person name container (``P``) in the sample text:
 
-```
-<ne type='P'><ne type='pf'>Václav</ne> <ne type='ps'>Havel</ne></ne> byl český dramatik, esejista, kritik komunistického režimu a později politik.
-```
++++ Untokenized Input +++
+
+The input is by default automatically tokenized and segmented. In this case,
+the output is in XML format without a root element, using ``<ne type="...">...</ne>``
+element to encode a named entity.
+
+Example unprocessed text input format:
+``` Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
+
+NameTag is run using:
+``` cat sample.txt | ./run_ner <model>
+
+A NameTag identifies a first name (``pf``), a surname (``ps``) and a person name container (``P``) in the input:
+``` <ne type='P'><ne type='pf'>Václav</ne> <ne type='ps'>Havel</ne></ne> byl český dramatik, esejista, kritik komunistického režimu a později politik.
+
 
 +++ Vertical Input Format +++
 
-For users who wish to perform their own tokenization and morphologic analysis, NameTag accepts tokenized and morphologically analyzed text in a CoNLL-style vertical format:
+For users who wish to perform their own tokenization and segmentation, NameTag
+accepts tokenized and segmented text in a CoNLL-style vertical format, where
+every word is on a separate line, with empty line representing an end of sentence.
 
-TODO
+The output in this case consists of lines representing found named entities.
+Each line contains three tab-separated fields: //entity_range//, //entity_type// and
+//entity_text//. The //entity_range// represents the lines of the input file containing
+the named entity and //entity_type// represents its type. The //entity_text// is not
+strictly necessary and contains space separated words of this named entity.
+
+Example input:
+```
+Václav
+Havel
+byl
+...
+```
+
+NameTag is run using:
+``` cat sample.txt | ./run_ner -v <model>
+
+Example oupout:
+```
+1,2	P	Václav Havel
+1	pf	Václav
+2	ps	Havel
+...
+```

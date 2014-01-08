@@ -18,6 +18,9 @@ web: nametag.t2t nametag_user.t2t nametag_api.t2t
 manual: html pdf txt
 	$(foreach fmt,$^,cp nametag.$(fmt) ../MANUAL.$(fmt); )
 
-.PHONY: clean
+.PHONY: clean veryclean
 clean:
 	rm -f *.aux *.dvi *.html *.log *.pdf *.out *.tex *.toc *.txt
+
+veryclean: clean
+	rm -f ../MANUAL.*
