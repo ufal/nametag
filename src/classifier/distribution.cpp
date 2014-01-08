@@ -16,8 +16,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <chrono>
-
 #include "distribution.h"
 
 namespace ufal {
@@ -54,10 +52,6 @@ void distribution::permutation(int min, int max, vector<int>& perm) {
       perm[i] = tmp;
     }
   }
-}
-
-unsigned distribution::random_seed() {
-  return chrono::high_resolution_clock::now().time_since_epoch().count();
 }
 
 } // namespace nametag

@@ -32,8 +32,6 @@ class distribution {
   int uniform(int min, int max);
   double real(double min = 0., double max = 1.);
   void permutation(int min, int max, vector<int>& perm);
-
-  static unsigned random_seed();
  private:
   mt19937 g;
 };
