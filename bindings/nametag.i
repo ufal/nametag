@@ -31,8 +31,8 @@ typedef std::vector<std::string> Forms;
 
 %rename(NamedEntity) named_entity;
 struct named_entity {
-  int start;
-  int length;
+  size_t start;
+  size_t length;
   std::string type;
 
   named_entity() {}

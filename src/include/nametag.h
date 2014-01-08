@@ -44,8 +44,8 @@ struct string_piece {
 };
 
 struct named_entity {
-  int start;
-  int length;
+  size_t start;
+  size_t length;
   std::string type;
 
   named_entity() {}
