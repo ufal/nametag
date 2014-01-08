@@ -122,7 +122,7 @@ void recognize_untokenized(const ner& recognizer) {
       // Print text just before the entity, open it and add end to the stack
       if (unprinted < entity.start) encode_entities_and_print(text.c_str() + unprinted, entity.start - unprinted);
       unprinted = entity.start;
-      printf("<ne type='%s'>", entity.type.c_str());
+      printf("<ne type=\"%s\">", entity.type.c_str());
       entity_ends.push_back(entity.start + entity.length);
     }
 
@@ -135,8 +135,6 @@ void recognize_untokenized(const ner& recognizer) {
     }
     // Write rest of the text (should be just spaces)
     if (unprinted < text.size()) encode_entities_and_print(text.c_str() + unprinted, text.size() - unprinted);
-
-    if (not_eof) printf("\n");
   }
 }
 
