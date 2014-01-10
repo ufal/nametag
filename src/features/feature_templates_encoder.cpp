@@ -19,6 +19,7 @@
 #include "feature_templates.h"
 #include "utils/compressor.h"
 #include "utils/input.h"
+#include "utils/parse_int.h"
 
 namespace ufal {
 namespace nametag {
@@ -40,7 +41,7 @@ void feature_templates::parse(FILE* f) {
     if (token0_parts.size() < 1 || token0_parts.size() > 2) runtime_errorf("Bad feature template description at line '%s' of feature templates file!", line.c_str());
 
     string template_name = token0_parts[0];
-    int window = token0_parts.size() > 1 ? (unsigned) stoi(token0_parts[1]) : 0;
+    int window = token0_parts.size() > 1 ? parse_int(token0_parts[1].c_str(), "feature_template_window") : 0;
     vector<string> args;
     for (unsigned i = 1; i < tokens.size(); i++)
       args.emplace_back(tokens[i]);

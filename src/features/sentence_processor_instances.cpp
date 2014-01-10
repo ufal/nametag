@@ -21,6 +21,7 @@
 #include "sentence_processor.h"
 #include "utils/file_ptr.h"
 #include "utils/input.h"
+#include "utils/parse_int.h"
 #include "utils/utf8.h"
 
 namespace ufal {
@@ -67,7 +68,7 @@ class brown_clusters : public sentence_processor {
     vector<size_t> substrings;
     substrings.emplace_back(string::npos);
     for (unsigned i = 1; i < args.size(); i++) {
-      int len = atoi(args[i].c_str());
+      int len = parse_int(args[i].c_str(), "BrownCluster_prefix_length");
       if (len <= 0)
         return eprintf("Wrong prefix length '%d' in BrownCluster specification!\n", len);
       else

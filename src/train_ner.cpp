@@ -22,6 +22,8 @@
 #include "ner/ner_ids.h"
 #include "tagger/tagger.h"
 #include "utils/file_ptr.h"
+#include "utils/parse_double.h"
+#include "utils/parse_int.h"
 
 using namespace ufal::nametag;
 
@@ -34,7 +36,7 @@ int main(int argc, char* argv[]) {
   switch (id) {
     case ner_ids::CZECH_NER:
       {
-        if (argc < 9) runtime_errorf("Usage: %s %s tagger_id[:tagger_options] features iterations missing_weight initial_alpha final_alpha gaussian [heldout_data]  ", argv[0], argv[1]);
+        if (argc < 9) runtime_errorf("Usage: %s %s tagger_id[:tagger_options] features iterations missing_weight initial_learning_rate final_learning_rate gaussian [heldout_data]  ", argv[0], argv[1]);
 
         // Encode the ner_id
         fputc(id, stdout);
@@ -46,11 +48,11 @@ int main(int argc, char* argv[]) {
         // Parse options
         network_parameters parameters;
         const char* features_file = argv[3];
-        parameters.iterations = atoi(argv[4]);
-        parameters.missing_weight = atof(argv[5]);
-        parameters.initial_learning_rate = atof(argv[6]);
-        parameters.final_learning_rate = atof(argv[7]);
-        parameters.gaussian_sigma = atof(argv[8]);
+        parameters.iterations = parse_int(argv[4], "iterations");
+        parameters.missing_weight = parse_double(argv[5], "missing_weight");
+        parameters.initial_learning_rate = parse_double(argv[6], "initial_learning_rate");
+        parameters.final_learning_rate = parse_double(argv[7], "final_learning_rate");
+        parameters.gaussian_sigma = parse_double(argv[8], "gaussian");
         const char* heldout_file = argc == 9 ? nullptr : argv[9];
 
         // Open needed files
