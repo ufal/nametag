@@ -20,7 +20,7 @@ NAMETAG_O = $(LZMA_DEC_O) classifier/network_classifier classifier/distribution 
 
 # libraries
 $(MORPHODITA_DIR)/libmorphodita%:
-	make -C $(@D) $(@F)
+	$(MAKE) -C $(@D) $(@F)
 $(call lib,libnametag): $(call lib,$(MORPHODITA_DIR)/libmorphodita) $(call obj, $(NAMETAG_O))
 	@$(foreach obj,$(filter-out $<,$^),cp $(obj) $(call libobj,nametag,$(obj));)
 	@cp $< $@
@@ -32,7 +32,7 @@ $(call lib,libnametag.dyn): $(call lib,$(MORPHODITA_DIR)/libmorphodita.dyn) $(ca
 	ar -rcs $@ $(call libobj,nametag,$(filter-out $<,$^))
 	@rm -r $(call libobj,nametag,$(filter-out $<,$^))
 $(call dynlib,libnametag): $(call lib,libnametag.dyn)
-	$(CXX) -o $@ $(DYN_LD_FLAGS) -Wl,--whole-archive $< -Wl,-no-whole-archive -Wl,--version-script=libnametag.map
+	$(CXX) -o $@ $(DYN_LD_FLAGS) -Wl,--whole-archive $< -Wl,-no-whole-archive -Wl,--version-script=libnametag.map $(call create_implib,libnametag)
 
 # executables
 $(call exe,run_ner): $(call obj, $(NAMETAG_O) utils/input) $(call lib,$(MORPHODITA_DIR)/libmorphodita)
@@ -44,7 +44,7 @@ $(EXECUTABLES): $(call exe,%): $(call obj,%)
 .PHONY: clean veryclean
 
 clean:
-	rm -rf .objs/ $(LIBRARIES) $(EXECUTABLES) $(if $(WIN),$(call lib,$(call dynlib,libnametag)))
+	rm -rf .objs/ $(LIBRARIES) $(EXECUTABLES) $(call implib,libmorphodita)
 
 veryclean: clean
-	make -C $(MORPHODITA_DIR) clean
+	$(MAKE) -C $(MORPHODITA_DIR) clean

@@ -1,2 +1,5 @@
+$(call lib,../../src/libnametag):
+	$(MAKE) -C $(dir $@) $(notdir $@)
+
 $(call lib,../../src/libnametag.dyn):
-	make -C $(dir $@) $(notdir $@)
+	$(MAKE) -C $(dir $@) $(notdir $@)
