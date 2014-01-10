@@ -20,9 +20,9 @@
 #include <cmath>
 #include <cstring>
 
-#include "distribution.h"
 #include "network_classifier.h"
 #include "utils/compressor.h"
+#include "utils/distribution.h"
 
 namespace ufal {
 namespace nametag {
