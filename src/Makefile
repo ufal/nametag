@@ -8,7 +8,10 @@ all: $(EXECUTABLES)
 lib: $(LIBRARIES)
 
 # options
-C_FLAGS += -I$(MORPHODITA_DIR)/include -DMORPHODITA_STATIC
+C_FLAGS += -I$(MORPHODITA_DIR)/include
+ifdef WIN
+  C_FLAGS += -DMORPHODITA_STATIC
+endif
 
 # dependency and compilation rules
 include $(MORPHODITA_DIR)/Makefile.rules
@@ -16,21 +19,21 @@ include $(MORPHODITA_DIR)/Makefile.rules
 # object files groups
 LZMA_DEC_O = utils/compressor_load utils/lzma/LzmaDec
 LZMA_ENC_O = utils/compressor_save utils/lzma/LzmaEnc utils/lzma/LzFind
-NAMETAG_O = $(LZMA_DEC_O) classifier/network_classifier features/entity_processor features/entity_processor_instances features/feature_templates features/form_processor features/form_processor_instances features/sentence_processor features/sentence_processor_instances ner/bilou_ner ner/bilou_probabilities ner/czech_ner ner/entity_map ner/ner tagger/external_tagger tagger/morphodita_tagger tagger/tagger tagger/trivial_tagger tokenizer/czech_tokenizer tokenizer/utf8_tokenizer utils/distribution utils/utf8
+NAMETAG_O = $(LZMA_DEC_O) classifier/network_classifier features/entity_processor features/entity_processor_instances features/feature_templates features/form_processor features/form_processor_instances features/sentence_processor features/sentence_processor_instances ner/bilou_ner ner/bilou_probabilities ner/czech_ner ner/entity_map ner/ner tagger/external_tagger tagger/morphodita_tagger tagger/tagger tagger/trivial_tagger tokenizer/czech_tokenizer tokenizer/utf8_tokenizer utils/distribution utils/input utils/utf8
 
 # libraries
 $(MORPHODITA_DIR)/libmorphodita%:
 	$(MAKE) -C $(@D) $(@F)
 $(call lib,libnametag): $(call lib,$(MORPHODITA_DIR)/libmorphodita) $(call obj, $(NAMETAG_O))
-	@$(foreach obj,$(filter-out $<,$^),cp $(obj) $(call libobj,nametag,$(obj));)
-	@cp $< $@
+	@$(foreach obj,$(filter-out $<,$^),$(call cp,$(obj),$(call libobj,nametag,$(obj))))
+	@$(call cp,$<,$@)
 	ar -rcs $@ $(call libobj,nametag,$(filter-out $<,$^))
-	@rm -r $(call libobj,nametag,$(filter-out $<,$^))
-$(call lib,libnametag.dyn): $(call lib,$(MORPHODITA_DIR)/libmorphodita.dyn) $(call dynobj, $(NAMETAG_O))
-	@$(foreach obj,$(filter-out $<,$^),cp $(obj) $(call libobj,nametag,$(obj));)
-	@cp $< $@
+	@$(call rm,$(call libobj,nametag,$(filter-out $<,$^)))
+$(call lib,libnametag.dyn): $(call lib,$(MORPHODITA_DIR)/libmorphodita$(if $(WIN),,.dyn)) $(call dynobj, $(NAMETAG_O))
+	@$(foreach obj,$(filter-out $<,$^),$(call cp,$(obj),$(call libobj,nametag,$(obj))))
+	@$(call cp,$<,$@)
 	ar -rcs $@ $(call libobj,nametag,$(filter-out $<,$^))
-	@rm -r $(call libobj,nametag,$(filter-out $<,$^))
+	@$(call rm,$(call libobj,nametag,$(filter-out $<,$^)))
 $(call dynlib,libnametag): $(call lib,libnametag.dyn)
 	$(CXX) -o $@ $(DYN_LD_FLAGS) -Wl,--whole-archive $< -Wl,-no-whole-archive -Wl,--version-script=libnametag.map $(call create_implib,libnametag)
 
@@ -44,7 +47,7 @@ $(EXECUTABLES): $(call exe,%): $(call obj,%)
 .PHONY: clean veryclean
 
 clean:
-	rm -rf .objs/ $(LIBRARIES) $(EXECUTABLES) $(call implib,libmorphodita)
+	@$(call rmdir,.objs) $(call rm,$(LIBRARIES) $(EXECUTABLES) $(call implib,libnametag))
 
 veryclean: clean
 	$(MAKE) -C $(MORPHODITA_DIR) clean

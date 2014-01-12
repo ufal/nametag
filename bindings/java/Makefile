@@ -22,9 +22,9 @@ $(JAVA_MODULE): nametag_java.cpp $(JAVA_NAMETAG_LIB)
 	$(CXX) -I../../src/include $(DYN_C_FLAGS) $(DYN_LD_FLAGS) $(JAVA_C_FLAGS) $(JAVA_LD_FLAGS) -fno-strict-aliasing -Wl,--version-script=nametag_java.map $^ -o $@
 
 nametag_java.cpp: nametag_java.i ../nametag.i
-	mkdir -p cz/cuni/mff/ufal/nametag
+	@$(call mkdir,cz/cuni/mff/ufal/nametag)
 	swig $(SWIG_FLAGS) -java -package cz.cuni.mff.ufal.nametag -outdir cz/cuni/mff/ufal/nametag -o $@ $<
 
 .PHONY: clean
 clean:
-	rm -rf $(TARGETS) cz/ *.cpp
+	@$(call rmdir,cz) $(call rm,$(TARGETS) $(wildcard *.cpp))
