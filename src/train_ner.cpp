@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
   switch (id) {
     case ner_ids::CZECH_NER:
       {
-        if (argc < 9) runtime_errorf("Usage: %s %s tagger_id[:tagger_options] features iterations missing_weight initial_learning_rate final_learning_rate gaussian [heldout_data]  ", argv[0], argv[1]);
+        if (argc < 9) runtime_errorf("Usage: %s %s tagger_id[:tagger_options] features stages iterations missing_weight initial_learning_rate final_learning_rate gaussian [heldout_data]", argv[0], argv[1]);
 
         // Encode the ner_id
         fputc(id, stdout);
@@ -48,12 +48,13 @@ int main(int argc, char* argv[]) {
         // Parse options
         network_parameters parameters;
         const char* features_file = argv[3];
-        parameters.iterations = parse_int(argv[4], "iterations");
-        parameters.missing_weight = parse_double(argv[5], "missing_weight");
-        parameters.initial_learning_rate = parse_double(argv[6], "initial_learning_rate");
-        parameters.final_learning_rate = parse_double(argv[7], "final_learning_rate");
-        parameters.gaussian_sigma = parse_double(argv[8], "gaussian");
-        const char* heldout_file = argc == 9 ? nullptr : argv[9];
+        int stages = parse_int(argv[4], "stages");
+        parameters.iterations = parse_int(argv[5], "iterations");
+        parameters.missing_weight = parse_double(argv[6], "missing_weight");
+        parameters.initial_learning_rate = parse_double(argv[7], "initial_learning_rate");
+        parameters.final_learning_rate = parse_double(argv[8], "final_learning_rate");
+        parameters.gaussian_sigma = parse_double(argv[9], "gaussian");
+        const char* heldout_file = argc == 10 ? nullptr : argv[10];
 
         // Open needed files
         file_ptr features = fopen(features_file, "r");
@@ -66,7 +67,7 @@ int main(int argc, char* argv[]) {
         }
 
         // Encode the ner itself
-        bilou_ner_trainer::train(parameters, *tagger, features, stdin, heldout, stdout);
+        bilou_ner_trainer::train(stages, parameters, *tagger, features, stdin, heldout, stdout);
 
         eprintf("Recognizer saved.\n");
         break;

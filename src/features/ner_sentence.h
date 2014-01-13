@@ -37,12 +37,14 @@ struct ner_sentence {
     bilou_probabilities_global global;
   };
   vector<probability_info> probabilities;
+  vector<entity_type> previous_stage;
 
   void resize(unsigned size) {
     this->size = size;
     if (words.size() < size) words.resize(size);
     if (features.size() < size) features.resize(size);
     if (probabilities.size() < size) probabilities.resize(size);
+    if (previous_stage.size() < size) previous_stage.resize();
   }
 };
 

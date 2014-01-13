@@ -38,7 +38,7 @@ class bilou_ner : public ner {
  private:
   entity_map named_entities;
   feature_templates templates;
-  network_classifier network;
+  vector<network_classifier> networks;
   unique_ptr<ufal::nametag::tagger> tagger;
 
   struct cache {
@@ -47,7 +47,7 @@ class bilou_ner : public ner {
     string string_buffer;
     vector<named_entity> entities_buffer;
 
-    cache(const bilou_ner& self) : outcomes(self.network.outcomes()) {}
+    cache(const bilou_ner& self) : outcomes(self.networks.empty() ? 0 : self.networks.front().outcomes()) {}
   };
   mutable threadsafe_stack<cache> caches;
 };

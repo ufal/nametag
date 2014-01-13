@@ -113,7 +113,10 @@ static void generate_instances(vector<labelled_sentence>& data, const feature_te
   }
 }
 
-void bilou_ner_trainer::train(const network_parameters& parameters, const tagger& tagger, FILE* in_features, FILE* in_train, FILE* in_heldout, FILE* out_ner) {
+void bilou_ner_trainer::train(int stages, const network_parameters& parameters, const tagger& tagger, FILE* in_features, FILE* in_train, FILE* in_heldout, FILE* out_ner) {
+  if (stages <= 0) runtime_errorf("Cannot train NER with <= 0 stages!");
+  if (stages >= 256) runtime_errorf("Cannot train NER with >= 256 stages!");
+
   // Parse feature templates
   feature_templates templates;
   eprintf("Parsing feature templates: ");
@@ -151,8 +154,9 @@ void bilou_ner_trainer::train(const network_parameters& parameters, const tagger
 
   // Train and encode the recognizer
   eprintf("Training network classifier.\n");
-  network_classifier network;
-  if (!network.train(features, bilou_entity::total(entities.size()), train_instances, heldout_instances, parameters, true))
+  vector<network_classifier> networks(stages);
+  for (auto& network : networks)
+    if (!network.train(features, bilou_entity::total(entities.size()), train_instances, heldout_instances, parameters, true))
       runtime_errorf("Cannot train the network classifier!");
 
   eprintf("Encoding the recognizer: \n");
@@ -160,8 +164,11 @@ void bilou_ner_trainer::train(const network_parameters& parameters, const tagger
     runtime_error("Cannot save entity map!");
   if (!templates.save(out_ner))
     runtime_error("Cannot save feature templates!");
-  if (!network.save(out_ner))
-    runtime_error("Cannot save classifier network!");
+  if (fputc(stages, out_ner) == EOF)
+    runtime_error("Cannot save number of stages!");
+  for (auto& network : networks)
+    if (!network.save(out_ner))
+      runtime_error("Cannot save classifier network!");
 }
 
 } // namespace nametag

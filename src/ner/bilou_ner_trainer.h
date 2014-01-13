@@ -27,7 +27,7 @@ namespace nametag {
 
 class bilou_ner_trainer {
  public:
-  static void train(const network_parameters& parameters, const tagger& tagger, FILE* in_features, FILE* in_train, FILE* in_heldout, FILE* out_ner);
+  static void train(int stages, const network_parameters& parameters, const tagger& tagger, FILE* in_features, FILE* in_train, FILE* in_heldout, FILE* out_ner);
 };
 
 } // namespace nametag
