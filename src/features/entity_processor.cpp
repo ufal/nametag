@@ -27,7 +27,7 @@ namespace nametag {
 // Feature template -- methods and virtual methods
 entity_processor::~entity_processor() {}
 
-bool entity_processor::init(const vector<string>& /*args*/) {
+bool entity_processor::parse(const vector<string>& /*args*/, entity_map& /*entities*/) {
   return true;
 }
 
@@ -35,9 +35,6 @@ void entity_processor::load(binary_decoder& /*data*/) {
 }
 
 void entity_processor::save(binary_encoder& /*enc*/) {
-}
-
-void entity_processor::freeze(entity_map& /*entities*/) {
 }
 
 } // namespace nametag

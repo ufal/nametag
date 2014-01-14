@@ -19,30 +19,40 @@
 #pragma once
 
 #include "common.h"
-#include "bilou/ner_sentence.h"
-#include "ner/ner.h"
-#include "tagger_ids.h"
+#include "bilou_probabilities.h"
+#include "features/ner_feature.h"
+#include "ner_word.h"
 
 namespace ufal {
 namespace nametag {
 
-class tagger {
- public:
-  virtual ~tagger() {}
+struct ner_sentence {
+  unsigned size = 0;
+  vector<ner_word> words;
+  vector<ner_features> features;
 
-  virtual void tag(const vector<string_piece>& forms, ner_sentence& sentence) const = 0;
+  struct probability_info {
+    bilou_probabilities local;
+    bool local_filled;
+    bilou_probabilities_global global;
+  };
+  vector<probability_info> probabilities;
 
-  // Factory methods
-  static tagger* load_instance(FILE* f);
-  static tagger* create_and_encode_instance(const string& tagger_id_and_params, FILE* f);
+  struct previous_stage_info {
+    bilou_type bilou;
+    entity_type entity;
+  };
+  vector<previous_stage_info> previous_stage;
 
- protected:
-  virtual bool load(FILE* f) = 0;
-  virtual bool create_and_encode(const string& params, FILE* f) = 0;
+  void resize(unsigned size);
+  void clear_features();
+  void clear_probabilities_local_filled();
+  void clear_previous_stage();
 
- private:
-  static tagger* create(tagger_id id);
+  void compute_best_decoding();
+  void fill_previous_stage();
 };
 
 } // namespace nametag
 } // namespace ufal
+

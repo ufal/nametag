@@ -28,6 +28,8 @@ bool feature_templates::load(FILE* f) {
   if (!compressor::load(f, data)) return false;
 
   try {
+    total_features = data.next_4B();
+
     sentence_processors.clear();
     for (unsigned i = data.next_4B(); i; i--) {
       unsigned name_len = data.next_1B();
@@ -35,7 +37,7 @@ bool feature_templates::load(FILE* f) {
       unique_ptr<sentence_processor> processor(sentence_processor::create(name));
       if (!processor) return false;
       processor->load(data);
-      sentence_processors.emplace_back(name, processor.release(), data.next_4B());
+      sentence_processors.emplace_back(name, processor.release());
     }
 
     form_processors.clear();
@@ -45,7 +47,7 @@ bool feature_templates::load(FILE* f) {
       unique_ptr<form_processor> processor(form_processor::create(name));
       if (!processor) return false;
       processor->load(data);
-      form_processors.emplace_back(name, processor.release(), data.next_4B());
+      form_processors.emplace_back(name, processor.release());
     }
 
     entity_processors.clear();
@@ -64,7 +66,7 @@ bool feature_templates::load(FILE* f) {
   return data.is_end();
 }
 
-void feature_templates::process_sentence(ner_sentence& sentence, string& buffer) const {
+void feature_templates::process_sentence(ner_sentence& sentence, string& buffer, bool adding_features) const {
   // Start with omnipresent feature
   for (unsigned i = 0; i < sentence.size; i++) {
     sentence.features[i].clear();
@@ -73,17 +75,21 @@ void feature_templates::process_sentence(ner_sentence& sentence, string& buffer)
 
   // Add features from given sentence processor templates
   for (auto& processor : sentence_processors)
-    processor.processor->process_sentence(sentence, processor.offset, buffer);
+    processor.processor->process_sentence(sentence, adding_features ? &total_features : nullptr, buffer);
 }
 
-void feature_templates::process_form(int form, ner_sentence& sentence, string& buffer) const {
+void feature_templates::process_form(int form, ner_sentence& sentence, string& buffer, bool adding_features) const {
   for (auto& processor : form_processors)
-    processor.processor->process_form(form, sentence, processor.offset, buffer);
+    processor.processor->process_form(form, sentence, adding_features ? &total_features : nullptr, buffer);
 }
 
 void feature_templates::process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const {
   for (auto& processor : entity_processors)
     processor.processor->process_entities(sentence, entities, buffer);
+}
+
+ner_feature feature_templates::get_total_features() const {
+  return total_features;
 }
 
 } // namespace nametag

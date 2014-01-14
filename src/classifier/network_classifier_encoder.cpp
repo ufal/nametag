@@ -30,7 +30,7 @@ bool network_classifier::save(FILE* f) {
   enc.add_double(missing_weight);
   save_matrix(enc, weights);
 
-  enc.add_2B(outcomes());
+  enc.add_2B(output_layer.size());
 
   return compressor::save(f, enc);
 }

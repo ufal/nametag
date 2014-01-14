@@ -19,35 +19,19 @@
 #pragma once
 
 #include "common.h"
-#include "ner_feature.h"
-#include "ner_word.h"
-#include "ner/bilou_probabilities.h"
 
 namespace ufal {
 namespace nametag {
 
-struct ner_sentence {
-  unsigned size = 0;
-  vector<ner_word> words;
-  vector<ner_features> features;
-
-  struct probability_info {
-    bilou_probabilities local;
-    bool local_filled;
-    bilou_probabilities_global global;
-  };
-  vector<probability_info> probabilities;
-  vector<entity_type> previous_stage;
-
-  void resize(unsigned size) {
-    this->size = size;
-    if (words.size() < size) words.resize(size);
-    if (features.size() < size) features.resize(size);
-    if (probabilities.size() < size) probabilities.resize(size);
-    if (previous_stage.size() < size) previous_stage.resize();
+// Appends a unique representation of an int (reversed hexadecimal).
+void append_encoded(string& str, int value) {
+  if (value < 0) {
+    str.push_back('-');
+    value = -value;
   }
-};
+  for (; value; value >>= 4)
+    str.push_back("0123456789abcdef"[value & 0xF]);
+}
 
 } // namespace nametag
 } // namespace ufal
-

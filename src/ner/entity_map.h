@@ -21,7 +21,7 @@
 #include <unordered_map>
 
 #include "common.h"
-#include "entity_type.h"
+#include "bilou/entity_type.h"
 
 namespace ufal {
 namespace nametag {

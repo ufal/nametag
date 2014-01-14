@@ -35,7 +35,6 @@ class network_classifier {
   bool train(unsigned features, unsigned outcomes, const vector<classifier_instance>& train,
              const vector<classifier_instance>& heldout, const network_parameters& parameters, bool verbose);
 
-  unsigned outcomes() const;
   void classify(const classifier_features& features, vector<double>& outcomes) const;
 
  private:

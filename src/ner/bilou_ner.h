@@ -19,6 +19,7 @@
 #pragma once
 
 #include "common.h"
+#include "bilou/bilou_entity.h"
 #include "classifier/network_classifier.h"
 #include "entity_map.h"
 #include "features/feature_templates.h"
@@ -36,10 +37,19 @@ class bilou_ner : public ner {
   virtual void recognize(const vector<string_piece>& forms, vector<named_entity>& entities) const override;
 
  private:
-  entity_map named_entities;
-  feature_templates templates;
-  vector<network_classifier> networks;
+  friend class bilou_ner_trainer;
+
+  // Methods used by bylou_ner_trainer
+  static void fill_bilou_probabilities(const vector<double>& outcomes, bilou_probabilities& prob);
+
+  // Internal members of bilou_ner
   unique_ptr<ufal::nametag::tagger> tagger;
+  entity_map named_entities;
+  struct stage_info {
+    feature_templates templates;
+    network_classifier network;
+  };
+  vector<stage_info> stages;
 
   struct cache {
     ner_sentence sentence;
@@ -47,7 +57,7 @@ class bilou_ner : public ner {
     string string_buffer;
     vector<named_entity> entities_buffer;
 
-    cache(const bilou_ner& self) : outcomes(self.networks.empty() ? 0 : self.networks.front().outcomes()) {}
+    cache(const bilou_ner& self) : outcomes(bilou_entity::total(self.named_entities.size())) {}
   };
   mutable threadsafe_stack<cache> caches;
 };

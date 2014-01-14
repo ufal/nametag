@@ -24,8 +24,11 @@
 namespace ufal {
 namespace nametag {
 
-void feature_templates::parse(FILE* f) {
+void feature_templates::parse(FILE* f, entity_map& entities) {
   sentence_processors.clear();
+  form_processors.clear();
+  entity_processors.clear();
+  total_features = 1; // An omnipresent feature used in process_sentence
 
   string line;
   vector<string> tokens;
@@ -49,7 +52,7 @@ void feature_templates::parse(FILE* f) {
     // Try sentence processor
     auto* maybe_sentence_processor = sentence_processor::create(template_name);
     if (maybe_sentence_processor) {
-      if (!maybe_sentence_processor->init(window, args)) runtime_errorf("Cannot initialize feature template sentence processor '%s' from line '%s' of feature templates file!", template_name.c_str(), line.c_str());
+      if (!maybe_sentence_processor->parse(window, args, entities, &total_features)) runtime_errorf("Cannot initialize feature template sentence processor '%s' from line '%s' of feature templates file!", template_name.c_str(), line.c_str());
       sentence_processors.emplace_back(template_name, maybe_sentence_processor);
       continue;
     }
@@ -57,7 +60,7 @@ void feature_templates::parse(FILE* f) {
     // Try form processor
     auto* maybe_form_processor = form_processor::create(template_name);
     if (maybe_form_processor) {
-      if (!maybe_form_processor->init(window, args)) runtime_errorf("Cannot initialize feature template form processor '%s' from line '%s' of feature templates file!", template_name.c_str(), line.c_str());
+      if (!maybe_form_processor->parse(window, args, entities, &total_features)) runtime_errorf("Cannot initialize feature template form processor '%s' from line '%s' of feature templates file!", template_name.c_str(), line.c_str());
       form_processors.emplace_back(template_name, maybe_form_processor);
       continue;
     }
@@ -65,7 +68,8 @@ void feature_templates::parse(FILE* f) {
     // Try entity processor
     auto* maybe_entity_processor = entity_processor::create(template_name);
     if (maybe_entity_processor) {
-      if (!maybe_entity_processor->init(args)) runtime_errorf("Cannot initialize feature template entity processor '%s' from line '%s' of feature templates file!", template_name.c_str(), line.c_str());
+      if (window) eprintf("Ignoring window of %d specified in entity_processor '%s'.\n", window, template_name.c_str());
+      if (!maybe_entity_processor->parse(args, entities)) runtime_errorf("Cannot initialize feature template entity processor '%s' from line '%s' of feature templates file!", template_name.c_str(), line.c_str());
       entity_processors.emplace_back(template_name, maybe_entity_processor);
       continue;
     }
@@ -75,34 +79,16 @@ void feature_templates::parse(FILE* f) {
   }
 }
 
-ner_feature feature_templates::freeze(entity_map& entities) {
-  ner_feature offset = 1; //0 is an omnipresent feature
-
-  for (auto& processor : sentence_processors) {
-    processor.offset = offset;
-    offset += processor.processor->freeze(entities);
-  }
-
-  for (auto& processor : form_processors) {
-    processor.offset = offset;
-    offset += processor.processor->freeze(entities);
-  }
-
-  for (auto& processor : entity_processors)
-    processor.processor->freeze(entities);
-
-  return offset;
-}
-
 bool feature_templates::save(FILE* f) {
   binary_encoder enc;
+
+  enc.add_4B(total_features);
 
   enc.add_4B(sentence_processors.size());
   for (auto& processor : sentence_processors) {
     enc.add_1B(processor.name.size());
     enc.add_str(processor.name);
     processor.processor->save(enc);
-    enc.add_4B(processor.offset);
   }
 
   enc.add_4B(form_processors.size());
@@ -110,7 +96,6 @@ bool feature_templates::save(FILE* f) {
     enc.add_1B(processor.name.size());
     enc.add_str(processor.name);
     processor.processor->save(enc);
-    enc.add_4B(processor.offset);
   }
 
   enc.add_4B(entity_processors.size());

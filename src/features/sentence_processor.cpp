@@ -27,14 +27,14 @@ namespace nametag {
 // Sentence processor -- methods and virtual methods
 sentence_processor::~sentence_processor() {}
 
-bool sentence_processor::init(int window, const vector<string>& /*args*/) {
+bool sentence_processor::parse(int window, const vector<string>& /*args*/, entity_map& /*entities*/, ner_feature* total_features) {
   if (window < 0) return false;
+  if (!total_features) return false;
 
   this->window = window;
 
   map.clear();
-  adding_features = true;
-  lookup(string()); // Always add an empty string to the map
+  lookup(string(), total_features); // Always add an empty string to the map
 
   return true;
 }
@@ -64,11 +64,6 @@ void sentence_processor::save(binary_encoder& enc) {
     enc.add_str(element.first);
     enc.add_4B(element.second);
   }
-}
-
-ner_feature sentence_processor::freeze(entity_map& /*entities*/) {
-  adding_features = false;
-  return (2*window + 1) * map.size();
 }
 
 } // namespace nametag

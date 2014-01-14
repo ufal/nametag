@@ -19,7 +19,7 @@
 #pragma once
 
 #include "common.h"
-#include "ner_sentence.h"
+#include "bilou/ner_sentence.h"
 #include "ner/entity_map.h"
 #include "ner/ner.h"
 #include "utils/binary_decoder.h"
@@ -32,14 +32,14 @@ class entity_processor {
  public:
   virtual ~entity_processor();
 
-  virtual bool init(const vector<string>& args);
+  virtual bool parse(const vector<string>& args, entity_map& entities);
   virtual void load(binary_decoder& data);
   virtual void save(binary_encoder& enc);
-  virtual void freeze(entity_map& entities);
 
   virtual void process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const = 0;
 
   // Factory method
+ public:
   static entity_processor* create(const string& name);
 };
 

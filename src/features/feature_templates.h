@@ -31,32 +31,32 @@ namespace nametag {
 
 class feature_templates {
  public:
-  void parse(FILE* f);
-  ner_feature freeze(entity_map& entities);
+  void parse(FILE* f, entity_map& entities);
 
   bool load(FILE* f);
   bool save(FILE* f);
 
-  void process_sentence(ner_sentence& sentence, string& buffer) const;
-  void process_form(int form, ner_sentence& sentence, string& buffer) const;
+  void process_sentence(ner_sentence& sentence, string& buffer, bool add_features = false) const;
+  void process_form(int form, ner_sentence& sentence, string& buffer, bool add_features = false) const;
   void process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const;
+  ner_feature get_total_features() const;
 
  private:
+  mutable ner_feature total_features;
+
   struct sentence_processor_info {
     string name;
     unique_ptr<sentence_processor> processor;
-    ner_feature offset;
 
-    sentence_processor_info(const string& name, sentence_processor* processor, ner_feature offset = 0) : name(name), processor(processor), offset(offset) {}
+    sentence_processor_info(const string& name, sentence_processor* processor) : name(name), processor(processor) {}
   };
   vector<sentence_processor_info> sentence_processors;
 
   struct form_processor_info {
     string name;
     unique_ptr<form_processor> processor;
-    ner_feature offset;
 
-    form_processor_info(const string& name, form_processor* processor, ner_feature offset = 0) : name(name), processor(processor), offset(offset) {}
+    form_processor_info(const string& name, form_processor* processor) : name(name), processor(processor) {}
   };
   vector<form_processor_info> form_processors;
 

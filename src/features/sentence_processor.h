@@ -19,7 +19,7 @@
 #pragma once
 
 #include "common.h"
-#include "ner_sentence.h"
+#include "bilou/ner_sentence.h"
 #include "ner/entity_map.h"
 #include "utils/binary_decoder.h"
 #include "utils/binary_encoder.h"
@@ -31,29 +31,25 @@ class sentence_processor {
  public:
   virtual ~sentence_processor();
 
-  virtual bool init(int window, const vector<string>& args);
+  virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features);
   virtual void load(binary_decoder& data);
   virtual void save(binary_encoder& enc);
-  virtual ner_feature freeze(entity_map& entities);
 
-  virtual void process_sentence(ner_sentence& sentence, ner_feature offset, string& buffer) const = 0;
+  virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const = 0;
 
  protected:
   int window;
 
-  inline ner_feature lookup(const string& key) const {
-    if (adding_features) {
-      return map.emplace(key, (2*window + 1)*map.size() + window).first->second;
-    } else {
-      auto it = map.find(key);
-      return it != map.end() ? it->second : ner_feature_unknown;
+  inline ner_feature lookup(const string& key, ner_feature* total_features) const {
+    auto it = map.find(key);
+    if (it == map.end() && total_features) {
+      it = map.emplace(key, window + *total_features).first;
+      *total_features += 2*window + 1;
     }
+    return it != map.end() ? it->second : ner_feature_unknown;
   }
 
   mutable unordered_map<string, ner_feature> map;
-
- private:
-  bool adding_features = false;
 
   // Factory method
  public:

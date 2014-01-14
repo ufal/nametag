@@ -132,31 +132,7 @@ bool network_classifier::train(unsigned features, unsigned outcomes, const vecto
     }
     if (verbose) eprintf("done.\n");
   }
-
-//  int cnt = 0;
-//  for (auto& instance : train) {
-//    propagate(instance.features);
-//
-//    for (auto& feature : instance.features) eprintf("%u ", feature);
-//    unsigned B_best = 0; double B_best_prob = output_layer[3];
-//    unsigned U_best = 0; double U_best_prob = output_layer[4];
-//    for (unsigned i = 5; i < output_layer.size(); i += 2) {
-//      if (output_layer[i] > B_best_prob) B_best = (i - 3) / 2, B_best_prob = output_layer[i];
-//      if (output_layer[i + 1] > U_best_prob) U_best = (i - 3) / 2, U_best_prob = output_layer[i + 1];
-//    }
-//    eprintf("B%.2g(%u)", B_best_prob, B_best);
-//    eprintf(" I%.2g", output_layer[0]);
-//    eprintf(" L%.2g", output_layer[1]);
-//    eprintf(" O%.2g", output_layer[2]);
-//    eprintf(" U%.2g(%u)\n", U_best_prob, U_best);
-//    if (++cnt > 100) break;
-//  }
-
   return true;
-}
-
-unsigned network_classifier::outcomes() const {
-  return output_layer.size();
 }
 
 void network_classifier::classify(const classifier_features& features, vector<double>& outcomes) const {

@@ -25,11 +25,11 @@ namespace ufal {
 namespace nametag {
 
 // Helper functions defined as macros so that they can access arguments without passing them
-#define apply_in_window(I, Feature) {                                          \
-  ner_feature _feature = (Feature);                                            \
-  if (_feature != ner_feature_unknown)                                         \
-    for (int _i = 1; _i <= window && int(I) + _i < int(sentence.size); _i++)   \
-      sentence.features[int(I) + _i].emplace_back(offset + _feature + _i - 1); \
+#define apply_in_window(I, Feature) {                                        \
+  ner_feature _feature = (Feature);                                          \
+  if (_feature != ner_feature_unknown)                                       \
+    for (int _i = 1; _i <= window && int(I) + _i < int(sentence.size); _i++) \
+      sentence.features[int(I) + _i].emplace_back(_feature + _i - 1);        \
 }
 
 #define apply_outer_words_in_window(Feature) { \
@@ -50,12 +50,12 @@ namespace form_processors {
 // PreviousEntity
 class previous_entity : public form_processor {
  public:
-  virtual void process_form(int form, ner_sentence& sentence, ner_feature offset, string& /*buffer*/) const override {
+  virtual void process_form(int form, ner_sentence& sentence, ner_feature* total_features, string& /*buffer*/) const override {
     if (form == 0) {
       apply_outer_words_in_window(lookup_empty());
     } else {
       auto& probs = sentence.probabilities[form-1].global;
-      apply_in_window(form, lookup(sentence.words[form-1].form + to_string(probs.bilou[probs.best].entity * bilou_type_total + probs.best)));
+      apply_in_window(form, lookup(sentence.words[form-1].form + to_string(probs.bilou[probs.best].entity * bilou_type_total + probs.best), total_features));
     }
   }
 };

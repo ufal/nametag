@@ -20,22 +20,79 @@
 #include <memory>
 #include <unordered_map>
 
-#include "bilou_entity.h"
+#include "bilou_ner.h"
 #include "bilou_ner_trainer.h"
-#include "classifier/network_classifier.h"
-#include "entity_map.h"
-#include "features/feature_templates.h"
 #include "utils/input.h"
 
 namespace ufal {
 namespace nametag {
 
-struct labelled_sentence {
-  ner_sentence sentence;
-  vector<bilou_entity::value> outcomes;
-};
+void bilou_ner_trainer::train(int stages_len, const network_parameters& parameters, const tagger& tagger, FILE* in_features, FILE* in_train, FILE* in_heldout, FILE* out_ner) {
+  if (stages_len <= 0) runtime_errorf("Cannot train NER with <= 0 stages!");
+  if (stages_len >= 256) runtime_errorf("Cannot train NER with >= 256 stages!");
 
-static void load_data(FILE* f, const tagger& tagger, vector<labelled_sentence>& data, entity_map& entity_map, bool add_entities) {
+  // Load training and possibly also heldout data
+  entity_map entities;
+  vector<labelled_sentence> train_data;
+  eprintf("Loading train data: ");
+  load_data(in_train, tagger, train_data, entities, true);
+  eprintf("done, %d sentences\n", train_data.size());
+  if (!entities.size()) runtime_errorf("No named entities present in the training data!");
+
+  vector<labelled_sentence> heldout_data;
+  if (in_heldout) {
+    eprintf("Loading heldout data: ");
+    load_data(in_heldout, tagger, heldout_data, entities, false);
+    eprintf("done, %d sentences\n", heldout_data.size());
+  }
+
+  // Train required number of stages
+  struct stage_info {
+    feature_templates templates;
+    network_classifier network;
+  };
+  vector<stage_info> stages(stages_len);
+
+  bool first_stage = true;
+  for (auto& stage : stages) {
+    // Parse feature templates
+    long in_features_start = ftell(in_features);
+    if (in_features_start < 0) runtime_errorf("Cannot seek in features file!");
+    if (first_stage) eprintf("Parsing feature templates: ");
+    stage.templates.parse(in_features, entities);
+    if (first_stage) eprintf("done\n");
+    if (fseek(in_features, 0, SEEK_SET) != 0) runtime_errorf("Cannot seek in features file!");
+    first_stage = false;
+
+    // Generate features
+    eprintf("Generating features: ");
+    vector<classifier_instance> train_instances, heldout_instances;
+    generate_instances(train_data, stage.templates, train_instances, true);
+    generate_instances(heldout_data, stage.templates, heldout_instances, false);
+    eprintf("done\n");
+
+    // Train and encode the recognizer
+    vector<double> outcomes(bilou_entity::total(entities.size()));
+    eprintf("Training network classifier.\n");
+    if (!stage.network.train(stage.templates.get_total_features(), outcomes.size(), train_instances, heldout_instances, parameters, true))
+      runtime_errorf("Cannot train the network classifier!");
+
+    // Use the trained classifier to compute previous_stage
+    compute_previous_stage(train_data, stage.templates, stage.network, outcomes);
+    compute_previous_stage(heldout_data, stage.templates, stage.network, outcomes);
+  }
+
+  // Encode the recognizer
+  eprintf("Encoding the recognizer: \n");
+  if (!entities.save(out_ner)) runtime_error("Cannot save entity map!");
+  if (fputc(stages_len, out_ner) == EOF) runtime_error("Cannot save number of stages!");
+  for (auto& stage : stages) {
+    if (!stage.templates.save(out_ner)) runtime_error("Cannot save feature templates!");
+    if (!stage.network.save(out_ner)) runtime_error("Cannot save classifier network!");
+  }
+}
+
+void bilou_ner_trainer::load_data(FILE* f, const tagger& tagger, vector<labelled_sentence>& data, entity_map& entity_map, bool add_entities) {
   vector<string> words, entities;
   vector<string_piece> forms;
 
@@ -51,6 +108,9 @@ static void load_data(FILE* f, const tagger& tagger, vector<labelled_sentence>& 
         data.emplace_back();
         auto& sentence = data.back();
         tagger.tag(forms, sentence.sentence);
+
+        // Clear previous_stage
+        sentence.sentence.clear_previous_stage();
 
         // Decode the entities names and ranges
         for (unsigned i = 0; i < entities.size(); i++)
@@ -81,31 +141,17 @@ static void load_data(FILE* f, const tagger& tagger, vector<labelled_sentence>& 
   }
 }
 
-static void generate_instances(vector<labelled_sentence>& data, const feature_templates& templates, vector<classifier_instance>& instances) {
+void bilou_ner_trainer::generate_instances(vector<labelled_sentence>& data, const feature_templates& templates, vector<classifier_instance>& instances, bool add_features) {
   string buffer;
 
   for (auto& sentence : data) {
+    sentence.sentence.clear_features();
+    sentence.sentence.clear_probabilities_local_filled();
+
     // Sentence processors
-    templates.process_sentence(sentence.sentence, buffer);
+    templates.process_sentence(sentence.sentence, buffer, add_features);
 
-    // Form processors
-    for (unsigned i = 0; i < sentence.sentence.size; i++) {
-      // Fill local probs
-      auto& probs = sentence.sentence.probabilities[i].local;
-      probs.bilou.fill({0, entity_type_unknown});
-      probs.bilou[bilou_entity::get_bilou(sentence.outcomes[i])] = {1, bilou_entity::get_entity(sentence.outcomes[i])};
-      sentence.sentence.probabilities[i].local_filled = true;
-
-      // Update global probs
-      if (i == 0) {
-        sentence.sentence.probabilities[i].global.init(probs);
-      } else {
-        sentence.sentence.probabilities[i].global.update(probs, sentence.sentence.probabilities[i - 1].global);
-      }
-
-      // Run form processors
-      templates.process_form(i, sentence.sentence, buffer);
-    }
+    // TODO: Form processors
 
     // Create classifier instances
     for (unsigned i = 0; i < sentence.sentence.size; i++)
@@ -113,62 +159,37 @@ static void generate_instances(vector<labelled_sentence>& data, const feature_te
   }
 }
 
-void bilou_ner_trainer::train(int stages, const network_parameters& parameters, const tagger& tagger, FILE* in_features, FILE* in_train, FILE* in_heldout, FILE* out_ner) {
-  if (stages <= 0) runtime_errorf("Cannot train NER with <= 0 stages!");
-  if (stages >= 256) runtime_errorf("Cannot train NER with >= 256 stages!");
+void bilou_ner_trainer::compute_previous_stage(vector<labelled_sentence>& data, const feature_templates& templates, const network_classifier& network, vector<double>& outcomes) {
+  string buffer;
 
-  // Parse feature templates
-  feature_templates templates;
-  eprintf("Parsing feature templates: ");
-  templates.parse(in_features);
-  eprintf("done\n");
+  for (auto& labelled_sentence : data) {
+    auto& sentence = labelled_sentence.sentence;
 
-  // Load training and possibly also heldout data
-  entity_map entities;
-  vector<labelled_sentence> train_data;
-  eprintf("Loading train data: ");
-  load_data(in_train, tagger, train_data, entities, true);
-  eprintf("done, %d sentences\n", train_data.size());
-  if (!entities.size()) runtime_errorf("No named entities present in the training data!");
+    sentence.clear_features();
+    sentence.clear_probabilities_local_filled();
 
-  vector<labelled_sentence> heldout_data;
-  if (in_heldout) {
-    eprintf("Loading heldout data: ");
-    load_data(in_heldout, tagger, heldout_data, entities, false);
-    eprintf("done, %d sentences\n", heldout_data.size());
+    // Sentence processors
+    templates.process_sentence(sentence, buffer);
+
+    // Form processors
+    for (unsigned i = 0; i < sentence.size; i++) {
+      templates.process_form(i, sentence, buffer);
+      if (!sentence.probabilities[i].local_filled) {
+        network.classify(sentence.features[i], outcomes);
+        bilou_ner::fill_bilou_probabilities(outcomes, sentence.probabilities[i].local);
+        sentence.probabilities[i].local_filled = true;
+      }
+
+      if (i == 0) {
+        sentence.probabilities[i].global.init(sentence.probabilities[i].local);
+      } else {
+        sentence.probabilities[i].global.update(sentence.probabilities[i].local, sentence.probabilities[i - 1].global);
+      }
+    }
+
+    sentence.compute_best_decoding();
+    sentence.fill_previous_stage();
   }
-
-  // Generate features
-  eprintf("Generating features: ");
-  vector<classifier_instance> train_instances, heldout_instances;
-
-  // Create all features before freezing
-  generate_instances(train_data, templates, train_instances);
-
-  // Freeze the features and regenerate them
-  ner_feature features = templates.freeze(entities);
-  train_instances.clear();
-  generate_instances(train_data, templates, train_instances);
-  generate_instances(heldout_data, templates, heldout_instances);
-  eprintf("done\n");
-
-  // Train and encode the recognizer
-  eprintf("Training network classifier.\n");
-  vector<network_classifier> networks(stages);
-  for (auto& network : networks)
-    if (!network.train(features, bilou_entity::total(entities.size()), train_instances, heldout_instances, parameters, true))
-      runtime_errorf("Cannot train the network classifier!");
-
-  eprintf("Encoding the recognizer: \n");
-  if (!entities.save(out_ner))
-    runtime_error("Cannot save entity map!");
-  if (!templates.save(out_ner))
-    runtime_error("Cannot save feature templates!");
-  if (fputc(stages, out_ner) == EOF)
-    runtime_error("Cannot save number of stages!");
-  for (auto& network : networks)
-    if (!network.save(out_ner))
-      runtime_error("Cannot save classifier network!");
 }
 
 } // namespace nametag
