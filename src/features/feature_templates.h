@@ -22,7 +22,6 @@
 
 #include "common.h"
 #include "entity_processor.h"
-#include "form_processor.h"
 #include "sentence_processor.h"
 #include "ner/entity_map.h"
 
@@ -37,7 +36,6 @@ class feature_templates {
   bool save(FILE* f);
 
   void process_sentence(ner_sentence& sentence, string& buffer, bool add_features = false) const;
-  void process_form(int form, ner_sentence& sentence, string& buffer, bool add_features = false) const;
   void process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const;
   ner_feature get_total_features() const;
 
@@ -51,14 +49,6 @@ class feature_templates {
     sentence_processor_info(const string& name, sentence_processor* processor) : name(name), processor(processor) {}
   };
   vector<sentence_processor_info> sentence_processors;
-
-  struct form_processor_info {
-    string name;
-    unique_ptr<form_processor> processor;
-
-    form_processor_info(const string& name, form_processor* processor) : name(name), processor(processor) {}
-  };
-  vector<form_processor_info> form_processors;
 
   struct entity_processor_info {
     string name;

@@ -40,16 +40,6 @@ bool feature_templates::load(FILE* f) {
       sentence_processors.emplace_back(name, processor.release());
     }
 
-    form_processors.clear();
-    for (unsigned i = data.next_4B(); i; i--) {
-      unsigned name_len = data.next_1B();
-      string name(data.next<char>(name_len), name_len);
-      unique_ptr<form_processor> processor(form_processor::create(name));
-      if (!processor) return false;
-      processor->load(data);
-      form_processors.emplace_back(name, processor.release());
-    }
-
     entity_processors.clear();
     for (unsigned i = data.next_4B(); i; i--) {
       unsigned name_len = data.next_1B();
@@ -76,11 +66,6 @@ void feature_templates::process_sentence(ner_sentence& sentence, string& buffer,
   // Add features from given sentence processor templates
   for (auto& processor : sentence_processors)
     processor.processor->process_sentence(sentence, adding_features ? &total_features : nullptr, buffer);
-}
-
-void feature_templates::process_form(int form, ner_sentence& sentence, string& buffer, bool adding_features) const {
-  for (auto& processor : form_processors)
-    processor.processor->process_form(form, sentence, adding_features ? &total_features : nullptr, buffer);
 }
 
 void feature_templates::process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const {
