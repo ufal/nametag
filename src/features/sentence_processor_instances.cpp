@@ -23,6 +23,7 @@
 #include "utils/file_ptr.h"
 #include "utils/input.h"
 #include "utils/parse_int.h"
+#include "utils/url_detector.h"
 #include "utils/utf8.h"
 
 namespace ufal {
@@ -350,6 +351,57 @@ class tag : public sentence_processor {
   }
 };
 
+
+// URLEmailDetector
+class url_email_detector : public sentence_processor {
+ public:
+  virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features) override {
+    if (!sentence_processor::parse(window, args, entities, total_features)) return false;
+    if (args.size() != 2) return eprintf("URLEmailDetector requires exactly two arguments -- named entity types for URL and email!\n"), false;
+
+    url = entities.parse(args[0].c_str(), true);
+    email = entities.parse(args[1].c_str(), true);
+
+    if (url == entity_type_unknown || email == entity_type_unknown)
+      return eprintf("Cannot create entities '%s' and '%s' in URLEmailDetector!\n", args[0].c_str(), args[1].c_str()), false;
+    return true;
+  }
+
+  virtual void load(binary_decoder& data) override {
+    sentence_processor::load(data);
+
+    url = data.next_4B();
+    email = data.next_4B();
+  }
+
+  virtual void save(binary_encoder& enc) override {
+    sentence_processor::save(enc);
+
+    enc.add_4B(url);
+    enc.add_4B(email);
+  }
+
+  virtual void process_sentence(ner_sentence& sentence, ner_feature* /*total_features*/, string& /*buffer*/) const override {
+    for (unsigned i = 0; i < sentence.size; i++) {
+      auto type = url_detector::detect(sentence.words[i].form);
+      if (type == url_detector::NO_URL || sentence.probabilities[i].local_filled) continue;
+
+      // We have found URL or email and the word has not yet been determined
+      for (auto& bilou : sentence.probabilities[i].local.bilou) {
+        bilou.probability = 0.;
+        bilou.entity = entity_type_unknown;
+      }
+      sentence.probabilities[i].local.bilou[bilou_type_U].probability = 1.;
+      sentence.probabilities[i].local.bilou[bilou_type_U].entity = type == url_detector::EMAIL ? email : url;
+      sentence.probabilities[i].local_filled = true;
+    }
+  }
+
+ private:
+  entity_type url, email;
+};
+
+
 } // namespace sentence_processors
 
 // Sentence processor factory method
@@ -363,6 +415,7 @@ sentence_processor* sentence_processor::create(const string& name) {
   if (name.compare("RawLemma") == 0) return new sentence_processors::raw_lemma();
   if (name.compare("RawLemmaCapitalization") == 0) return new sentence_processors::raw_lemma_capitalization();
   if (name.compare("Tag") == 0) return new sentence_processors::tag();
+  if (name.compare("URLEmailDetector") == 0) return new sentence_processors::url_email_detector();
   return nullptr;
 }
 
