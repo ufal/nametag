@@ -9,3 +9,7 @@ $(call lib,../../morphodita/src/libmorphodita):
 
 $(call lib,../../morphodita/src/libmorphodita.dyn):
 	$(MAKE) -C $(dir $@) $(notdir $@)
+
+.PHONY: veryclean
+veryclean: clean
+	$(MAKE) -C ../../src veryclean
