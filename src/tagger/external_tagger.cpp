@@ -17,10 +17,18 @@
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "external_tagger.h"
-#include "utils/small_stringops.h"
 
 namespace ufal {
 namespace nametag {
+
+inline static size_t strnchrpos(const char* str, char c, size_t len) {
+  size_t pos = 0;
+  for (; len--; str++, pos++)
+    if (*str == c)
+      return pos;
+
+  return pos;
+}
 
 bool external_tagger::load(FILE* /*f*/) {
   return true;
@@ -35,19 +43,19 @@ void external_tagger::tag(const vector<string_piece>& forms, ner_sentence& sente
   for (unsigned i = 0; i < forms.size(); i++) {
     string_piece form = forms[i];
 
-    size_t tab = small_strnchrpos(form.str, '\t', form.len);
+    size_t tab = strnchrpos(form.str, '\t', form.len);
     if (tab < form.len) {
       sentence.words[i].form.assign(form.str, tab);
       form.len -= tab + 1;
       form.str += tab + 1;
 
-      tab = small_strnchrpos(form.str, '\t', form.len);
+      tab = strnchrpos(form.str, '\t', form.len);
       if (tab < form.len) {
         sentence.words[i].raw_lemma.assign(form.str, tab);
         form.len -= tab + 1;
         form.str += tab + 1;
 
-        sentence.words[i].tag.assign(form.str, small_strnchrpos(form.str, '\t', form.len));
+        sentence.words[i].tag.assign(form.str, strnchrpos(form.str, '\t', form.len));
       } else {
         sentence.words[i].raw_lemma.assign(form.str, form.len);
         sentence.words[i].tag.clear();

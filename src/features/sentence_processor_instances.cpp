@@ -18,8 +18,8 @@
 
 #include <algorithm>
 
-#include "encode_utils.h"
 #include "sentence_processor.h"
+#include "utils/encode_utils.h"
 #include "utils/file_ptr.h"
 #include "utils/input.h"
 #include "utils/parse_int.h"

@@ -24,18 +24,12 @@ NAMETAG_O = $(LZMA_DEC_O) bilou/bilou_probabilities bilou/ner_sentence classifie
 # libraries
 $(MORPHODITA_DIR)/libmorphodita%:
 	$(MAKE) -C $(@D) $(@F)
-$(call lib,libnametag): $(call lib,$(MORPHODITA_DIR)/libmorphodita) $(call obj, $(NAMETAG_O))
-	@$(foreach obj,$(filter-out $<,$^),$(call cp,$(obj),$(call libobj,nametag,$(obj))))
-	@$(call cp,$<,$@)
-	ar -rcs $@ $(call libobj,nametag,$(filter-out $<,$^))
-	@$(call rm,$(call libobj,nametag,$(filter-out $<,$^)))
-$(call lib,libnametag.dyn): $(call lib,$(MORPHODITA_DIR)/libmorphodita$(if $(WIN),,.dyn)) $(call dynobj, $(NAMETAG_O))
-	@$(foreach obj,$(filter-out $<,$^),$(call cp,$(obj),$(call libobj,nametag,$(obj))))
-	@$(call cp,$<,$@)
-	ar -rcs $@ $(call libobj,nametag,$(filter-out $<,$^))
-	@$(call rm,$(call libobj,nametag,$(filter-out $<,$^)))
-$(call dynlib,libnametag): $(call lib,libnametag.dyn)
-	$(CXX) -o $@ $(DYN_LD_FLAGS) -Wl,--whole-archive $< -Wl,-no-whole-archive -Wl,--version-script=libnametag.map $(call create_implib,libnametag)
+$(call lib,libnametag): $(call obj, $(NAMETAG_O))
+	ar -rcs $@ $^
+$(call lib,libnametag.dyn): $(call dynobj, $(NAMETAG_O))
+	ar -rcs $@ $^
+$(call dynlib,libnametag): $(call lib,libnametag.dyn) $(call lib,$(MORPHODITA_DIR)/libmorphodita$(if $(WIN),,.dyn))
+	$(CXX) -o $@ $(DYN_LD_FLAGS) -Wl,--whole-archive $^ -Wl,-no-whole-archive -Wl,--version-script=libnametag.map $(call create_implib,libnametag)
 
 # executables
 $(call exe,run_ner): $(call obj, $(NAMETAG_O) utils/input) $(call lib,$(MORPHODITA_DIR)/libmorphodita)

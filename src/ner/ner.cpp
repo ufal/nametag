@@ -22,7 +22,6 @@
 #include "ner.h"
 #include "ner_ids.h"
 #include "utils/file_ptr.h"
-#include "utils/new_unique_ptr.h"
 
 namespace ufal {
 namespace nametag {
@@ -31,7 +30,7 @@ ner* ner::load(FILE* f) {
   switch (fgetc(f)) {
     case ner_ids::CZECH_NER:
       {
-        auto res = new_unique_ptr<czech_ner>();
+        unique_ptr<czech_ner> res(new czech_ner());
         if (res->load(f)) return res.release();
         break;
       }

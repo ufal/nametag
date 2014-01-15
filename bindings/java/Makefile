@@ -17,7 +17,7 @@ all: $(TARGETS)
 
 include ../Makefile.rules
 
-$(JAVA_MODULE): nametag_java.cpp $(JAVA_NAMETAG_LIB)
+$(JAVA_MODULE): nametag_java.cpp $(call lib,../../src/libnametag$(if $(WIN),,.dyn)) $(call lib,../../morphodita/src/libmorphodita$(if $(WIN),,.dyn))
 	@$(if $(JAVA_HOME),,$(error JAVA_HOME must be set))
 	$(CXX) -I../../src/include $(DYN_C_FLAGS) $(DYN_LD_FLAGS) $(JAVA_C_FLAGS) $(JAVA_LD_FLAGS) -fno-strict-aliasing -Wl,--version-script=nametag_java.map $^ -o $@
 

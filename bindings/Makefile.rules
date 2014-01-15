@@ -3,3 +3,9 @@ $(call lib,../../src/libnametag):
 
 $(call lib,../../src/libnametag.dyn):
 	$(MAKE) -C $(dir $@) $(notdir $@)
+
+$(call lib,../../morphodita/src/libmorphodita):
+	$(MAKE) -C $(dir $@) $(notdir $@)
+
+$(call lib,../../morphodita/src/libmorphodita.dyn):
+	$(MAKE) -C $(dir $@) $(notdir $@)
