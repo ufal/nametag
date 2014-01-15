@@ -17,13 +17,12 @@
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "czech_ner.h"
-#include "tokenizer/czech_tokenizer.h"
 
 namespace ufal {
 namespace nametag {
 
 tokenizer* czech_ner::new_tokenizer() const {
-  return new czech_tokenizer();
+  return tokenizer::new_czech_tokenizer();
 }
 
 } // namespace nametag
