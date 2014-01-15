@@ -61,8 +61,9 @@ void bilou_ner::recognize(const vector<string_piece>& forms, vector<named_entity
       // Compute per-sentence feature templates
       templates.process_sentence(sentence, c->string_buffer);
 
-      // Sequentially classify sentence words
+      // Perform classification of sentence words
       for (unsigned i = 0; i < sentence.size; i++) {
+        templates.process_form(i, sentence, c->string_buffer);
         if (!sentence.probabilities[i].local_filled) {
           network.classify(sentence.features[i], c->outcomes, c->network_buffer);
           fill_bilou_probabilities(c->outcomes, sentence.probabilities[i].local);

@@ -141,6 +141,8 @@ void bilou_ner_trainer::generate_instances(vector<labelled_sentence>& data, cons
     // Sentence processors
     templates.process_sentence(sentence.sentence, buffer, add_features);
 
+    // TODO: Form processors
+
     // Create classifier instances
     for (unsigned i = 0; i < sentence.sentence.size; i++)
      instances.emplace_back(sentence.sentence.features[i], sentence.outcomes[i]);
@@ -160,8 +162,9 @@ void bilou_ner_trainer::compute_previous_stage(vector<labelled_sentence>& data, 
     // Sentence processors
     templates.process_sentence(sentence, buffer);
 
-    // Sequentially classify sentence words
+    // Form processors
     for (unsigned i = 0; i < sentence.size; i++) {
+      templates.process_form(i, sentence, buffer);
       if (!sentence.probabilities[i].local_filled) {
         network.classify(sentence.features[i], outcomes, network_buffer);
         bilou_ner::fill_bilou_probabilities(outcomes, sentence.probabilities[i].local);

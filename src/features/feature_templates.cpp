@@ -32,6 +32,7 @@ bool feature_templates::load(FILE* f) {
 
     sentence_processors.clear();
     entity_processors.clear();
+    form_processors.clear();
     for (unsigned processors = data.next_4B(); processors; processors--) {
       unsigned name_len = data.next_1B();
       string name(data.next<char>(name_len), name_len);
@@ -49,6 +50,14 @@ bool feature_templates::load(FILE* f) {
       if (maybe_entity_processor) {
         maybe_entity_processor->load(data);
         entity_processors.emplace_back(name, maybe_entity_processor);
+        continue;
+      }
+
+      // Try form processor
+      auto* maybe_form_processor = form_processor::create(name);
+      if (maybe_form_processor) {
+        maybe_form_processor->load(data);
+        form_processors.emplace_back(name, maybe_form_processor);
         continue;
       }
 
@@ -72,6 +81,11 @@ void feature_templates::process_sentence(ner_sentence& sentence, string& buffer,
   // Add features from given sentence processor templates
   for (auto&& processor : sentence_processors)
     processor.processor->process_sentence(sentence, adding_features ? &total_features : nullptr, buffer);
+}
+
+void feature_templates::process_form(int form, ner_sentence& sentence, string& buffer, bool adding_features) const {
+  for (auto&& processor : form_processors)
+    processor.processor->process_form(form, sentence, adding_features ? &total_features : nullptr, buffer);
 }
 
 void feature_templates::process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const {
