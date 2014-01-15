@@ -27,21 +27,20 @@ namespace nametag {
 bool bilou_ner::load(FILE* f) {
   if (tagger.reset(tagger::load_instance(f)), !tagger) return false;
   if (!named_entities.load(f)) return false;
+  if (!templates.load(f)) return false;
 
-  int stages_len = fgetc(f);
-  if (stages_len == EOF) return false;
-  stages.resize(stages_len);
-  for (auto& stage : stages) {
-    if (!stage.templates.load(f)) return false;
-    if (!stage.network.load(f)) return false;
-  }
+  int stages = fgetc(f);
+  if (stages == EOF) return false;
+  networks.resize(stages);
+  for (auto& network : networks)
+    if (!network.load(f)) return false;
 
   return true;
 }
 
 void bilou_ner::recognize(const vector<string_piece>& forms, vector<named_entity>& entities) const {
   entities.clear();
-  if (forms.empty() || !tagger || !named_entities.size() || !stages.size()) return;
+  if (forms.empty() || !tagger || !named_entities.size() || !networks.size()) return;
 
   // Acquire cache
   cache* c = caches.pop();
@@ -56,17 +55,17 @@ void bilou_ner::recognize(const vector<string_piece>& forms, vector<named_entity
     sentence.clear_previous_stage();
 
     // Perform required NER stages
-    for (auto& stage : stages) {
+    for (auto& network : networks) {
       sentence.clear_features();
       sentence.clear_probabilities_local_filled();
 
       // Compute per-sentence feature templates
-      stage.templates.process_sentence(sentence, c->string_buffer);
+      templates.process_sentence(sentence, c->string_buffer);
 
       // Sequentially classify sentence words
       for (unsigned i = 0; i < sentence.size; i++) {
         if (!sentence.probabilities[i].local_filled) {
-          stage.network.classify(sentence.features[i], outcomes);
+          network.classify(sentence.features[i], outcomes);
           fill_bilou_probabilities(outcomes, sentence.probabilities[i].local);
           sentence.probabilities[i].local_filled = true;
         }
@@ -93,7 +92,7 @@ void bilou_ner::recognize(const vector<string_piece>& forms, vector<named_entity
       }
 
     // Process the entities
-    stages.back().templates.process_entities(sentence, entities, c->entities_buffer);
+    templates.process_entities(sentence, entities, c->entities_buffer);
   }
 
   caches.push(c);

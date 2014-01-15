@@ -27,9 +27,9 @@
 namespace ufal {
 namespace nametag {
 
-void bilou_ner_trainer::train(int stages_len, const network_parameters& parameters, const tagger& tagger, FILE* in_features, FILE* in_train, FILE* in_heldout, FILE* out_ner) {
-  if (stages_len <= 0) runtime_errorf("Cannot train NER with <= 0 stages!");
-  if (stages_len >= 256) runtime_errorf("Cannot train NER with >= 256 stages!");
+void bilou_ner_trainer::train(int stages, const network_parameters& parameters, const tagger& tagger, FILE* in_features, FILE* in_train, FILE* in_heldout, FILE* out_ner) {
+  if (stages <= 0) runtime_errorf("Cannot train NER with <= 0 stages!");
+  if (stages >= 256) runtime_errorf("Cannot train NER with >= 256 stages!");
 
   // Load training and possibly also heldout data
   entity_map entities;
@@ -46,50 +46,41 @@ void bilou_ner_trainer::train(int stages_len, const network_parameters& paramete
     eprintf("done, %d sentences\n", heldout_data.size());
   }
 
+  // Parse feature templates
+  feature_templates templates;
+  eprintf("Parsing feature templates: ");
+  templates.parse(in_features, entities);
+  eprintf("done\n");
+
   // Train required number of stages
-  struct stage_info {
-    feature_templates templates;
-    network_classifier network;
-  };
-  vector<stage_info> stages(stages_len);
+  vector<network_classifier> networks(stages);
 
-  bool first_stage = true;
-  for (auto& stage : stages) {
-    // Parse feature templates
-    long in_features_start = ftell(in_features);
-    if (in_features_start < 0) runtime_errorf("Cannot seek in features file!");
-    if (first_stage) eprintf("Parsing feature templates: ");
-    stage.templates.parse(in_features, entities);
-    if (first_stage) eprintf("done\n");
-    if (fseek(in_features, 0, SEEK_SET) != 0) runtime_errorf("Cannot seek in features file!");
-    first_stage = false;
-
+  for (auto& network : networks) {
     // Generate features
     eprintf("Generating features: ");
     vector<classifier_instance> train_instances, heldout_instances;
-    generate_instances(train_data, stage.templates, train_instances, true);
-    generate_instances(heldout_data, stage.templates, heldout_instances, false);
+    generate_instances(train_data, templates, train_instances, true);
+    generate_instances(heldout_data, templates, heldout_instances, false);
     eprintf("done\n");
 
     // Train and encode the recognizer
     vector<double> outcomes(bilou_entity::total(entities.size()));
     eprintf("Training network classifier.\n");
-    if (!stage.network.train(stage.templates.get_total_features(), outcomes.size(), train_instances, heldout_instances, parameters, true))
+    if (!network.train(templates.get_total_features(), outcomes.size(), train_instances, heldout_instances, parameters, true))
       runtime_errorf("Cannot train the network classifier!");
 
     // Use the trained classifier to compute previous_stage
-    compute_previous_stage(train_data, stage.templates, stage.network, outcomes);
-    compute_previous_stage(heldout_data, stage.templates, stage.network, outcomes);
+    compute_previous_stage(train_data, templates, network, outcomes);
+    compute_previous_stage(heldout_data, templates, network, outcomes);
   }
 
   // Encode the recognizer
   eprintf("Encoding the recognizer: \n");
   if (!entities.save(out_ner)) runtime_error("Cannot save entity map!");
-  if (fputc(stages_len, out_ner) == EOF) runtime_error("Cannot save number of stages!");
-  for (auto& stage : stages) {
-    if (!stage.templates.save(out_ner)) runtime_error("Cannot save feature templates!");
-    if (!stage.network.save(out_ner)) runtime_error("Cannot save classifier network!");
-  }
+  if (!templates.save(out_ner)) runtime_error("Cannot save feature templates!");
+  if (fputc(stages, out_ner) == EOF) runtime_error("Cannot save number of stages!");
+  for (auto& network : networks)
+    if (!network.save(out_ner)) runtime_error("Cannot save classifier network!");
 }
 
 void bilou_ner_trainer::load_data(FILE* f, const tagger& tagger, vector<labelled_sentence>& data, entity_map& entity_map, bool add_entities) {

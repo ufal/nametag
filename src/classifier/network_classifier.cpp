@@ -138,7 +138,6 @@ bool network_classifier::train(unsigned features, unsigned outcomes, const vecto
 void network_classifier::classify(const classifier_features& features, vector<double>& outcomes) const {
   // Assertions
   assert(outcomes.size() == output_layer.size());
-  for (auto& p : features) assert(p < indices.size());
 
   // Propagation
   propagate(features, outcomes);
@@ -152,8 +151,9 @@ void network_classifier::propagate(const classifier_features& features, vector<d
   output_layer.assign(output_layer.size(), features.size() * missing_weight);
 
   for (auto& feature : features)
-    for (unsigned i = 0; i < indices[feature].size(); i++)
-      output_layer[indices[feature][i]] += weights[feature][i] - missing_weight;
+    if (feature < indices.size())
+      for (unsigned i = 0; i < indices[feature].size(); i++)
+        output_layer[indices[feature][i]] += weights[feature][i] - missing_weight;
 
   // Apply softmax sigmoid to output_layer layer
   double sum = 0;

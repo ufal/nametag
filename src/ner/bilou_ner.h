@@ -45,11 +45,8 @@ class bilou_ner : public ner {
   // Internal members of bilou_ner
   unique_ptr<ufal::nametag::tagger> tagger;
   entity_map named_entities;
-  struct stage_info {
-    feature_templates templates;
-    network_classifier network;
-  };
-  vector<stage_info> stages;
+  feature_templates templates;
+  vector<network_classifier> networks;
 
   struct cache {
     ner_sentence sentence;
