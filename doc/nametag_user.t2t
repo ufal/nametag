@@ -15,7 +15,7 @@ tagged texts.
 
 This section describes the command line tool and the model.
 
-++ Models ++
+== Models ==
 
 Like any supervised machine learning tool, NameTag needs a trained linguistic
 model. Czech models trained on [CNEC http://ufal.mff.cuni.cz/cnec/] 1.1 and 2.0
@@ -26,7 +26,7 @@ to your NameTag release. The best way to assure this is to use the most
 current NameTag release with the most current model release.
 
 
-+++ Czech NER - CNEC 1.1 +++
+=== Czech NER - CNEC 1.1 ===
 
 The model is trained on the training portion of the [Czech Named Entity Corpus 1.1 http://ufal.mff.cuni.cz/cnec/].
 The corpus uses a detailed two-level named entity hierarchy, whose description
@@ -34,7 +34,7 @@ is available in the documentation of the [Czech Named Entity Corpus 1.1
 http://ufal.mff.cuni.cz/cnec/].
 
 
-+++ Czech NER - CNEC 2.0 +++
+=== Czech NER - CNEC 2.0 ===
 
 The model is trained on the training portion of the [Czech Named Entity Corpus 2.0 http://ufal.mff.cuni.cz/cnec/].
 The corpus uses a detailed two-level named entity hierarchy, whose description
@@ -43,7 +43,7 @@ http://ufal.mff.cuni.cz/cnec/]. This hierarchy is an updated version of CNEC
 1.1 hierarchy and is more suitable for automatic named entity recognition.
 
 
-++ NameTag Command Line Tool ++
+== NameTag Command Line Tool ==
 
 NameTag command line tool accepts two input formats: an unprocessed, raw text
 and a custom tokenized and segmented vertical format. NameTag command line tool
@@ -51,7 +51,7 @@ accepts input on standard input and prints to standard output.  All inputs and
 outputs are assumed in UTF-8.
 
 
-+++ Untokenized Input +++
+=== Untokenized Input ===
 
 The input is by default automatically tokenized and segmented. In this case,
 the output is in XML format without a root element, using ``<ne type="...">...</ne>``
@@ -67,7 +67,7 @@ A NameTag identifies a first name (``pf``), a surname (``ps``) and a person name
 ``` <ne type='P'><ne type='pf'>Václav</ne> <ne type='ps'>Havel</ne></ne> byl český dramatik, esejista, kritik komunistického režimu a později politik.
 
 
-+++ Vertical Input Format +++
+=== Vertical Input Format ===
 
 For users who wish to perform their own tokenization and segmentation, NameTag
 accepts tokenized and segmented text in a CoNLL-style vertical format, where

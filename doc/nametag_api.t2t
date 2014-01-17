@@ -9,7 +9,7 @@ The NameTag API is defined in header ``nametag.h`` and resides in
 The strings used in the NameTag API are always UTF-8 encoded (except from
 file paths, whose encoding is system dependent).
 
-++ Struct string_piece ++[string_piece]
+== Struct string_piece ==[string_piece]
 ```
 struct string_piece {
   const char* str;
@@ -26,7 +26,7 @@ The [``string_piece`` #string_piece] is used for efficient string passing. The s
 referenced in [``string_piece`` #string_piece] is not owned by it, so users have to make sure
 the referenced string exists as long as the [``string_piece`` #string_piece].
 
-++ Struct named_entity ++[named_entity]
+== Struct named_entity ==[named_entity]
 ```
 struct named_entity {
   size_t start;
@@ -43,7 +43,7 @@ The [``named_entity`` #named_entity] is used to represend a named entity. The
 unicode characters or bytes, depending on the usage. The ``type`` represents
 the entity type.
 
-++ Class ner ++[ner]
+== Class ner ==[ner]
 ```
 class ner {
  public:
@@ -61,21 +61,21 @@ class ner {
 A [``ner`` #ner] instance represents a named entity recognizer. All methods
 are thread-safe.
 
-+++ ner::load(const char*) +++[ner_load_cstring]
+=== ner::load(const char*) ===[ner_load_cstring]
 ``` static [ner #ner]* load(const char* fname);
 
 Factory method constructor. Accepts C string with a file name of the model.
 Returns a pointer to an instance of [``ner`` #ner] which the user should delete
 after use.
 
-+++ ner::load(FILE*) +++[ner_load_FILE]
+=== ner::load(FILE*) ===[ner_load_FILE]
 ``` static [ner #ner]* load(FILE* f);
 
 Factory method constructor. Accepts C file pointer of an opened file with the
 model. Returns a pointer to an instance of [``ner`` #ner] which the user should
 delete after use.
 
-+++ ner::recognize +++[ner_recognize]
+=== ner::recognize ===[ner_recognize]
 ``` virtual void recognize(const std::vector<[string_piece #string_piece]>& forms, std::vector<[named_entity #named_entity]>& entities) const = 0;
 
 Perform named entity recognition on a tokenized sentence given in the ``forms`` argument.
@@ -83,7 +83,7 @@ The found entities are returned in the ``entities`` argument. The range of the
 returned [named_entity #named_entity] is represented using form indices.
 
 
-+++ ner::tokenize_and_recognize +++[ner_tokenize_and_recognize]
+=== ner::tokenize_and_recognize ===[ner_tokenize_and_recognize]
 ``` void tokenize_and_recognize(const char* text, std::vector<[named_entity #named_entity]>& entities, bool unicode_offsets = false) const;
 
 Perform named entity recognition on an untokenized text given in the ``text`` argument.
