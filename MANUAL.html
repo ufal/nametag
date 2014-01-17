@@ -1,0 +1,571 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.org">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<TITLE>NameTag: Name Entity Recognizer</TITLE>
+</HEAD>
+<BODY>
+
+<DIV CLASS="header" ID="header">
+<H1>NameTag: Name Entity Recognizer</H1>
+<H2>Version 0.9</H2>
+</DIV>
+
+<DIV CLASS="toc">
+
+  <OL>
+  <LI><A HREF="#toc1">Introduction</A>
+  <LI><A HREF="#toc2">Release</A>
+    <UL>
+    <LI><A HREF="#toc3">2.1. Download</A>
+    <LI><A HREF="#toc4">2.2. Roadmap</A>
+    <LI><A HREF="#toc5">2.3. License</A>
+    <LI><A HREF="#toc6">2.4. Platforms and Requirements</A>
+    </UL>
+  <LI><A HREF="#toc7">NameTag Installation</A>
+    <UL>
+    <LI><A HREF="#toc8">3.1. Requirements</A>
+    <LI><A HREF="#toc9">3.2. Compilation</A>
+      <UL>
+      <LI><A HREF="#toc10">3.2.1. Windows</A>
+      </UL>
+    <LI><A HREF="#toc11">3.3. Other language bindings</A>
+      <UL>
+      <LI><A HREF="#toc12">3.3.1. Java</A>
+      <LI><A HREF="#toc13">3.3.2. Python</A>
+      </UL>
+    </UL>
+  <LI><A HREF="#toc14">NameTag User's Manual</A>
+    <UL>
+    <LI><A HREF="#toc15">4.1. Models</A>
+      <UL>
+      <LI><A HREF="#toc16">4.1.1. Czech NER - CNEC 1.1</A>
+      <LI><A HREF="#toc17">4.1.2. Czech NER - CNEC 2.0</A>
+      </UL>
+    <LI><A HREF="#toc18">4.2. NameTag Command Line Tool</A>
+      <UL>
+      <LI><A HREF="#toc19">4.2.1. Untokenized Input</A>
+      <LI><A HREF="#toc20">4.2.2. Vertical Input Format</A>
+      </UL>
+    </UL>
+  <LI><A HREF="#toc21">NameTag API Reference</A>
+    <UL>
+    <LI><A HREF="#string_piece">5.1. Struct string_piece</A>
+    <LI><A HREF="#named_entity">5.2. Struct named_entity</A>
+    <LI><A HREF="#ner">5.3. Class ner</A>
+      <UL>
+      <LI><A HREF="#ner_load_cstring">5.3.1. ner::load(const char*)</A>
+      <LI><A HREF="#ner_load_FILE">5.3.2. ner::load(FILE*)</A>
+      <LI><A HREF="#ner_recognize">5.3.3. ner::recognize</A>
+      <LI><A HREF="#ner_tokenize_and_recognize">5.3.4. ner::tokenize_and_recognize</A>
+      </UL>
+    </UL>
+  <LI><A HREF="#toc29">Contact</A>
+  <LI><A HREF="#toc30">Acknowledgements</A>
+  <LI><A HREF="#toc31">References</A>
+    <UL>
+    <LI><A HREF="#toc32">8.1. Bibtex for referencing</A>
+    </UL>
+  </OL>
+
+</DIV>
+<DIV CLASS="body" ID="body">
+
+<A NAME="toc1"></A>
+<H1>1. Introduction</H1>
+
+<P>
+NameTag is an open-source tool for named entity recognition (NER). NameTag
+identifies proper names in text and classifies them into predefined categories,
+such as names of persons, locations, organizations, etc. NameTag is distributed
+as a standalone tool or a library, along with trained linguistic models. In the
+Czech language, NameTag achieves state-of-the-art performance
+(<A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">Straková et al. 2013</A>).
+NameTag is a free software under <A HREF="http://www.gnu.org/licenses/lgpl.html">LGPL</A>
+license and the linguistic models are free for non-commercial use and
+distributed under <A HREF="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</A> license.
+</P>
+
+<A NAME="toc2"></A>
+<H1>2. Release</H1>
+
+<A NAME="toc3"></A>
+<H2>2.1. Download</H2>
+
+<P>
+NameTag is currently undergoing beta testing. Please let us know if you wish to participate. The beta version includes:
+</P>
+
+<UL>
+<LI>named entity recognizer commandline tool
+<LI>Czech models trained on <A HREF="http://ufal.mff.cuni.cz/cnec/">CNEC</A> 1.1 and 2.0
+<LI>C++ library
+<LI>Java bindings
+</UL>
+
+<P>
+NameTag will be available either as pre-compiled binaries and models from <A HREF="http://www.lindat.cz">LINDAT-Clarin</A> infrastructure or as open-source from <A HREF="https://github.com/ufal/nametag">GitHub</A>. If you use this tool for scientific work, please give credit to us by referencing <A HREF="http://ufal.mff.cuni.cz/nametag">NameTag website</A> and <A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">Straková et al. 2013</A>.
+</P>
+
+<A NAME="toc4"></A>
+<H2>2.2. Roadmap</H2>
+
+<UL>
+<LI>Jan 2014: NameTag 1.0 release
+<LI>Feb 2014: training custom models available
+<LI>March 2014: Java, Perl, Python language bindings
+</UL>
+
+<A NAME="toc5"></A>
+<H2>2.3. License</H2>
+
+<P>
+NameTag is an open-source project and is freely available for non-commercial
+purposes. The source code is distributed under <A HREF="http://www.gnu.org/licenses/lgpl.html">LGPL</A>
+and the pre-compiled binaries and the associated models and data under
+<A HREF="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</A>. If you use this tool for
+scientific work, please give credit to us by referencing
+<A HREF="http://ufal.mff.cuni.cz/nametag">NameTag website</A> and
+<A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">Straková et al. 2013</A>.
+</P>
+
+<A NAME="toc6"></A>
+<H2>2.4. Platforms and Requirements</H2>
+
+<P>
+NameTag is available as a standalone tool and as a library for Linux/Windows.
+It does not require any additional libraries. As any supervised machine
+learning tool, it needs trained linguistic models to perform named entity
+recognition. The models for the Czech language are available with the tool.
+</P>
+
+<A NAME="toc7"></A>
+<H1>3. NameTag Installation</H1>
+
+<P>
+Pre-compiled binaries and models are available from <A HREF="http://www.lindat.cz">LINDAT-Clarin</A> infrastructure.
+</P>
+<P>
+To use the NameTag library, either in C++ or other languages, it must be compiled manually. The sources are available either at <A HREF="http://www.lindat.cz">LINDAT-Clarin</A> or in the <A HREF="https://github.com/ufal/nametag">GitHub repository</A>.
+</P>
+
+<A NAME="toc8"></A>
+<H2>3.1. Requirements</H2>
+
+<UL>
+<LI><CODE>G++ 4.7</CODE> or newer
+<LI><CODE>make</CODE>
+<LI><CODE>SWIG 1.3+</CODE> for language bindings other than <CODE>C++</CODE>
+</UL>
+
+<A NAME="toc9"></A>
+<H2>3.2. Compilation</H2>
+
+<P>
+To compile NameTag on Unix-like systems, run <CODE>make</CODE> in the <CODE>src</CODE> directory.
+</P>
+<P>
+Make targets and options:
+</P>
+
+<UL>
+<LI><CODE>exe</CODE>: compile the binaries (default)
+<LI><CODE>lib</CODE>: compile the library
+<LI><CODE>BITS=32</CODE> or <CODE>BITS=64</CODE>: compile for specified 32-bit or 64-bit architecture instead of the default one
+<LI><CODE>RELEASE=1</CODE>: turn off assertions and use LTO
+<LI><CODE>PROFILE=1</CODE>: turn on profiling
+<LI><CODE>DEBUG=1</CODE>: compile with debug informations and C++ library debugging
+</UL>
+
+<A NAME="toc10"></A>
+<H3>3.2.1. Windows</H3>
+
+<P>
+Currently only G++ is supported under Windows. We use
+<A HREF="http://tdm-gcc.tdragon.net/">TDM-GCC</A> for producing Windows builds,
+but MinGW and Cygwin are also known to work. If you are interested in adding
+support for other compilers (most notably, Visual Studio), let us know.
+</P>
+<P>
+By default, Unix-like shell is required (i.e., Cygwin or MSYS). If you use
+standard Windows Cmd.exe (i.e., TDM-GCC or plain MinGW), use
+</P>
+
+<PRE>
+make WINCMD=1
+</PRE>
+
+<P>
+Note that <CODE>make</CODE> in MinGW is usually distributed as <CODE>mingw32-make</CODE>.
+</P>
+
+<A NAME="toc11"></A>
+<H2>3.3. Other language bindings</H2>
+
+<A NAME="toc12"></A>
+<H3>3.3.1. Java</H3>
+
+<P>
+To compile Java bindings, run <CODE>make</CODE> in the <CODE>bindings/java</CODE> directory,
+optionally with the described Make options.
+</P>
+<P>
+The Java installation specified in the environment variable <CODE>JAVA_HOME</CODE> is
+used.  If the environment variable does not exist, the <CODE>JAVA_HOME</CODE> can be
+specified using
+</P>
+
+<PRE>
+make JAVA_HOME=path_to_Java_installation
+</PRE>
+
+<P>
+Java 6 and newer is supported.
+</P>
+
+<A NAME="toc13"></A>
+<H3>3.3.2. Python</H3>
+
+<P>
+To compile Python bindings, run <CODE>make</CODE> in the <CODE>bindings/python</CODE> directory,
+optionally with the described Make options.
+</P>
+<P>
+Path to the include headers of the required Python version must be specified
+in the <CODE>PYTHON_INCLUDE</CODE> variable using
+</P>
+
+<PRE>
+make PYTHON_INCLUDE=path_to_Python_includes
+</PRE>
+
+<P>
+Both Python 2.6+ and Python 3+ are supported.
+</P>
+
+<A NAME="toc14"></A>
+<H1>4. NameTag User's Manual</H1>
+
+<P>
+In a natural language text, the task of named entity recognition (NER) is to
+identify proper names such as names of persons, organizations and locations.
+NameTag recognizes named entities in an unprocessed text using
+<A HREF="http://ufal.mff.cuni.cz/morphodita">MorphoDiTa</A>.
+MorphoDiTa library tokenizes the text and performs morphologic analysis and tagging
+and NameTag identifies and classifies named entities by an algorithm described in
+<A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">Straková et al. 2013</A>.
+NameTag can also performs NER in custom tokenized and morphologically analyzed and
+tagged texts.
+</P>
+<P>
+This section describes the command line tool and the model.
+</P>
+
+<A NAME="toc15"></A>
+<H2>4.1. Models</H2>
+
+<P>
+Like any supervised machine learning tool, NameTag needs a trained linguistic
+model. Czech models trained on <A HREF="http://ufal.mff.cuni.cz/cnec/">CNEC</A> 1.1 and 2.0
+are distributed with the tool. All models are distributed under the
+<A HREF="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</A> licence.
+Please make sure you are using the linguistic models in a version corresponding
+to your NameTag release. The best way to assure this is to use the most
+current NameTag release with the most current model release.
+</P>
+
+<A NAME="toc16"></A>
+<H3>4.1.1. Czech NER - CNEC 1.1</H3>
+
+<P>
+The model is trained on the training portion of the <A HREF="http://ufal.mff.cuni.cz/cnec/">Czech Named Entity Corpus 1.1</A>.
+The corpus uses a detailed two-level named entity hierarchy, whose description
+is available in the documentation of the [Czech Named Entity Corpus 1.1
+<A HREF="http://ufal.mff.cuni.cz/cnec/">http://ufal.mff.cuni.cz/cnec/</A>].
+</P>
+
+<A NAME="toc17"></A>
+<H3>4.1.2. Czech NER - CNEC 2.0</H3>
+
+<P>
+The model is trained on the training portion of the <A HREF="http://ufal.mff.cuni.cz/cnec/">Czech Named Entity Corpus 2.0</A>.
+The corpus uses a detailed two-level named entity hierarchy, whose description
+is available in the documentation of the [Czech Named Entity Corpus 2.0
+<A HREF="http://ufal.mff.cuni.cz/cnec/">http://ufal.mff.cuni.cz/cnec/</A>]. This hierarchy is an updated version of CNEC
+1.1 hierarchy and is more suitable for automatic named entity recognition.
+</P>
+
+<A NAME="toc18"></A>
+<H2>4.2. NameTag Command Line Tool</H2>
+
+<P>
+NameTag command line tool accepts two input formats: an unprocessed, raw text
+and a custom tokenized and segmented vertical format. NameTag command line tool
+accepts input on standard input and prints to standard output.  All inputs and
+outputs are assumed in UTF-8.
+</P>
+
+<A NAME="toc19"></A>
+<H3>4.2.1. Untokenized Input</H3>
+
+<P>
+The input is by default automatically tokenized and segmented. In this case,
+the output is in XML format without a root element, using <CODE>&lt;ne type="..."&gt;...&lt;/ne&gt;</CODE>
+element to encode a named entity.
+</P>
+<P>
+Example unprocessed text input format:
+</P>
+
+<PRE>
+Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
+</PRE>
+
+<P>
+NameTag is run using:
+</P>
+
+<PRE>
+cat sample.txt | ./run_ner &lt;model&gt;
+</PRE>
+
+<P>
+A NameTag identifies a first name (<CODE>pf</CODE>), a surname (<CODE>ps</CODE>) and a person name container (<CODE>P</CODE>) in the input:
+</P>
+
+<PRE>
+&lt;ne type='P'&gt;&lt;ne type='pf'&gt;Václav&lt;/ne&gt; &lt;ne type='ps'&gt;Havel&lt;/ne&gt;&lt;/ne&gt; byl český dramatik, esejista, kritik komunistického režimu a později politik.
+</PRE>
+
+<A NAME="toc20"></A>
+<H3>4.2.2. Vertical Input Format</H3>
+
+<P>
+For users who wish to perform their own tokenization and segmentation, NameTag
+accepts tokenized and segmented text in a CoNLL-style vertical format, where
+every word is on a separate line, with empty line representing an end of sentence.
+</P>
+<P>
+The output in this case consists of lines representing found named entities.
+Each line contains three tab-separated fields: <I>entity_range</I>, <I>entity_type</I> and
+<I>entity_text</I>. The <I>entity_range</I> represents the lines of the input file containing
+the named entity and <I>entity_type</I> represents its type. The <I>entity_text</I> is not
+strictly necessary and contains space separated words of this named entity.
+</P>
+<P>
+Example input:
+</P>
+
+<PRE>
+Václav
+Havel
+byl
+...
+</PRE>
+
+<P>
+NameTag is run using:
+</P>
+
+<PRE>
+cat sample.txt | ./run_ner -v &lt;model&gt;
+</PRE>
+
+<P>
+Example oupout:
+</P>
+
+<PRE>
+1,2	P	Václav Havel
+1	pf	Václav
+2	ps	Havel
+...
+</PRE>
+
+<A NAME="toc21"></A>
+<H1>5. NameTag API Reference</H1>
+
+<P>
+The NameTag API is defined in header <CODE>nametag.h</CODE> and resides in
+<CODE>ufal::nametag</CODE> namespace.
+</P>
+<P>
+The strings used in the NameTag API are always UTF-8 encoded (except from
+file paths, whose encoding is system dependent).
+</P>
+
+<A NAME="string_piece"></A>
+<H2>5.1. Struct string_piece</H2>
+
+<PRE>
+struct string_piece {
+  const char* str;
+  size_t len;
+
+  string_piece();
+  string_piece(const char* str);
+  string_piece(const char* str, size_t len);
+  string_piece(const std::string&amp; str);
+}
+</PRE>
+
+<P>
+The <A HREF="#string_piece"><CODE>string_piece</CODE></A> is used for efficient string passing. The string
+referenced in <A HREF="#string_piece"><CODE>string_piece</CODE></A> is not owned by it, so users have to make sure
+the referenced string exists as long as the <A HREF="#string_piece"><CODE>string_piece</CODE></A>.
+</P>
+
+<A NAME="named_entity"></A>
+<H2>5.2. Struct named_entity</H2>
+
+<PRE>
+struct named_entity {
+  size_t start;
+  size_t length;
+  std::string type;
+
+  named_entity();
+  named_entity(size_t start, size_t length, const std::string&amp; type);
+};
+</PRE>
+
+<P>
+The <A HREF="#named_entity"><CODE>named_entity</CODE></A> is used to represend a named entity. The
+<CODE>start</CODE> and <CODE>length</CODE> fields represent the entity range in either tokens,
+unicode characters or bytes, depending on the usage. The <CODE>type</CODE> represents
+the entity type.
+</P>
+
+<A NAME="ner"></A>
+<H2>5.3. Class ner</H2>
+
+<PRE>
+class ner {
+ public:
+  virtual ~ner() {}
+
+  static <A HREF="#ner">ner</A>* <A HREF="#ner_load_cstring">load</A>(const char* fname);
+  static <A HREF="#ner">ner</A>* <A HREF="#ner_load_FILE">load</A>(FILE* f);
+
+  virtual void <A HREF="#ner_recognize">recognize</A>(const std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;&amp; forms, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities) const = 0;
+
+  void <A HREF="#ner_tokenize_and_recognize">tokenize_and_recognize</A>(const char* text, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities, bool unicode_offsets = false) const;
+};
+</PRE>
+
+<P>
+A <A HREF="#ner"><CODE>ner</CODE></A> instance represents a named entity recognizer. All methods
+are thread-safe.
+</P>
+
+<A NAME="ner_load_cstring"></A>
+<H3>5.3.1. ner::load(const char*)</H3>
+
+<PRE>
+static <A HREF="#ner">ner</A>* load(const char* fname);
+</PRE>
+
+<P>
+Factory method constructor. Accepts C string with a file name of the model.
+Returns a pointer to an instance of <A HREF="#ner"><CODE>ner</CODE></A> which the user should delete
+after use.
+</P>
+
+<A NAME="ner_load_FILE"></A>
+<H3>5.3.2. ner::load(FILE*)</H3>
+
+<PRE>
+static <A HREF="#ner">ner</A>* load(FILE* f);
+</PRE>
+
+<P>
+Factory method constructor. Accepts C file pointer of an opened file with the
+model. Returns a pointer to an instance of <A HREF="#ner"><CODE>ner</CODE></A> which the user should
+delete after use.
+</P>
+
+<A NAME="ner_recognize"></A>
+<H3>5.3.3. ner::recognize</H3>
+
+<PRE>
+virtual void recognize(const std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;&amp; forms, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities) const = 0;
+</PRE>
+
+<P>
+Perform named entity recognition on a tokenized sentence given in the <CODE>forms</CODE> argument.
+The found entities are returned in the <CODE>entities</CODE> argument. The range of the
+returned <A HREF="#named_entity">named_entity</A> is represented using form indices.
+</P>
+
+<A NAME="ner_tokenize_and_recognize"></A>
+<H3>5.3.4. ner::tokenize_and_recognize</H3>
+
+<PRE>
+void tokenize_and_recognize(const char* text, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities, bool unicode_offsets = false) const;
+</PRE>
+
+<P>
+Perform named entity recognition on an untokenized text given in the <CODE>text</CODE> argument.
+The found entities are returned in the <CODE>entities</CODE> argument. The range of the
+returned <A HREF="#named_entity">named_entity</A> is represented either in Unicode characters
+(when <CODE>unicode_offsets == true</CODE>), or in UTF-8 bytes (when <CODE>unicode_offset == false</CODE>).
+</P>
+
+<A NAME="toc29"></A>
+<H1>6. Contact</H1>
+
+<P>
+Authors:
+</P>
+
+<UL>
+<LI><A HREF="http://ufal.mff.cuni.cz/milan-straka">Milan Straka</A>, <A HREF="mailto:straka@ufal.mff.cuni.cz">straka@ufal.mff.cuni.cz</A>
+<LI><A HREF="http://ufal.mff.cuni.cz/jana-strakova">Jana Straková</A>, <A HREF="mailto:strakova@ufal.mff.cuni.cz">strakova@ufal.mff.cuni.cz</A>
+</UL>
+
+<P>
+<A HREF="http://ufal.mff.cuni.cz/nametag">NameTag website</A>.
+</P>
+
+<A NAME="toc30"></A>
+<H1>7. Acknowledgements</H1>
+
+<P>
+This work has been using language resources developed and/or stored and/or distributed by the LINDAT-Clarin project of the Ministry of Education of the Czech Republic (project LM2010013).
+</P>
+
+<A NAME="toc31"></A>
+<H1>8. References</H1>
+
+<P>
+Straková Jana, Straka Milan, Hajič Jan: <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</A>.</I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
+</P>
+
+<A NAME="toc32"></A>
+<H2>8.1. Bibtex for referencing</H2>
+
+<PRE>
+  @inproceedings{biblio:StStANew2013,
+    booktitle = {Text, Speech and Dialogue: 16th International Conference, {TSD} 2013. Proceedings},
+    series = {Lecture Notes in Computer Science},
+    title = {A New State-of-The-Art Czech Named Entity Recognizer},
+    editor = {Ivan Habernal and V{\'{a}}clav Matou{\v{s}}ek},
+    author = {Jana Strakov{\'{a}} and Milan Straka and Jan Haji{\v{c}}},
+    year = {2013},
+    publisher = {Springer Verlag},
+    organization = {Z{\'{a}}pado{\v{c}}esk{\'{a}} univerzita v Plzni},
+    address = {Berlin / Heidelberg},
+    venue = {Plze{\v{n}}, hotel Angelo},
+    series = {Lecture Notes in Artificial Intelligence},
+    volume = {8082},
+    pages = {68--75},
+    isbn = {978-3-642-40584-6},
+    issn = {0302-9743},
+  }
+</PRE>
+
+</DIV>
+<!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
+<!-- cmdline: txt2tags -t html -C ../morphodita/doc/not_web.conf nametag.t2t -->
+</BODY></HTML>
