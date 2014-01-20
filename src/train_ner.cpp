@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
   switch (id) {
     case ner_ids::CZECH_NER:
       {
-        if (argc < 9) runtime_errorf("Usage: %s %s tagger_id[:tagger_options] features stages iterations missing_weight initial_learning_rate final_learning_rate gaussian [heldout_data]", argv[0], argv[1]);
+        if (argc < 10) runtime_errorf("Usage: %s %s tagger_id[:tagger_options] features stages iterations missing_weight initial_learning_rate final_learning_rate gaussian hidden_layer [heldout_data]", argv[0], argv[1]);
 
         // Encode the ner_id
         fputc(id, stdout);
@@ -54,7 +54,8 @@ int main(int argc, char* argv[]) {
         parameters.initial_learning_rate = parse_double(argv[7], "initial_learning_rate");
         parameters.final_learning_rate = parse_double(argv[8], "final_learning_rate");
         parameters.gaussian_sigma = parse_double(argv[9], "gaussian");
-        const char* heldout_file = argc == 10 ? nullptr : argv[10];
+        parameters.hidden_layer = parse_int(argv[10], "hidden_layer");
+        const char* heldout_file = argc == 11 ? nullptr : argv[11];
 
         // Open needed files
         file_ptr features = fopen(features_file, "r");

@@ -44,9 +44,8 @@ void bilou_ner::recognize(const vector<string_piece>& forms, vector<named_entity
 
   // Acquire cache
   cache* c = caches.pop();
-  if (!c) c = new cache(*this);
+  if (!c) c = new cache();
   auto& sentence = c->sentence;
-  auto& outcomes = c->outcomes;
 
   // Tag
   tagger->tag(forms, sentence);
@@ -65,8 +64,8 @@ void bilou_ner::recognize(const vector<string_piece>& forms, vector<named_entity
       // Sequentially classify sentence words
       for (unsigned i = 0; i < sentence.size; i++) {
         if (!sentence.probabilities[i].local_filled) {
-          network.classify(sentence.features[i], outcomes);
-          fill_bilou_probabilities(outcomes, sentence.probabilities[i].local);
+          network.classify(sentence.features[i], c->outcomes, c->network_buffer);
+          fill_bilou_probabilities(c->outcomes, sentence.probabilities[i].local);
           sentence.probabilities[i].local_filled = true;
         }
 

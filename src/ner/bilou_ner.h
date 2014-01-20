@@ -50,11 +50,9 @@ class bilou_ner : public ner {
 
   struct cache {
     ner_sentence sentence;
-    vector<double> outcomes;
+    vector<double> outcomes, network_buffer;
     string string_buffer;
     vector<named_entity> entities_buffer;
-
-    cache(const bilou_ner& self) : outcomes(bilou_entity::total(self.named_entities.size())) {}
   };
   mutable threadsafe_stack<cache> caches;
 };

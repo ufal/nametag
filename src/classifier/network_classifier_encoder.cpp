@@ -25,11 +25,19 @@ namespace nametag {
 bool network_classifier::save(FILE* f) {
   binary_encoder enc;
 
+  // Direct connections
   save_matrix(enc, indices);
-
   enc.add_double(missing_weight);
   save_matrix(enc, weights);
 
+  // Hidden layer
+  enc.add_2B(hidden_layer.size());
+  if (!hidden_layer.empty()) {
+    save_matrix(enc, hidden_weights[0]);
+    save_matrix(enc, hidden_weights[1]);
+  }
+
+  // Output layer
   enc.add_2B(output_layer.size());
 
   return compressor::save(f, enc);

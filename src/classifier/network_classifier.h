@@ -35,17 +35,23 @@ class network_classifier {
   bool train(unsigned features, unsigned outcomes, const vector<classifier_instance>& train,
              const vector<classifier_instance>& heldout, const network_parameters& parameters, bool verbose);
 
-  void classify(const classifier_features& features, vector<double>& outcomes) const;
+  void classify(const classifier_features& features, vector<double>& outcomes, vector<double>& buffer) const;
 
  private:
+  // Direct connections
   vector<vector<float>> weights;
   vector<vector<uint32_t>> indices;
   double missing_weight;
 
+  // Hidden layer, experimental use only
+  vector<vector<float>> hidden_weights[2];
+  vector<double> hidden_layer, hidden_error;
+
+  // Output layer
   vector<double> output_layer, output_error;
 
   inline void propagate(const classifier_features& features);
-  inline void propagate(const classifier_features& features, vector<double>& output_layer) const;
+  inline void propagate(const classifier_features& features, vector<double>& hidden_layer, vector<double>& output_layer) const;
   inline void backpropagate(const classifier_instance& instance, double learning_rate, double gaussian_sigma);
   inline classifier_outcome best_outcome();
 

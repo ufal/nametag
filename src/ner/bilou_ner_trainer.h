@@ -40,7 +40,7 @@ class bilou_ner_trainer {
 
   static void load_data(FILE* f, const tagger& tagger, vector<labelled_sentence>& data, entity_map& entity_map, bool add_entities);
   static void generate_instances(vector<labelled_sentence>& data, const feature_templates& templates, vector<classifier_instance>& instances, bool add_features);
-  static void compute_previous_stage(vector<labelled_sentence>& data, const feature_templates& templates, const network_classifier& network, vector<double>& outcomes);
+  static void compute_previous_stage(vector<labelled_sentence>& data, const feature_templates& templates, const network_classifier& network);
 };
 
 } // namespace nametag

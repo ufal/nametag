@@ -64,14 +64,13 @@ void bilou_ner_trainer::train(int stages, const network_parameters& parameters, 
     eprintf("done\n");
 
     // Train and encode the recognizer
-    vector<double> outcomes(bilou_entity::total(entities.size()));
     eprintf("Training network classifier.\n");
-    if (!network.train(templates.get_total_features(), outcomes.size(), train_instances, heldout_instances, parameters, true))
+    if (!network.train(templates.get_total_features(), bilou_entity::total(entities.size()), train_instances, heldout_instances, parameters, true))
       runtime_errorf("Cannot train the network classifier!");
 
     // Use the trained classifier to compute previous_stage
-    compute_previous_stage(train_data, templates, network, outcomes);
-    compute_previous_stage(heldout_data, templates, network, outcomes);
+    compute_previous_stage(train_data, templates, network);
+    compute_previous_stage(heldout_data, templates, network);
   }
 
   // Encode the recognizer
@@ -148,8 +147,9 @@ void bilou_ner_trainer::generate_instances(vector<labelled_sentence>& data, cons
   }
 }
 
-void bilou_ner_trainer::compute_previous_stage(vector<labelled_sentence>& data, const feature_templates& templates, const network_classifier& network, vector<double>& outcomes) {
+void bilou_ner_trainer::compute_previous_stage(vector<labelled_sentence>& data, const feature_templates& templates, const network_classifier& network) {
   string buffer;
+  vector<double> outcomes, network_buffer;
 
   for (auto& labelled_sentence : data) {
     auto& sentence = labelled_sentence.sentence;
@@ -163,7 +163,7 @@ void bilou_ner_trainer::compute_previous_stage(vector<labelled_sentence>& data, 
     // Sequentially classify sentence words
     for (unsigned i = 0; i < sentence.size; i++) {
       if (!sentence.probabilities[i].local_filled) {
-        network.classify(sentence.features[i], outcomes);
+        network.classify(sentence.features[i], outcomes, network_buffer);
         bilou_ner::fill_bilou_probabilities(outcomes, sentence.probabilities[i].local);
         sentence.probabilities[i].local_filled = true;
       }

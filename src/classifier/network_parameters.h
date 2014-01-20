@@ -29,6 +29,7 @@ struct network_parameters {
   double initial_learning_rate;
   double final_learning_rate;
   double gaussian_sigma;
+  int hidden_layer; // Experimental use only.
 };
 
 } // namespace nametag

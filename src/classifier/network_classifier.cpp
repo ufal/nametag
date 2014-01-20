@@ -32,10 +32,21 @@ bool network_classifier::load(FILE* f) {
   if (!compressor::load(f, data)) return false;
 
   try {
+    // Direct connections
     load_matrix(data, indices);
     missing_weight = *data.next<double>(1);
     load_matrix(data, weights);
 
+    // Hidden layer
+    hidden_weights[0].clear();
+    hidden_weights[1].clear();
+    hidden_layer.resize(data.next_2B());
+    if (!hidden_layer.empty()) {
+      load_matrix(data, hidden_weights[0]);
+      load_matrix(data, hidden_weights[1]);
+    }
+
+    // Output layer
     unsigned outcomes = data.next_2B();
     output_layer.resize(outcomes);
     output_error.resize(outcomes);
@@ -84,11 +95,29 @@ bool network_classifier::train(unsigned features, unsigned outcomes, const vecto
     row.resize(unique(row.begin(), row.end()) - row.begin());
   }
 
-  // Initialize weight matrix and output vectors
+  // Initialize direct connections
   weights.clear();
   for (auto& row : indices)
     weights.emplace_back(row.size());
   missing_weight = parameters.missing_weight;
+
+  // Initialize hidden layer
+  hidden_layer.resize(parameters.hidden_layer);
+  if (!hidden_layer.empty()) {
+    hidden_error.resize(hidden_layer.size());
+
+    hidden_weights[0].resize(features);
+    for (auto& row : hidden_weights[0])
+      for (auto& weight : row.resize(hidden_layer.size()), row)
+        weight = d.real(0.1) + d.real(0.1) + d.real(0.1);
+
+    hidden_weights[1].resize(hidden_layer.size());
+    for (auto& row : hidden_weights[1])
+      for (auto& weight : row.resize(outcomes), row)
+        weight = d.real(0.1) + d.real(0.1) + d.real(0.1);
+  }
+
+  // Initialize output layer
   output_layer.resize(outcomes);
   output_error.resize(outcomes);
 
@@ -135,25 +164,48 @@ bool network_classifier::train(unsigned features, unsigned outcomes, const vecto
   return true;
 }
 
-void network_classifier::classify(const classifier_features& features, vector<double>& outcomes) const {
-  // Assertions
-  assert(outcomes.size() == output_layer.size());
+void network_classifier::classify(const classifier_features& features, vector<double>& outcomes, vector<double>& buffer) const {
+  if (outcomes.size() != output_layer.size()) outcomes.resize(output_layer.size());
+  if (buffer.size() != hidden_layer.size()) buffer.resize(hidden_layer.size());
 
   // Propagation
-  propagate(features, outcomes);
+  propagate(features, buffer, outcomes);
 }
 
 void network_classifier::propagate(const classifier_features& features) {
-  propagate(features, output_layer);
+  propagate(features, hidden_layer, output_layer);
 }
 
-void network_classifier::propagate(const classifier_features& features, vector<double>& output_layer) const {
+void network_classifier::propagate(const classifier_features& features, vector<double>& hidden_layer, vector<double>& output_layer) const {
   output_layer.assign(output_layer.size(), features.size() * missing_weight);
 
+  // Direct connections
   for (auto& feature : features)
     if (feature < indices.size())
       for (unsigned i = 0; i < indices[feature].size(); i++)
         output_layer[indices[feature][i]] += weights[feature][i] - missing_weight;
+
+  // Hidden layer
+  if (!hidden_layer.empty()) {
+    for (auto& weight : hidden_layer)
+      weight = 0;
+
+    // Propagate to hidden layer
+    for (auto& feature : features)
+      if (feature < hidden_weights[0].size())
+        for (unsigned i = 0; i < hidden_layer.size(); i++) {
+          hidden_layer[i] += hidden_weights[0][feature][i];
+        }
+
+    // Apply logistic sigmoid to hidden layer
+    for (auto& weight : hidden_layer)
+      weight = 1 / (1 + exp(-weight));
+
+    // Propagate to output_layer
+    for (unsigned h = 0; h < hidden_layer.size(); h++)
+      for (unsigned i = 0; i < output_layer.size(); i++)
+        output_layer[i] += hidden_layer[h] * hidden_weights[1][h][i];
+  }
 
   // Apply softmax sigmoid to output_layer layer
   double sum = 0;
@@ -178,10 +230,31 @@ void network_classifier::backpropagate(const classifier_instance& instance, doub
   for (unsigned i = 0; i < output_error.size(); i++)
     output_error[i] = (i == instance.outcome) - output_layer[i];
 
-  // Update weights
+  // Update direct connections
   for (auto& feature : instance.features)
     for (unsigned i = 0; i < indices[feature].size(); i++)
       weights[feature][i] += learning_rate * output_error[indices[feature][i]] - weights[feature][i] * gaussian_sigma;
+
+  // Update hidden layer
+  if (!hidden_layer.empty()) {
+    // Backpropagate output_error into hidden_error
+    for (unsigned h = 0; h < hidden_layer.size(); h++) {
+      hidden_error[h] = 0;
+      for (unsigned i = 0; i < output_layer.size(); i++)
+        hidden_error[h] += hidden_weights[1][h][i] * output_error[i];
+      hidden_error[h] *= hidden_layer[h] * (1-hidden_layer[h]);
+    }
+
+    // Update hidden_weights[1]
+    for (unsigned h = 0; h < hidden_layer.size(); h++)
+      for (unsigned i = 0; i < output_layer.size(); i++)
+        hidden_weights[1][h][i] += learning_rate * hidden_layer[h] * output_error[i] - hidden_weights[1][h][i] * gaussian_sigma;
+
+    // Update hidden_weights[0]
+    for (auto& feature : instance.features)
+      for (unsigned i = 0; i < hidden_layer.size(); i++)
+        hidden_weights[0][feature][i] += learning_rate * hidden_error[i] - hidden_weights[0][feature][i] * gaussian_sigma;
+  }
 }
 
 } // namespace nametag
