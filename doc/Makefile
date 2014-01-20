@@ -17,7 +17,7 @@ nametag_install.txt: nametag_install.t2t
 	$(DIR)/txt2tags -t txt -C $(DIR)/not_web.conf -C $(DIR)/strip_level.conf --no-toc --no-enum-title $<
 
 nametag.tex: nametag.t2t *.t2t
-	$(DIR)/txt2tags -t tex -C not_web.conf $<
+	$(DIR)/txt2tags -t tex -C $(DIR)/not_web.conf $<
 
 nametag.pdf: nametag.tex $(DIR)/*.sty
 	TEXINPUTS=.:$(DIR): pdflatex $<
