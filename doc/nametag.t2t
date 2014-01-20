@@ -35,8 +35,8 @@ NameTag will be available either as pre-compiled binaries and models from [LINDA
 == Roadmap ==
 
 - Jan 2014: NameTag 1.0 release
-- Feb 2014: training custom models available
-- Feb 2014: further programming language bindings (Perl, ...)
+- --Feb 2014: training custom models available-- (done)
+- March 2014: --Java-- (done), --Python-- (done), Perl language bindings
 
 
 == License ==

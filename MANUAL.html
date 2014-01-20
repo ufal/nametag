@@ -48,8 +48,15 @@
       <LI><A HREF="#toc19">4.2.1. Untokenized Input</A>
       <LI><A HREF="#toc20">4.2.2. Vertical Input Format</A>
       </UL>
+    <LI><A HREF="#toc21">4.3. Training of Custom Models</A>
+      <UL>
+      <LI><A HREF="#training_data">4.3.1. Training data</A>
+      <LI><A HREF="#tagger">4.3.2. Tagger</A>
+      <LI><A HREF="#feature_templates">4.3.3. Feature Templates</A>
+      <LI><A HREF="#toc25">4.3.4. Running train_ner</A>
+      </UL>
     </UL>
-  <LI><A HREF="#toc21">NameTag API Reference</A>
+  <LI><A HREF="#toc26">NameTag API Reference</A>
     <UL>
     <LI><A HREF="#string_piece">5.1. Struct string_piece</A>
     <LI><A HREF="#named_entity">5.2. Struct named_entity</A>
@@ -61,11 +68,11 @@
       <LI><A HREF="#ner_tokenize_and_recognize">5.3.4. ner::tokenize_and_recognize</A>
       </UL>
     </UL>
-  <LI><A HREF="#toc29">Contact</A>
-  <LI><A HREF="#toc30">Acknowledgements</A>
-  <LI><A HREF="#toc31">References</A>
+  <LI><A HREF="#toc34">Contact</A>
+  <LI><A HREF="#toc35">Acknowledgements</A>
+  <LI><A HREF="#toc36">References</A>
     <UL>
-    <LI><A HREF="#toc32">8.1. Bibtex for referencing</A>
+    <LI><A HREF="#toc37">8.1. Bibtex for referencing</A>
     </UL>
   </OL>
 
@@ -102,6 +109,7 @@ NameTag is currently undergoing beta testing. Please let us know if you wish to 
 <LI>Czech models trained on <A HREF="http://ufal.mff.cuni.cz/cnec/">CNEC</A> 1.1 and 2.0
 <LI>C++ library
 <LI>Java bindings
+<LI>Python bindings
 </UL>
 
 <P>
@@ -113,8 +121,8 @@ NameTag will be available either as pre-compiled binaries and models from <A HRE
 
 <UL>
 <LI>Jan 2014: NameTag 1.0 release
-<LI>Feb 2014: training custom models available
-<LI>March 2014: Java, Perl, Python language bindings
+<LI><S>Feb 2014: training custom models available</S> (done)
+<LI>March 2014: <S>Java</S> (done), <S>Python</S> (done), Perl language bindings
 </UL>
 
 <A NAME="toc5"></A>
@@ -384,6 +392,192 @@ Example oupout:
 </PRE>
 
 <A NAME="toc21"></A>
+<H2>4.3. Training of Custom Models</H2>
+
+<P>
+Training of custom models is possible using the <CODE>train_ner</CODE> binary.
+</P>
+
+<A NAME="training_data"></A>
+<H3>4.3.1. Training data</H3>
+
+<P>
+To train a named entity recognizer model, training data is needed. The training
+data must be tokenized and contain annotated name entities. The name entities
+are non-overlapping, consist of a sequence of words and have a specified type.
+</P>
+<P>
+The training data must be encoded in UTF-8 encoding. The lines correspond to
+individual words and an empty line denotes an end of sentence. Each non-empty
+line contains exactly two tab-separated columns, the first is the word form and the
+second is the annotation. The format of the annotation is taken from CoNLL-2003:
+the annotation <CODE>I-type</CODE> or <CODE>B-type</CODE> denotes named entity of specified type,
+any other annotation is ignored. The <CODE>I-type</CODE> and <CODE>B-type</CODE> annotations are equivalent
+except for one case &ndash; if the previous word is also a named entity of same type, then
+</P>
+
+ <UL>
+ <LI>if the current word is annotated as <CODE>I-type</CODE>, it is part of the same named
+   entity as the previous word,
+ <LI>if the current word is annotated as <CODE>B-type</CODE>, it is in a different name entity
+   than the previous word (albeit with the same type).
+ </UL>
+
+<A NAME="tagger"></A>
+<H3>4.3.2. Tagger</H3>
+
+<P>
+Most named entity recognizer models utilize part of speech tags and lemmas.
+NameTag can utilize several taggers to obtain the tags and lemmas:
+</P>
+
+<DL>
+<DT><CODE>trivial</CODE></DT><DD>
+  Do not use any tagger. The lemma is the same as the given form and there is
+  no part of speech tag.
+<P></P>
+<DT><CODE>external</CODE></DT><DD>
+  Use some external tagger. The input "forms" can contain multiple tab-separated values,
+  first being the <I>form</I>, second the <I>lemma</I> and the rest is <I>part of speech tag</I>.
+  The part of speech tag is optional. The lemma is also optional and if missing, the form
+  itself is used as a lemma.
+<P></P>
+<DT><CODE>morphodita:model</CODE></DT><DD>
+  Use <A HREF="http://ufal.mff.cuni.cz/morphodita">MorphoDiTa</A> as a tagger with the
+  specified model. This tagger model is embedded in resulting named entity recognizer model.
+  The <I>lemmatizer</I> model of MorphoDiTa is recommended, because it is very fast, small
+  and detailed part of speech tags do not improve the performance of the named entity recognizer
+  significantly.
+</DL>
+
+<H4>4.3.2.1. Lemma Structure</H4>
+
+<P>
+The lemmas used by the recognizer can be structured and consist of three parts:
+</P>
+
+<UL>
+<LI><I>raw lemma</I> is the textual form of the lemma, possibly ambiguous
+<LI><I>lemma id</I> is the unique lemma identification (for example a raw lemma plus
+  a numeric identifier)
+<LI><I>lemma info</I> is additional information about a lemma occurrence, not used
+  to identify the lemma. If used, it usually contains information which is not
+  possible to encode in part of speech tags.
+</UL>
+
+<P>
+Currently, all these parts are filled only when <CODE>morphodita</CODE> tagger is used.
+If <CODE>external</CODE> tagger is used, raw lemma and lemma id are the same and lemma
+info is empty.
+</P>
+
+<A NAME="feature_templates"></A>
+<H3>4.3.3. Feature Templates</H3>
+
+<P>
+The recognizer utilizes feature templates to generate features which are used
+as the input to the named entity classifier. The feature templates are
+specified in a file, one feature template on a line. Empty lines and lines
+starting with <CODE>#</CODE> are ignored.
+</P>
+<P>
+The first space-separated column on a line is the name of the feature template,
+optionally followed by a slash and a window size. The window size specifies how
+many adjacent words can observe the feature template value of a given word,
+with default value of 0 denoting only the word in question.
+</P>
+<P>
+List of commonly used feature templates follows. Note that it is probably not
+exhaustive (see the sources in the <CODE>features</CODE> directory).
+</P>
+
+<UL>
+<LI><CODE>BrownClusters file [prefix_lengths]</CODE> &ndash; use Brown clusters found in the
+  specified file. An optional list of lengths of cluster prefixes to be used
+  in addition to the full Brown cluster can be specified. Each line of the Brown
+  clusters file must contain two tab-separated columns, the first of which is
+  the Brown cluster label and the second is a raw lemma.
+<LI><CODE>CzechLemmaTerm</CODE> &ndash; feature template specific for Czech morphologic system
+  by Jan Hajič (<A HREF="http://books.google.cz/books?id=sB63AAAACAAJ">Hajič 2004</A>).
+  The term information (personal name, geographic name, ...) specified in lemma
+  info are used as features.
+<LI><CODE>Form</CODE> &ndash; use forms as features
+<LI><CODE>Gazetteers [files]</CODE> &ndash; use given files as gazetteers. Each file is one
+  gazetteers list independent of the others and must contain a set of lemma
+  sequences, each on a line, represented as raw lemmas separated by spaces.
+<LI><CODE>Lemma</CODE> &ndash; use lemma ids as a feature
+<LI><CODE>PreviousStage</CODE> &ndash; use named entities predicted by previous stage as features
+<LI><CODE>RawLemma</CODE> &ndash; use raw lemmas as features
+<LI><CODE>RawLemmaCapitalization</CODE> &ndash; use capitalization of raw lemma as features
+<LI><CODE>Tag</CODE> &ndash; use tags as features
+<LI><CODE>URLEmailDetector url_type email_type</CODE> &ndash; detect URLs and emails. If an URL
+  or an email is detected, it is immediately marked with specified named entity
+  type and not used in further processing.
+</UL>
+
+<A NAME="toc25"></A>
+<H3>4.3.4. Running train_ner</H3>
+
+<P>
+The <CODE>train_ner</CODE> binary has the following arguments (which has to be specified
+in this order):
+</P>
+
+<OL>
+<LI><I>ner_identifier</I> &ndash; identifier of the named entity recognizer type. This affects
+  the tokenizer used in this model, and in theory any other aspect of the recognizer.
+  Supported values:
+   <UL>
+   <LI><I>czech</I>
+   <P></P>
+   </UL>
+<LI><I>tagger</I> &ndash; the tagger identifier as described in the <A HREF="#tagger">Tagger</A> section
+<P></P>
+<LI><I>feature_templates_file</I> &ndash; file with feature templates as described in the
+  <A HREF="#feature_templates">Feature Templates</A> section.
+<P></P>
+<LI><I>stages</I> &ndash; the number of stages performed during recognition. Common
+  values are either <I>1</I> or <I>2</I>. With more stages, the model is larger and
+  recognition is slower, but more accurate.
+<P></P>
+<LI><I>iterations</I> &ndash; the number of iterations performed when training each stage
+  of the recognizer. With more iterations, training take longer (the
+  recognition time is unaffected), but the model gets over-trained when too
+  many iterations are used. Values from <I>10</I> to <I>30</I> or <I>50</I> are commonly used.
+<P></P>
+<LI><I>missing_weight</I> &ndash; default value of missing weights in the log-linear model.
+  Common values are small negative real numbers like <I>-0.2</I>.
+<P></P>
+<LI><I>initial_learning_rage</I> &ndash; learning rate used in the first iteration of SGD
+  training method of the log-linear model. Common value is <I>0.1</I>.
+<P></P>
+<LI><I>final_learning_rage</I> &ndash; learning rate used in the last iteration of SGD
+  training method of the log-linear model. Common values are in range from
+  <I>0.1</I> to <I>0.001</I>, with <I>0.01</I> working reasonably well.
+<P></P>
+<LI><I>gaussian</I> &ndash; the value of Gaussian prior imposed on the weights. In other
+  words, value of L2-norm regularizer. Common value is either <I>0</I> for no regularization,
+  or small real number like <I>0.5</I>.
+<P></P>
+<LI><I>hidden_layer</I> &ndash; experimental support for hidden layer in the artificial
+  neural network classifier. To not use the hidden layer (recommended), use <I>0</I>.
+  Otherwise, specify the number of neurons in the hidden layer. Please note that
+  non-zero values will create enormous models, slower recognition and are
+  <I>not</I> guaranteed to create models with better accuracy.
+<P></P>
+<LI><I>heldout_data</I> &ndash; optional parameter with heldout data in the
+  <A HREF="#training_data">described</A> format. If the heldout data is present, the
+  accuracy of the heldout data classification is printed during training. The
+  heldout data is not used in any other way.
+</OL>
+
+<P>
+The training data in the <A HREF="#training_data">described</A> format is read from the standard
+input and the trained model is written to the standard output if the training
+is successful.
+</P>
+
+<A NAME="toc26"></A>
 <H1>5. NameTag API Reference</H1>
 
 <P>
@@ -512,7 +706,7 @@ returned <A HREF="#named_entity">named_entity</A> is represented either in Unico
 (when <CODE>unicode_offsets == true</CODE>), or in UTF-8 bytes (when <CODE>unicode_offset == false</CODE>).
 </P>
 
-<A NAME="toc29"></A>
+<A NAME="toc34"></A>
 <H1>6. Contact</H1>
 
 <P>
@@ -528,21 +722,21 @@ Authors:
 <A HREF="http://ufal.mff.cuni.cz/nametag">NameTag website</A>.
 </P>
 
-<A NAME="toc30"></A>
+<A NAME="toc35"></A>
 <H1>7. Acknowledgements</H1>
 
 <P>
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT-Clarin project of the Ministry of Education of the Czech Republic (project LM2010013).
 </P>
 
-<A NAME="toc31"></A>
+<A NAME="toc36"></A>
 <H1>8. References</H1>
 
 <P>
 Straková Jana, Straka Milan, Hajič Jan: <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</A>.</I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
 </P>
 
-<A NAME="toc32"></A>
+<A NAME="toc37"></A>
 <H2>8.1. Bibtex for referencing</H2>
 
 <PRE>

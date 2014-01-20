@@ -97,3 +97,160 @@ Example oupout:
 2	ps	Havel
 ...
 ```
+
+
+== Training of Custom Models ==
+
+Training of custom models is possible using the ``train_ner`` binary.
+
+
+=== Training data ===[training_data]
+
+To train a named entity recognizer model, training data is needed. The training
+data must be tokenized and contain annotated name entities. The name entities
+are non-overlapping, consist of a sequence of words and have a specified type.
+
+The training data must be encoded in UTF-8 encoding. The lines correspond to
+individual words and an empty line denotes an end of sentence. Each non-empty
+line contains exactly two tab-separated columns, the first is the word form and the
+second is the annotation. The format of the annotation is taken from CoNLL-2003:
+the annotation ``I-type`` or ``B-type`` denotes named entity of specified type,
+any other annotation is ignored. The ``I-type`` and ``B-type`` annotations are equivalent
+except for one case -- if the previous word is also a named entity of same type, then
+ - if the current word is annotated as ``I-type``, it is part of the same named
+   entity as the previous word,
+ - if the current word is annotated as ``B-type``, it is in a different name entity
+   than the previous word (albeit with the same type).
+
+
+=== Tagger ===[tagger]
+
+Most named entity recognizer models utilize part of speech tags and lemmas.
+NameTag can utilize several taggers to obtain the tags and lemmas:
+
+: ``trivial``
+  Do not use any tagger. The lemma is the same as the given form and there is
+  no part of speech tag.
+
+: ``external``
+  Use some external tagger. The input "forms" can contain multiple tab-separated values,
+  first being the //form//, second the //lemma// and the rest is //part of speech tag//.
+  The part of speech tag is optional. The lemma is also optional and if missing, the form
+  itself is used as a lemma.
+
+: ``morphodita:model``
+  Use [MorphoDiTa http://ufal.mff.cuni.cz/morphodita] as a tagger with the
+  specified model. This tagger model is embedded in resulting named entity recognizer model.
+  The //lemmatizer// model of MorphoDiTa is recommended, because it is very fast, small
+  and detailed part of speech tags do not improve the performance of the named entity recognizer
+  significantly.
+
+
+==== Lemma Structure ====
+
+The lemmas used by the recognizer can be structured and consist of three parts:
+- //raw lemma// is the textual form of the lemma, possibly ambiguous
+- //lemma id// is the unique lemma identification (for example a raw lemma plus
+  a numeric identifier)
+- //lemma info// is additional information about a lemma occurrence, not used
+  to identify the lemma. If used, it usually contains information which is not
+  possible to encode in part of speech tags.
+
+
+Currently, all these parts are filled only when ``morphodita`` tagger is used.
+If ``external`` tagger is used, raw lemma and lemma id are the same and lemma
+info is empty.
+
+
+=== Feature Templates===[feature_templates]
+
+The recognizer utilizes feature templates to generate features which are used
+as the input to the named entity classifier. The feature templates are
+specified in a file, one feature template on a line. Empty lines and lines
+starting with ``#`` are ignored.
+
+The first space-separated column on a line is the name of the feature template,
+optionally followed by a slash and a window size. The window size specifies how
+many adjacent words can observe the feature template value of a given word,
+with default value of 0 denoting only the word in question.
+
+List of commonly used feature templates follows. Note that it is probably not
+exhaustive (see the sources in the ``features`` directory).
+- ``BrownClusters file [prefix_lengths]`` -- use Brown clusters found in the
+  specified file. An optional list of lengths of cluster prefixes to be used
+  in addition to the full Brown cluster can be specified. Each line of the Brown
+  clusters file must contain two tab-separated columns, the first of which is
+  the Brown cluster label and the second is a raw lemma.
+- ``CzechLemmaTerm`` -- feature template specific for Czech morphologic system
+  by Jan Hajič ([Hajič 2004 http://books.google.cz/books?id=sB63AAAACAAJ]).
+  The term information (personal name, geographic name, ...) specified in lemma
+  info are used as features.
+- ``Form`` -- use forms as features
+- ``Gazetteers [files]`` -- use given files as gazetteers. Each file is one
+  gazetteers list independent of the others and must contain a set of lemma
+  sequences, each on a line, represented as raw lemmas separated by spaces.
+- ``Lemma`` -- use lemma ids as a feature
+- ``PreviousStage`` -- use named entities predicted by previous stage as features
+- ``RawLemma`` -- use raw lemmas as features
+- ``RawLemmaCapitalization`` -- use capitalization of raw lemma as features
+- ``Tag`` -- use tags as features
+- ``URLEmailDetector url_type email_type`` -- detect URLs and emails. If an URL
+  or an email is detected, it is immediately marked with specified named entity
+  type and not used in further processing.
+
+
+
+
+=== Running train_ner ===
+
+The ``train_ner`` binary has the following arguments (which has to be specified
+in this order):
+
++ //ner_identifier// -- identifier of the named entity recognizer type. This affects
+  the tokenizer used in this model, and in theory any other aspect of the recognizer.
+  Supported values:
+   - //czech//
+
++ //tagger// -- the tagger identifier as described in the [Tagger #tagger] section
+
++ //feature_templates_file// -- file with feature templates as described in the
+  [Feature Templates #feature_templates] section.
+
++ //stages// -- the number of stages performed during recognition. Common
+  values are either //1// or //2//. With more stages, the model is larger and
+  recognition is slower, but more accurate.
+
++ //iterations// -- the number of iterations performed when training each stage
+  of the recognizer. With more iterations, training take longer (the
+  recognition time is unaffected), but the model gets over-trained when too
+  many iterations are used. Values from //10// to //30// or //50// are commonly used.
+
++ //missing_weight// -- default value of missing weights in the log-linear model.
+  Common values are small negative real numbers like //-0.2//.
+
++ //initial_learning_rage// -- learning rate used in the first iteration of SGD
+  training method of the log-linear model. Common value is //0.1//.
+
++ //final_learning_rage// -- learning rate used in the last iteration of SGD
+  training method of the log-linear model. Common values are in range from
+  //0.1// to //0.001//, with //0.01// working reasonably well.
+
++ //gaussian// -- the value of Gaussian prior imposed on the weights. In other
+  words, value of L2-norm regularizer. Common value is either //0// for no regularization,
+  or small real number like //0.5//.
+
++ //hidden_layer// -- experimental support for hidden layer in the artificial
+  neural network classifier. To not use the hidden layer (recommended), use //0//.
+  Otherwise, specify the number of neurons in the hidden layer. Please note that
+  non-zero values will create enormous models, slower recognition and are
+  //not// guaranteed to create models with better accuracy.
+
++ //heldout_data// -- optional parameter with heldout data in the
+  [described #training_data] format. If the heldout data is present, the
+  accuracy of the heldout data classification is printed during training. The
+  heldout data is not used in any other way.
+
+
+The training data in the [described #training_data] format is read from the standard
+input and the trained model is written to the standard output if the training
+is successful.
