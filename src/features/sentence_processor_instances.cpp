@@ -169,21 +169,21 @@ class form : public sentence_processor {
 };
 
 
-// Gazeteers
-class gazeteers : public sentence_processor {
+// Gazetteers
+class gazetteers : public sentence_processor {
  public:
   enum { G = 0, U = 1, B = 2, L = 3, I = 4 };
 
   virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features) override {
     if (!sentence_processor::parse(window, args, entities, total_features)) return false;
 
-    gazeteers.clear();
+    gazetteers.clear();
     for (auto& arg : args) {
       file_ptr f = fopen(arg.c_str(), "r");
-      if (!f) return eprintf("Cannot open gazeteers file '%s'!\n", arg.c_str()), false;
+      if (!f) return eprintf("Cannot open gazetteers file '%s'!\n", arg.c_str()), false;
 
       unsigned longest = 0;
-      string gazeteer;
+      string gazetteer;
       string line;
       vector<string> tokens;
       while (getline(f, line)) {
@@ -193,13 +193,13 @@ class gazeteers : public sentence_processor {
             tokens.erase(tokens.begin() + i--);
         if (tokens.size() > longest) longest = tokens.size();
 
-        gazeteer.clear();
+        gazetteer.clear();
         for (unsigned i = 0; i < tokens.size(); i++) {
-          if (i) gazeteer += ' ';
-          gazeteer += tokens[i];
-          auto it = map.emplace(gazeteer, gazeteers.size()).first;
-          if (it->second == gazeteers.size()) gazeteers.emplace_back();
-          auto& info = gazeteers[it->second];
+          if (i) gazetteer += ' ';
+          gazetteer += tokens[i];
+          auto it = map.emplace(gazetteer, gazetteers.size()).first;
+          if (it->second == gazetteers.size()) gazetteers.emplace_back();
+          auto& info = gazetteers[it->second];
           if (i + 1 < tokens.size())
             info.prefix_of_longer |= true;
           else
@@ -216,11 +216,11 @@ class gazeteers : public sentence_processor {
   virtual void load(binary_decoder& data) override {
     sentence_processor::load(data);
 
-    gazeteers.resize(data.next_4B());
-    for (auto& gazeteer : gazeteers) {
-      gazeteer.prefix_of_longer = data.next_1B();
-      gazeteer.features.resize(data.next_1B());
-      for (auto& feature : gazeteer.features)
+    gazetteers.resize(data.next_4B());
+    for (auto& gazetteer : gazetteers) {
+      gazetteer.prefix_of_longer = data.next_1B();
+      gazetteer.features.resize(data.next_1B());
+      for (auto& feature : gazetteer.features)
         feature = data.next_4B();
     }
   }
@@ -228,11 +228,11 @@ class gazeteers : public sentence_processor {
   virtual void save(binary_encoder& enc) override {
     sentence_processor::save(enc);
 
-    enc.add_4B(gazeteers.size());
-    for (auto& gazeteer : gazeteers) {
-      enc.add_1B(gazeteer.prefix_of_longer);
-      enc.add_1B(gazeteer.features.size());
-      for (auto& feature : gazeteer.features)
+    enc.add_4B(gazetteers.size());
+    for (auto& gazetteer : gazetteers) {
+      enc.add_1B(gazetteer.prefix_of_longer);
+      enc.add_1B(gazetteer.features.size());
+      for (auto& feature : gazetteer.features)
         enc.add_4B(feature);
     }
   }
@@ -242,21 +242,21 @@ class gazeteers : public sentence_processor {
       auto it = map.find(sentence.words[i].raw_lemma);
       if (it == map.end()) continue;
 
-      // Apply regular gazeteer feature G + unigram gazeteer feature U
-      for (auto& feature : gazeteers[it->second].features) {
+      // Apply regular gazetteer feature G + unigram gazetteer feature U
+      for (auto& feature : gazetteers[it->second].features) {
         apply_in_window(i, feature + G * (2*window + 1));
         apply_in_window(i, feature + U * (2*window + 1));
       }
 
-      for (unsigned j = i + 1; gazeteers[it->second].prefix_of_longer && j < sentence.size; j++) {
+      for (unsigned j = i + 1; gazetteers[it->second].prefix_of_longer && j < sentence.size; j++) {
         if (j == i + 1) buffer.assign(sentence.words[i].raw_lemma);
         buffer += ' ';
         buffer += sentence.words[j].raw_lemma;
         it = map.find(buffer);
         if (it == map.end()) break;
 
-        // Apply regular gazeteer feature G + position specific gazeteers B, I, L
-        for (auto& feature : gazeteers[it->second].features)
+        // Apply regular gazetteer feature G + position specific gazetteers B, I, L
+        for (auto& feature : gazetteers[it->second].features)
           for (unsigned g = i; g <= j; g++) {
             apply_in_window(g, feature + G * (2*window + 1));
             apply_in_window(g, feature + (g == i ? B : g == j ? L : I) * (2*window + 1));
@@ -266,11 +266,11 @@ class gazeteers : public sentence_processor {
   }
 
  private:
-  struct gazeteer_info {
+  struct gazetteer_info {
     vector<ner_feature> features;
     bool prefix_of_longer;
   };
-  vector<gazeteer_info> gazeteers;
+  vector<gazetteer_info> gazetteers;
 };
 
 
@@ -409,7 +409,7 @@ sentence_processor* sentence_processor::create(const string& name) {
   if (name.compare("BrownClusters") == 0) return new sentence_processors::brown_clusters();
   if (name.compare("CzechLemmaTerm") == 0) return new sentence_processors::czech_lemma_term();
   if (name.compare("Form") == 0) return new sentence_processors::form();
-  if (name.compare("Gazeteers") == 0) return new sentence_processors::gazeteers();
+  if (name.compare("Gazetteers") == 0) return new sentence_processors::gazetteers();
   if (name.compare("Lemma") == 0) return new sentence_processors::lemma();
   if (name.compare("PreviousStage") == 0) return new sentence_processors::previous_stage();
   if (name.compare("RawLemma") == 0) return new sentence_processors::raw_lemma();
