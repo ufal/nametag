@@ -31,23 +31,29 @@ bool feature_templates::load(FILE* f) {
     total_features = data.next_4B();
 
     sentence_processors.clear();
-    for (unsigned i = data.next_4B(); i; i--) {
-      unsigned name_len = data.next_1B();
-      string name(data.next<char>(name_len), name_len);
-      unique_ptr<sentence_processor> processor(sentence_processor::create(name));
-      if (!processor) return false;
-      processor->load(data);
-      sentence_processors.emplace_back(name, processor.release());
-    }
-
     entity_processors.clear();
-    for (unsigned i = data.next_4B(); i; i--) {
+    for (unsigned processors = data.next_4B(); processors; processors--) {
       unsigned name_len = data.next_1B();
       string name(data.next<char>(name_len), name_len);
-      unique_ptr<entity_processor> processor(entity_processor::create(name));
-      if (!processor) return false;
-      processor->load(data);
-      entity_processors.emplace_back(name, processor.release());
+
+      // Try sentence processor
+      auto* maybe_sentence_processor = sentence_processor::create(name);
+      if (maybe_sentence_processor) {
+        maybe_sentence_processor->load(data);
+        sentence_processors.emplace_back(name, maybe_sentence_processor);
+        continue;
+      }
+
+      // Try entity processor
+      auto* maybe_entity_processor = entity_processor::create(name);
+      if (maybe_entity_processor) {
+        maybe_entity_processor->load(data);
+        entity_processors.emplace_back(name, maybe_entity_processor);
+        continue;
+      }
+
+      // Could not find processor with specified name
+      return false;
     }
   } catch (binary_decoder_error&) {
     return false;

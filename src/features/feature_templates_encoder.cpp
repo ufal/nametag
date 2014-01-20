@@ -75,14 +75,12 @@ bool feature_templates::save(FILE* f) {
 
   enc.add_4B(total_features);
 
-  enc.add_4B(sentence_processors.size());
+  enc.add_4B(sentence_processors.size() + entity_processors.size());
   for (auto& processor : sentence_processors) {
     enc.add_1B(processor.name.size());
     enc.add_str(processor.name);
     processor.processor->save(enc);
   }
-
-  enc.add_4B(entity_processors.size());
   for (auto& processor : entity_processors) {
     enc.add_1B(processor.name.size());
     enc.add_str(processor.name);
