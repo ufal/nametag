@@ -24,6 +24,7 @@
 #include "utils/file_ptr.h"
 #include "utils/parse_double.h"
 #include "utils/parse_int.h"
+#include "utils/set_binary_stdout.h"
 
 using namespace ufal::nametag;
 
@@ -32,6 +33,9 @@ int main(int argc, char* argv[]) {
 
   ner_id id;
   if (!ner_ids::parse(argv[1], id)) runtime_errorf("Cannot parse ner_identifier '%s'!\n", argv[1]);
+
+  // Switch stdout to binary mode. Needed on Windows only.
+  set_binary_stdout();
 
   switch (id) {
     case ner_ids::CZECH_NER:
