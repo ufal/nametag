@@ -22,11 +22,13 @@
 
 #include "ner/ner.h"
 #include "utils/input.h"
+#include "utils/output.h"
+#include "utils/process_args.h"
 
 using namespace ufal::nametag;
 
-static void recognize_vertical(const ner& recognizer);
-static void recognize_untokenized(const ner& recognizer);
+static void recognize_vertical(FILE* in, FILE* out, const ner& recognizer);
+static void recognize_untokenized(FILE* in, FILE* out, const ner& recognizer);
 
 int main(int argc, char* argv[]) {
   bool use_vertical = false;
@@ -39,17 +41,18 @@ int main(int argc, char* argv[]) {
   unique_ptr<ner> recognizer(ner::load(argv[argi]));
   if (!recognizer) runtime_errorf("Cannot load ner from file '%s'!", argv[argi]);
   eprintf("done\n");
+  argi++;
 
   eprintf("Recognizing: ");
   clock_t now = clock();
-  if (use_vertical) recognize_vertical(*recognizer);
-  else recognize_untokenized(*recognizer);
+  if (use_vertical) process_args(argi, argc, argv, recognize_vertical, *recognizer);
+  else process_args(argi, argc, argv, recognize_untokenized, *recognizer);
   eprintf("done, in %.3f seconds.\n", (clock() - now) / double(CLOCKS_PER_SEC));
 
   return 0;
 }
 
-void recognize_vertical(const ner& recognizer) {
+void recognize_vertical(FILE* in, FILE* out, const ner& recognizer) {
   string line;
   unsigned total_lines = 0;
 
@@ -62,7 +65,7 @@ void recognize_vertical(const ner& recognizer) {
     // Read sentence
     words.clear();
     forms.clear();
-    while ((not_eof = getline(stdin, line)) && !line.empty()) {
+    while ((not_eof = getline(in, line)) && !line.empty()) {
       auto tab = line.find('\t');
       words.emplace_back(tab == string::npos ? line : line.substr(0, tab));
       forms.emplace_back(words.back());
@@ -83,7 +86,7 @@ void recognize_vertical(const ner& recognizer) {
           entity_ids += to_string(total_lines + i + 1);
           entity_text += words[i];
         }
-        printf("%s\t%s\t%s\n", entity_ids.c_str(), entity.type.c_str(), entity_text.c_str());
+        fprintf(out, "%s\t%s\t%s\n", entity_ids.c_str(), entity.type.c_str(), entity_text.c_str());
       }
     }
 
@@ -91,65 +94,39 @@ void recognize_vertical(const ner& recognizer) {
   }
 }
 
-static void encode_entities_and_print(const char* text, size_t length);
-
-void recognize_untokenized(const ner& recognizer) {
-  string line, text;
+void recognize_untokenized(FILE* in, FILE* out, const ner& recognizer) {
+  string para;
   vector<named_entity> entities;
   vector<size_t> entity_ends;
 
-  for (bool not_eof = true; not_eof; ) {
-    // Read block of text
-    text.clear();
-    while ((not_eof = getline(stdin, line)) && !line.empty()) {
-      text += line;
-      text += '\n';
-    }
-    if (not_eof) text += '\n';
-
+  while (getpara(in, para)) {
     // Tokenize the text and find named entities
     size_t unprinted = 0;
-    recognizer.tokenize_and_recognize(text.c_str(), entities);
+    recognizer.tokenize_and_recognize(para.c_str(), entities);
     for (auto& entity : entities) {
       // Close entities that end sooned than current entity
       while (!entity_ends.empty() && entity_ends.back() < entity.start) {
-        if (unprinted < entity_ends.back()) encode_entities_and_print(text.c_str() + unprinted, entity_ends.back() - unprinted);
+        if (unprinted < entity_ends.back()) print_xml_content(out, para.c_str() + unprinted, entity_ends.back() - unprinted);
         unprinted = entity_ends.back();
         entity_ends.pop_back();
-        fputs("</ne>", stdout);
+        fputs("</ne>", out);
       }
 
       // Print text just before the entity, open it and add end to the stack
-      if (unprinted < entity.start) encode_entities_and_print(text.c_str() + unprinted, entity.start - unprinted);
+      if (unprinted < entity.start) print_xml_content(out, para.c_str() + unprinted, entity.start - unprinted);
       unprinted = entity.start;
-      printf("<ne type=\"%s\">", entity.type.c_str());
+      fprintf(out, "<ne type=\"%s\">", entity.type.c_str());
       entity_ends.push_back(entity.start + entity.length);
     }
 
     // Close unclosed entities
     while (!entity_ends.empty()) {
-      if (unprinted < entity_ends.back()) encode_entities_and_print(text.c_str() + unprinted, entity_ends.back() - unprinted);
+      if (unprinted < entity_ends.back()) print_xml_content(out, para.c_str() + unprinted, entity_ends.back() - unprinted);
       unprinted = entity_ends.back();
       entity_ends.pop_back();
-      fputs("</ne>", stdout);
+      fputs("</ne>", out);
     }
     // Write rest of the text (should be just spaces)
-    if (unprinted < text.size()) encode_entities_and_print(text.c_str() + unprinted, text.size() - unprinted);
+    if (unprinted < para.size()) print_xml_content(out, para.c_str() + unprinted, para.size() - unprinted);
   }
-}
-
-void encode_entities_and_print(const char* text, size_t length) {
-  const char* to_print = text;
-  while (length) {
-    while (length && *text != '<' && *text != '>' && *text != '&' && *text != '"')
-      text++, length--;
-
-    if (length) {
-      if (to_print < text) fwrite(to_print, 1, text - to_print, stdout);
-      fputs(*text == '<' ? "&lt;" : *text == '>' ? "&gt;" : *text == '&' ? "&amp;" : "&quot;", stdout);
-      text++, length--;
-      to_print = text;
-    }
-  }
-  if (to_print < text) fwrite(to_print, 1, text - to_print, stdout);
 }
