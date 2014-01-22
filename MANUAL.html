@@ -43,7 +43,7 @@
       <LI><A HREF="#toc16">4.1.1. Czech NER - CNEC 1.1</A>
       <LI><A HREF="#toc17">4.1.2. Czech NER - CNEC 2.0</A>
       </UL>
-    <LI><A HREF="#toc18">4.2. NameTag Command Line Tool</A>
+    <LI><A HREF="#toc18">4.2. Running the Recognizer</A>
       <UL>
       <LI><A HREF="#toc19">4.2.1. Untokenized Input</A>
       <LI><A HREF="#toc20">4.2.2. Vertical Input Format</A>
@@ -305,25 +305,47 @@ is available in the documentation of the [Czech Named Entity Corpus 2.0
 </P>
 
 <A NAME="toc18"></A>
-<H2>4.2. NameTag Command Line Tool</H2>
+<H2>4.2. Running the Recognizer</H2>
 
 <P>
-NameTag command line tool accepts two input formats: an unprocessed, raw text
-and a custom tokenized and segmented vertical format. NameTag command line tool
-accepts input on standard input and prints to standard output.  All inputs and
-outputs are assumed in UTF-8.
+The NameTag Recognizer can be executed using the following command:
 </P>
+
+<PRE>
+run_ner recognizer_model
+</PRE>
+
+<P>
+The input is assumed to be in UTF-8 encoding and can be either already
+tokenized and segmented, or it can be a plain text which is tokenized and
+segmented automatically.
+</P>
+<P>
+Any number of files can be specified after the <CODE>recognizer_model</CODE>. If an
+argument <CODE>input_file:output_file</CODE> is used, the given <CODE>input_file</CODE> is
+processed and the result is saved to <CODE>output_file</CODE>. If only <CODE>input_file</CODE> is
+used, the result is saved to standard output. If no argument is given, input is
+read from standard input and written to standard output.
+</P>
+<P>
+The full command syntax of <CODE>run_ner</CODE> is
+</P>
+
+<PRE>
+run_ner [-v] recognizer_model [input_file[:output_file]]...
+</PRE>
 
 <A NAME="toc19"></A>
 <H3>4.2.1. Untokenized Input</H3>
 
 <P>
-The input is by default automatically tokenized and segmented. In this case,
-the output is in XML format without a root element, using <CODE>&lt;ne type="..."&gt;...&lt;/ne&gt;</CODE>
-element to encode a named entity.
+By default (i.e., without specifying <CODE>-v</CODE>), the input is assumed to be
+a plain text and it is automatically tokenized and segmented by default. The
+output is in XML format without a root element, using
+<CODE>&lt;ne type="..."&gt;...&lt;/ne&gt;</CODE> element to encode a named entity.
 </P>
 <P>
-Example unprocessed text input format:
+Example input file <CODE>sample.txt</CODE>:
 </P>
 
 <PRE>
@@ -335,7 +357,7 @@ NameTag is run using:
 </P>
 
 <PRE>
-cat sample.txt | ./run_ner &lt;model&gt;
+./run_ner recognizer_model sample.txt
 </PRE>
 
 <P>
@@ -350,9 +372,9 @@ A NameTag identifies a first name (<CODE>pf</CODE>), a surname (<CODE>ps</CODE>)
 <H3>4.2.2. Vertical Input Format</H3>
 
 <P>
-For users who wish to perform their own tokenization and segmentation, NameTag
-accepts tokenized and segmented text in a CoNLL-style vertical format, where
-every word is on a separate line, with empty line representing an end of sentence.
+If the input is already tokenized and segmented, <CODE>run_ner</CODE> accepts tokenized
+and segmented text in a CoNLL-style vertical format, where every word is on
+a separate line, with empty line representing an end of sentence.
 </P>
 <P>
 The output in this case consists of lines representing found named entities.
@@ -377,11 +399,11 @@ NameTag is run using:
 </P>
 
 <PRE>
-cat sample.txt | ./run_ner -v &lt;model&gt;
+./run_ner -v recognizer_model
 </PRE>
 
 <P>
-Example oupout:
+Example output:
 </P>
 
 <PRE>

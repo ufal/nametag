@@ -201,29 +201,43 @@ an updated version of CNEC 1.1 hierarchy and is more suitable for automatic
 named entity recognition.
 
 
-NameTag Command Line Tool
--------------------------
+Running the Recognizer
+----------------------
 
-NameTag command line tool accepts two input formats: an unprocessed, raw text
-and a custom tokenized and segmented vertical format. NameTag command line tool
-accepts input on standard input and prints to standard output.  All inputs and
-outputs are assumed in UTF-8.
+The NameTag Recognizer can be executed using the following command:
+
+  run_ner recognizer_model
+
+The input is assumed to be in UTF-8 encoding and can be either already tokenized
+and segmented, or it can be a plain text which is tokenized and segmented
+automatically.
+
+Any number of files can be specified after the recognizer_model. If an argument
+input_file:output_file is used, the given input_file is processed and the result
+is saved to output_file. If only input_file is used, the result is saved to
+standard output. If no argument is given, input is read from standard input and
+written to standard output.
+
+The full command syntax of run_ner is
+
+  run_ner [-v] recognizer_model [input_file[:output_file]]...
 
 
 Untokenized Input
 -----------------
 
-The input is by default automatically tokenized and segmented. In this case, the
-output is in XML format without a root element, using <ne type="...">...</ne>
-element to encode a named entity.
+By default (i.e., without specifying -v), the input is assumed to be a plain
+text and it is automatically tokenized and segmented by default. The output is
+in XML format without a root element, using <ne type="...">...</ne> element to
+encode a named entity.
 
-Example unprocessed text input format:
+Example input file sample.txt:
 
   Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
 
 NameTag is run using:
 
-  cat sample.txt | ./run_ner <model>
+  ./run_ner recognizer_model sample.txt
 
 A NameTag identifies a first name (pf), a surname (ps) and a person name
 container (P) in the input:
@@ -234,10 +248,9 @@ container (P) in the input:
 Vertical Input Format
 ---------------------
 
-For users who wish to perform their own tokenization and segmentation, NameTag
-accepts tokenized and segmented text in a CoNLL-style vertical format, where
-every word is on a separate line, with empty line representing an end of
-sentence.
+If the input is already tokenized and segmented, run_ner accepts tokenized and
+segmented text in a CoNLL-style vertical format, where every word is on a
+separate line, with empty line representing an end of sentence.
 
 The output in this case consists of lines representing found named entities.
 Each line contains three tab-separated fields: entity_range, entity_type and
@@ -254,9 +267,9 @@ Example input:
 
 NameTag is run using:
 
-  cat sample.txt | ./run_ner -v <model>
+  ./run_ner -v recognizer_model
 
-Example oupout:
+Example output:
 
   1,2	P	Václav Havel
   1	pf	Václav
@@ -383,10 +396,10 @@ this order):
    the recognizer. Supported values:
    - czech
      
-2. tagger - the tagger identifier as described in the Tagger (#tagger) section
+2. tagger - the tagger identifier as described in the Tagger section
    
 3. feature_templates_file - file with feature templates as described in the
-   Feature Templates (#feature_templates) section.
+   Feature Templates section.
    
 4. stages - the number of stages performed during recognition. Common values
    are either 1 or 2. With more stages, the model is larger and recognition is
@@ -418,13 +431,13 @@ this order):
     not guaranteed to create models with better accuracy.
     
 11. heldout_data - optional parameter with heldout data in the described
-    (#training_data) format. If the heldout data is present, the accuracy of the
-    heldout data classification is printed during training. The heldout data is
-    not used in any other way.
+    format. If the heldout data is present, the accuracy of the heldout data
+    classification is printed during training. The heldout data is not used in
+    any other way.
 
-The training data in the described (#training_data) format is read from the
-standard input and the trained model is written to the standard output if the
-training is successful.
+The training data in the described format is read from the standard input and
+the trained model is written to the standard output if the training is
+successful.
 
 
 NameTag API Reference
@@ -450,10 +463,9 @@ Struct string_piece
     string_piece(const std::string& str);
   }
 
-The string_piece (#string_piece) is used for efficient string passing. The
-string referenced in string_piece (#string_piece) is not owned by it, so users
-have to make sure the referenced string exists as long as the string_piece
-(#string_piece).
+The string_piece is used for efficient string passing. The string referenced in
+string_piece is not owned by it, so users have to make sure the referenced
+string exists as long as the string_piece.
 
 
 Struct named_entity
@@ -468,10 +480,9 @@ Struct named_entity
     named_entity(size_t start, size_t length, const std::string& type);
   };
 
-The named_entity (#named_entity) is used to represend a named entity. The start
-and length fields represent the entity range in either tokens, unicode
-characters or bytes, depending on the usage. The type represents the entity
-type.
+The named_entity is used to represend a named entity. The start and length
+fields represent the entity range in either tokens, unicode characters or bytes,
+depending on the usage. The type represents the entity type.
 
 
 Class ner
@@ -489,7 +500,7 @@ Class ner
     void tokenize_and_recognize(const char* text, std::vector<named_entity>& entities, bool unicode_offsets = false) const;
   };
 
-A ner (#ner) instance represents a named entity recognizer. All methods are
+A ner instance represents a named entity recognizer. All methods are
 thread-safe.
 
 
@@ -499,8 +510,7 @@ ner::load(const char*)
   static ner* load(const char* fname);
 
 Factory method constructor. Accepts C string with a file name of the model.
-Returns a pointer to an instance of ner (#ner) which the user should delete
-after use.
+Returns a pointer to an instance of ner which the user should delete after use.
 
 
 ner::load(FILE*)
@@ -509,8 +519,8 @@ ner::load(FILE*)
   static ner* load(FILE* f);
 
 Factory method constructor. Accepts C file pointer of an opened file with the
-model. Returns a pointer to an instance of ner (#ner) which the user should
-delete after use.
+model. Returns a pointer to an instance of ner which the user should delete
+after use.
 
 
 ner::recognize
@@ -520,7 +530,7 @@ ner::recognize
 
 Perform named entity recognition on a tokenized sentence given in the forms
 argument. The found entities are returned in the entities argument. The range of
-the returned named_entity (#named_entity) is represented using form indices.
+the returned named_entity is represented using form indices.
 
 
 ner::tokenize_and_recognize
@@ -530,9 +540,8 @@ ner::tokenize_and_recognize
 
 Perform named entity recognition on an untokenized text given in the text
 argument. The found entities are returned in the entities argument. The range of
-the returned named_entity (#named_entity) is represented either in Unicode
-characters (when unicode_offsets == true), or in UTF-8 bytes (when
-unicode_offset == false).
+the returned named_entity is represented either in Unicode characters (when
+unicode_offsets == true), or in UTF-8 bytes (when unicode_offset == false).
 
 
 Contact

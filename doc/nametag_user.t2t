@@ -43,25 +43,36 @@ http://ufal.mff.cuni.cz/cnec/]. This hierarchy is an updated version of CNEC
 1.1 hierarchy and is more suitable for automatic named entity recognition.
 
 
-== NameTag Command Line Tool ==
+== Running the Recognizer ==
 
-NameTag command line tool accepts two input formats: an unprocessed, raw text
-and a custom tokenized and segmented vertical format. NameTag command line tool
-accepts input on standard input and prints to standard output.  All inputs and
-outputs are assumed in UTF-8.
+The NameTag Recognizer can be executed using the following command:
+``` run_ner recognizer_model
 
+The input is assumed to be in UTF-8 encoding and can be either already
+tokenized and segmented, or it can be a plain text which is tokenized and
+segmented automatically.
+
+Any number of files can be specified after the ``recognizer_model``. If an
+argument ``input_file:output_file`` is used, the given ``input_file`` is
+processed and the result is saved to ``output_file``. If only ``input_file`` is
+used, the result is saved to standard output. If no argument is given, input is
+read from standard input and written to standard output.
+
+The full command syntax of ``run_ner`` is
+``` run_ner [-v] recognizer_model [input_file[:output_file]]...
 
 === Untokenized Input ===
 
-The input is by default automatically tokenized and segmented. In this case,
-the output is in XML format without a root element, using ``<ne type="...">...</ne>``
-element to encode a named entity.
+By default (i.e., without specifying ``-v``), the input is assumed to be
+a plain text and it is automatically tokenized and segmented by default. The
+output is in XML format without a root element, using
+``<ne type="...">...</ne>`` element to encode a named entity.
 
-Example unprocessed text input format:
+Example input file ``sample.txt``:
 ``` Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
 
 NameTag is run using:
-``` cat sample.txt | ./run_ner <model>
+``` ./run_ner recognizer_model sample.txt
 
 A NameTag identifies a first name (``pf``), a surname (``ps``) and a person name container (``P``) in the input:
 ``` <ne type='P'><ne type='pf'>Václav</ne> <ne type='ps'>Havel</ne></ne> byl český dramatik, esejista, kritik komunistického režimu a později politik.
@@ -69,9 +80,9 @@ A NameTag identifies a first name (``pf``), a surname (``ps``) and a person name
 
 === Vertical Input Format ===
 
-For users who wish to perform their own tokenization and segmentation, NameTag
-accepts tokenized and segmented text in a CoNLL-style vertical format, where
-every word is on a separate line, with empty line representing an end of sentence.
+If the input is already tokenized and segmented, ``run_ner`` accepts tokenized
+and segmented text in a CoNLL-style vertical format, where every word is on
+a separate line, with empty line representing an end of sentence.
 
 The output in this case consists of lines representing found named entities.
 Each line contains three tab-separated fields: //entity_range//, //entity_type// and
@@ -88,9 +99,9 @@ byl
 ```
 
 NameTag is run using:
-``` cat sample.txt | ./run_ner -v <model>
+``` ./run_ner -v recognizer_model
 
-Example oupout:
+Example output:
 ```
 1,2	P	Václav Havel
 1	pf	Václav
