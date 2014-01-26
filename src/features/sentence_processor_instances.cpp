@@ -92,7 +92,7 @@ class brown_clusters : public sentence_processor {
       if (it == cluster_map.end()) {
         unsigned id = clusters.size();
         clusters.emplace_back();
-        for (auto& substring : substrings)
+        for (auto&& substring : substrings)
           if (substring == string::npos || substring < cluster.size())
             clusters.back().emplace_back(prefixes_map.emplace(cluster.substr(0, substring), *total_features + (2*window + 1) * prefixes_map.size() + window).first->second);
         it = cluster_map.emplace(cluster, id).first;
@@ -108,9 +108,9 @@ class brown_clusters : public sentence_processor {
     sentence_processor::load(data);
 
     clusters.resize(data.next_4B());
-    for (auto& cluster : clusters) {
+    for (auto&& cluster : clusters) {
       cluster.resize(data.next_4B());
-      for (auto& feature : cluster)
+      for (auto&& feature : cluster)
         feature = data.next_4B();
     }
   }
@@ -119,9 +119,9 @@ class brown_clusters : public sentence_processor {
     sentence_processor::save(enc);
 
     enc.add_4B(clusters.size());
-    for (auto& cluster : clusters) {
+    for (auto&& cluster : clusters) {
       enc.add_4B(cluster.size());
-      for (auto& feature : cluster)
+      for (auto&& feature : cluster)
         enc.add_4B(feature);
     }
   }
@@ -131,7 +131,7 @@ class brown_clusters : public sentence_processor {
       auto it = map.find(sentence.words[i].raw_lemma);
       if (it != map.end()) {
         auto& cluster = clusters[it->second];
-        for (auto& feature : cluster)
+        for (auto&& feature : cluster)
           apply_in_window(i, feature);
       }
     }
@@ -178,7 +178,7 @@ class gazetteers : public sentence_processor {
     if (!sentence_processor::parse(window, args, entities, total_features)) return false;
 
     gazetteers.clear();
-    for (auto& arg : args) {
+    for (auto&& arg : args) {
       file_ptr f = fopen(arg.c_str(), "r");
       if (!f) return eprintf("Cannot open gazetteers file '%s'!\n", arg.c_str()), false;
 
@@ -217,10 +217,10 @@ class gazetteers : public sentence_processor {
     sentence_processor::load(data);
 
     gazetteers.resize(data.next_4B());
-    for (auto& gazetteer : gazetteers) {
+    for (auto&& gazetteer : gazetteers) {
       gazetteer.prefix_of_longer = data.next_1B();
       gazetteer.features.resize(data.next_1B());
-      for (auto& feature : gazetteer.features)
+      for (auto&& feature : gazetteer.features)
         feature = data.next_4B();
     }
   }
@@ -229,10 +229,10 @@ class gazetteers : public sentence_processor {
     sentence_processor::save(enc);
 
     enc.add_4B(gazetteers.size());
-    for (auto& gazetteer : gazetteers) {
+    for (auto&& gazetteer : gazetteers) {
       enc.add_1B(gazetteer.prefix_of_longer);
       enc.add_1B(gazetteer.features.size());
-      for (auto& feature : gazetteer.features)
+      for (auto&& feature : gazetteer.features)
         enc.add_4B(feature);
     }
   }
@@ -243,7 +243,7 @@ class gazetteers : public sentence_processor {
       if (it == map.end()) continue;
 
       // Apply regular gazetteer feature G + unigram gazetteer feature U
-      for (auto& feature : gazetteers[it->second].features) {
+      for (auto&& feature : gazetteers[it->second].features) {
         apply_in_window(i, feature + G * (2*window + 1));
         apply_in_window(i, feature + U * (2*window + 1));
       }
@@ -256,7 +256,7 @@ class gazetteers : public sentence_processor {
         if (it == map.end()) break;
 
         // Apply regular gazetteer feature G + position specific gazetteers B, I, L
-        for (auto& feature : gazetteers[it->second].features)
+        for (auto&& feature : gazetteers[it->second].features)
           for (unsigned g = i; g <= j; g++) {
             apply_in_window(g, feature + G * (2*window + 1));
             apply_in_window(g, feature + (g == i ? B : g == j ? L : I) * (2*window + 1));
@@ -387,7 +387,7 @@ class url_email_detector : public sentence_processor {
       if (type == url_detector::NO_URL || sentence.probabilities[i].local_filled) continue;
 
       // We have found URL or email and the word has not yet been determined
-      for (auto& bilou : sentence.probabilities[i].local.bilou) {
+      for (auto&& bilou : sentence.probabilities[i].local.bilou) {
         bilou.probability = 0.;
         bilou.entity = entity_type_unknown;
       }

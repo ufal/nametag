@@ -60,7 +60,7 @@ bool network_classifier::load(FILE* f) {
 template<class T>
 void network_classifier::load_matrix(binary_decoder& data, vector<vector<T>>& m) {
   m.resize(data.next_4B());
-  for (auto& row : m) {
+  for (auto&& row : m) {
     row.resize(data.next_2B());
     memcpy((unsigned char*) row.data(), data.next<T>(row.size()), row.size() * sizeof(T));
   }
@@ -72,12 +72,12 @@ bool network_classifier::train(unsigned features, unsigned outcomes, const vecto
   if (features <= 0) { if (verbose) eprintf("There must be more than zero features!\n"); return false; }
   if (outcomes <= 0) { if (verbose) eprintf("There must be more than zero features!\n"); return false; }
   if (train.empty()) { if (verbose) eprintf("No training data!\n"); return false; }
-  for (auto& instance : train) {
+  for (auto&& instance : train) {
     if (instance.outcome >= outcomes) { if (verbose) eprintf("Training instances out of range!\n"); return false; }
     for(auto& feature : instance.features)
       if (feature >= features) { if (verbose) eprintf("Training instances out of range!\n"); return false; }
   }
-  for (auto& instance : heldout)
+  for (auto&& instance : heldout)
     for(auto& feature : instance.features)
       if (feature >= features) { if (verbose) eprintf("Heldout instances out of range!\n"); return false; }
 
@@ -86,18 +86,18 @@ bool network_classifier::train(unsigned features, unsigned outcomes, const vecto
   // Compute indices from existing feature-outcome pairs
   indices.clear();
   indices.resize(features);
-  for (auto& instance : train)
-    for (auto& feature : instance.features)
+  for (auto&& instance : train)
+    for (auto&& feature : instance.features)
       indices[feature].emplace_back(instance.outcome);
 
-  for (auto& row : indices) {
+  for (auto&& row : indices) {
     sort(row.begin(), row.end());
     row.resize(unique(row.begin(), row.end()) - row.begin());
   }
 
   // Initialize direct connections
   weights.clear();
-  for (auto& row : indices)
+  for (auto&& row : indices)
     weights.emplace_back(row.size());
   missing_weight = parameters.missing_weight;
 
@@ -107,13 +107,13 @@ bool network_classifier::train(unsigned features, unsigned outcomes, const vecto
     hidden_error.resize(hidden_layer.size());
 
     hidden_weights[0].resize(features);
-    for (auto& row : hidden_weights[0])
-      for (auto& weight : row.resize(hidden_layer.size()), row)
+    for (auto&& row : hidden_weights[0])
+      for (auto&& weight : row.resize(hidden_layer.size()), row)
         weight = d.real(0.1) + d.real(0.1) + d.real(0.1);
 
     hidden_weights[1].resize(hidden_layer.size());
-    for (auto& row : hidden_weights[1])
-      for (auto& weight : row.resize(outcomes), row)
+    for (auto&& row : hidden_weights[1])
+      for (auto&& weight : row.resize(outcomes), row)
         weight = d.real(0.1) + d.real(0.1) + d.real(0.1);
   }
 
@@ -137,7 +137,7 @@ bool network_classifier::train(unsigned features, unsigned outcomes, const vecto
 
     // Process instances in random order
     d.permutation(0, train.size(), permutation);
-    for (auto& train_index : permutation) {
+    for (auto&& train_index : permutation) {
       auto& instance = train[train_index];
       propagate(instance.features);
 
@@ -153,7 +153,7 @@ bool network_classifier::train(unsigned features, unsigned outcomes, const vecto
     // Evaluate heldout accuracy if heldout data are present
     if (!heldout.empty()) {
       int heldout_correct = 0;
-      for (auto& instance : heldout) {
+      for (auto&& instance : heldout) {
         propagate(instance.features);
         heldout_correct += best_outcome() == instance.outcome;
       }
@@ -180,25 +180,25 @@ void network_classifier::propagate(const classifier_features& features, vector<d
   output_layer.assign(output_layer.size(), features.size() * missing_weight);
 
   // Direct connections
-  for (auto& feature : features)
+  for (auto&& feature : features)
     if (feature < indices.size())
       for (unsigned i = 0; i < indices[feature].size(); i++)
         output_layer[indices[feature][i]] += weights[feature][i] - missing_weight;
 
   // Hidden layer
   if (!hidden_layer.empty()) {
-    for (auto& weight : hidden_layer)
+    for (auto&& weight : hidden_layer)
       weight = 0;
 
     // Propagate to hidden layer
-    for (auto& feature : features)
+    for (auto&& feature : features)
       if (feature < hidden_weights[0].size())
         for (unsigned i = 0; i < hidden_layer.size(); i++) {
           hidden_layer[i] += hidden_weights[0][feature][i];
         }
 
     // Apply logistic sigmoid to hidden layer
-    for (auto& weight : hidden_layer)
+    for (auto&& weight : hidden_layer)
       weight = 1 / (1 + exp(-weight));
 
     // Propagate to output_layer
@@ -231,7 +231,7 @@ void network_classifier::backpropagate(const classifier_instance& instance, doub
     output_error[i] = (i == instance.outcome) - output_layer[i];
 
   // Update direct connections
-  for (auto& feature : instance.features)
+  for (auto&& feature : instance.features)
     for (unsigned i = 0; i < indices[feature].size(); i++)
       weights[feature][i] += learning_rate * output_error[indices[feature][i]] - weights[feature][i] * gaussian_sigma;
 
@@ -251,7 +251,7 @@ void network_classifier::backpropagate(const classifier_instance& instance, doub
         hidden_weights[1][h][i] += learning_rate * hidden_layer[h] * output_error[i] - hidden_weights[1][h][i] * gaussian_sigma;
 
     // Update hidden_weights[0]
-    for (auto& feature : instance.features)
+    for (auto&& feature : instance.features)
       for (unsigned i = 0; i < hidden_layer.size(); i++)
         hidden_weights[0][feature][i] += learning_rate * hidden_error[i] - hidden_weights[0][feature][i] * gaussian_sigma;
   }

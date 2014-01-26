@@ -27,7 +27,7 @@ bool entity_map::save(FILE *f) const {
   binary_encoder enc;
 
   enc.add_4B(id2str.size());
-  for (auto& entity : id2str) {
+  for (auto&& entity : id2str) {
     enc.add_1B(entity.size());
     enc.add_str(entity);
   }

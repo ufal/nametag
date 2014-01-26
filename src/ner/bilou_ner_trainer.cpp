@@ -55,7 +55,7 @@ void bilou_ner_trainer::train(int stages, const network_parameters& parameters, 
   // Train required number of stages
   vector<network_classifier> networks(stages);
 
-  for (auto& network : networks) {
+  for (auto&& network : networks) {
     // Generate features
     eprintf("Generating features: ");
     vector<classifier_instance> train_instances, heldout_instances;
@@ -78,7 +78,7 @@ void bilou_ner_trainer::train(int stages, const network_parameters& parameters, 
   if (!entities.save(out_ner)) runtime_error("Cannot save entity map!");
   if (!templates.save(out_ner)) runtime_error("Cannot save feature templates!");
   if (fputc(stages, out_ner) == EOF) runtime_error("Cannot save number of stages!");
-  for (auto& network : networks)
+  for (auto&& network : networks)
     if (!network.save(out_ner)) runtime_error("Cannot save classifier network!");
 }
 
@@ -134,7 +134,7 @@ void bilou_ner_trainer::load_data(FILE* f, const tagger& tagger, vector<labelled
 void bilou_ner_trainer::generate_instances(vector<labelled_sentence>& data, const feature_templates& templates, vector<classifier_instance>& instances, bool add_features) {
   string buffer;
 
-  for (auto& sentence : data) {
+  for (auto&& sentence : data) {
     sentence.sentence.clear_features();
     sentence.sentence.clear_probabilities_local_filled();
 
@@ -151,7 +151,7 @@ void bilou_ner_trainer::compute_previous_stage(vector<labelled_sentence>& data, 
   string buffer;
   vector<double> outcomes, network_buffer;
 
-  for (auto& labelled_sentence : data) {
+  for (auto&& labelled_sentence : data) {
     auto& sentence = labelled_sentence.sentence;
 
     sentence.clear_features();

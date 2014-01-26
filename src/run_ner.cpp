@@ -75,7 +75,7 @@ void recognize_vertical(FILE* in, FILE* out, const ner& recognizer) {
     if (!forms.empty()) {
       recognizer.recognize(forms, entities);
 
-      for (auto& entity : entities) {
+      for (auto&& entity : entities) {
         entity_ids.clear();
         entity_text.clear();
         for (auto i = entity.start; i < entity.start + entity.length; i++) {
@@ -103,7 +103,7 @@ void recognize_untokenized(FILE* in, FILE* out, const ner& recognizer) {
     // Tokenize the text and find named entities
     size_t unprinted = 0;
     recognizer.tokenize_and_recognize(para.c_str(), entities);
-    for (auto& entity : entities) {
+    for (auto&& entity : entities) {
       // Close entities that end sooned than current entity
       while (!entity_ends.empty() && entity_ends.back() < entity.start) {
         if (unprinted < entity_ends.back()) print_xml_content(out, para.c_str() + unprinted, entity_ends.back() - unprinted);

@@ -70,12 +70,12 @@ void feature_templates::process_sentence(ner_sentence& sentence, string& buffer,
   }
 
   // Add features from given sentence processor templates
-  for (auto& processor : sentence_processors)
+  for (auto&& processor : sentence_processors)
     processor.processor->process_sentence(sentence, adding_features ? &total_features : nullptr, buffer);
 }
 
 void feature_templates::process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const {
-  for (auto& processor : entity_processors)
+  for (auto&& processor : entity_processors)
     processor.processor->process_entities(sentence, entities, buffer);
 }
 

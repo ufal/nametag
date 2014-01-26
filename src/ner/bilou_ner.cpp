@@ -32,7 +32,7 @@ bool bilou_ner::load(FILE* f) {
   int stages = fgetc(f);
   if (stages == EOF) return false;
   networks.resize(stages);
-  for (auto& network : networks)
+  for (auto&& network : networks)
     if (!network.load(f)) return false;
 
   return true;
@@ -54,7 +54,7 @@ void bilou_ner::recognize(const vector<string_piece>& forms, vector<named_entity
     sentence.clear_previous_stage();
 
     // Perform required NER stages
-    for (auto& network : networks) {
+    for (auto&& network : networks) {
       sentence.clear_features();
       sentence.clear_probabilities_local_filled();
 
@@ -98,7 +98,7 @@ void bilou_ner::recognize(const vector<string_piece>& forms, vector<named_entity
 }
 
 void bilou_ner::fill_bilou_probabilities(const vector<double>& outcomes, bilou_probabilities& prob) {
-  for (auto& prob_bilou : prob.bilou)
+  for (auto&& prob_bilou : prob.bilou)
     prob_bilou.probability = -1;
 
   for (bilou_entity::value i = 0; i < outcomes.size(); i++) {

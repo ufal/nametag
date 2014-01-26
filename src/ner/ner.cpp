@@ -55,7 +55,7 @@ void ner::tokenize_and_recognize(const char* text, vector<named_entity>& entitie
   c->t->set_text(text);
   while (c->t->next_sentence(&c->forms, unicode_offsets ? &c->tokens : nullptr)) {
     recognize(c->forms, c->entities);
-    for (auto& entity : c->entities)
+    for (auto&& entity : c->entities)
       if (unicode_offsets)
         entities.emplace_back(c->tokens[entity.start].start, c->tokens[entity.start + entity.length - 1].start +
                               c->tokens[entity.start + entity.length - 1].length - c->tokens[entity.start].start, entity.type);

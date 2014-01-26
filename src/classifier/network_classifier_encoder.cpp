@@ -46,7 +46,7 @@ bool network_classifier::save(FILE* f) {
 template <class T>
 void network_classifier::save_matrix(binary_encoder& enc, const vector<vector<T>>& m) {
   enc.add_4B(m.size());
-  for (auto& row : m) {
+  for (auto&& row : m) {
     enc.add_2B(row.size());
     enc.add_data((const unsigned char*) row.data(), ((const unsigned char*) row.data()) + row.size() * sizeof(T));
   }

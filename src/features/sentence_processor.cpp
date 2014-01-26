@@ -59,7 +59,7 @@ void sentence_processor::save(binary_encoder& enc) {
 
   vector<pair<string, ner_feature>> map_elements(map.begin(), map.end());
   sort(map_elements.begin(), map_elements.end());
-  for (auto& element : map_elements) {
+  for (auto&& element : map_elements) {
     enc.add_1B(element.first.size());
     enc.add_str(element.first);
     enc.add_4B(element.second);
