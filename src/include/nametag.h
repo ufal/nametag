@@ -20,6 +20,7 @@
 #define NAMETAG_H
 
 #include <cstdio>
+#include <cstring>
 #include <string>
 #include <vector>
 
