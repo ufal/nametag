@@ -43,7 +43,7 @@ http://ufal.mff.cuni.cz/cnec/]. This hierarchy is an updated version of CNEC
 1.1 hierarchy and is more suitable for automatic named entity recognition.
 
 
-== Running the Recognizer ==
+== Running the Recognizer ==[run_ner]
 
 The NameTag Recognizer can be executed using the following command:
 ``` run_ner recognizer_model
@@ -61,7 +61,7 @@ read from standard input and written to standard output.
 The full command syntax of ``run_ner`` is
 ``` run_ner [-v] recognizer_model [input_file[:output_file]]...
 
-=== Untokenized Input ===
+=== Untokenized Input ===[run_ner_untokenized]
 
 By default (i.e., without specifying ``-v``), the input is assumed to be
 a plain text and it is automatically tokenized and segmented by default. The
@@ -78,7 +78,7 @@ A NameTag identifies a first name (``pf``), a surname (``ps``) and a person name
 ``` <ne type='P'><ne type='pf'>Václav</ne> <ne type='ps'>Havel</ne></ne> byl český dramatik, esejista, kritik komunistického režimu a později politik.
 
 
-=== Vertical Input Format ===
+=== Vertical Input Format ===[run_ner_vertical]
 
 If the input is already tokenized and segmented, ``run_ner`` accepts tokenized
 and segmented text in a CoNLL-style vertical format, where every word is on

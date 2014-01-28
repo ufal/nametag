@@ -43,10 +43,10 @@
       <LI><A HREF="#toc16">4.1.1. Czech NER - CNEC 1.1</A>
       <LI><A HREF="#toc17">4.1.2. Czech NER - CNEC 2.0</A>
       </UL>
-    <LI><A HREF="#toc18">4.2. Running the Recognizer</A>
+    <LI><A HREF="#run_ner">4.2. Running the Recognizer</A>
       <UL>
-      <LI><A HREF="#toc19">4.2.1. Untokenized Input</A>
-      <LI><A HREF="#toc20">4.2.2. Vertical Input Format</A>
+      <LI><A HREF="#run_ner_untokenized">4.2.1. Untokenized Input</A>
+      <LI><A HREF="#run_ner_vertical">4.2.2. Vertical Input Format</A>
       </UL>
     <LI><A HREF="#toc21">4.3. Training of Custom Models</A>
       <UL>
@@ -304,7 +304,7 @@ is available in the documentation of the [Czech Named Entity Corpus 2.0
 1.1 hierarchy and is more suitable for automatic named entity recognition.
 </P>
 
-<A NAME="toc18"></A>
+<A NAME="run_ner"></A>
 <H2>4.2. Running the Recognizer</H2>
 
 <P>
@@ -335,7 +335,7 @@ The full command syntax of <CODE>run_ner</CODE> is
 run_ner [-v] recognizer_model [input_file[:output_file]]...
 </PRE>
 
-<A NAME="toc19"></A>
+<A NAME="run_ner_untokenized"></A>
 <H3>4.2.1. Untokenized Input</H3>
 
 <P>
@@ -368,7 +368,7 @@ A NameTag identifies a first name (<CODE>pf</CODE>), a surname (<CODE>ps</CODE>)
 &lt;ne type='P'&gt;&lt;ne type='pf'&gt;Václav&lt;/ne&gt; &lt;ne type='ps'&gt;Havel&lt;/ne&gt;&lt;/ne&gt; byl český dramatik, esejista, kritik komunistického režimu a později politik.
 </PRE>
 
-<A NAME="toc20"></A>
+<A NAME="run_ner_vertical"></A>
 <H3>4.2.2. Vertical Input Format</H3>
 
 <P>
