@@ -1,5 +1,5 @@
 NameTag: Name Entity Recognizer
-Version 0.91
+Version 0.92
 
 
 Introduction
@@ -43,8 +43,8 @@ work, please give credit to us by referencing NameTag website
 Roadmap
 -------
 
-- Jan 2014: NameTag 1.0 release
 - Feb 2014: training custom models available (done)
+- Feb 2014: NameTag 1.0 release
 - March 2014: Java (done), Python (done), Perl language bindings
 
 
@@ -85,9 +85,9 @@ compiled manually. The sources are available either at LINDAT-Clarin
 Requirements
 ------------
 
-- G++ 4.7 or newer
+- G++ 4.7 or newer, alternatively clang 3.2 or newer
 - make
-- SWIG 2.0.5+ for language bindings other than C++
+- SWIG 2.0.5 or newer for language bindings other than C++
 
 
 Compilation
@@ -497,7 +497,7 @@ Class ner
   
     virtual void recognize(const std::vector<string_piece>& forms, std::vector<named_entity>& entities) const = 0;
   
-    void tokenize_and_recognize(const char* text, std::vector<named_entity>& entities, bool unicode_offsets = false) const;
+    void tokenize_and_recognize(string_piece text, std::vector<named_entity>& entities, bool unicode_offsets = false) const;
   };
 
 A ner instance represents a named entity recognizer. All methods are
@@ -536,7 +536,7 @@ the returned named_entity is represented using form indices.
 ner::tokenize_and_recognize
 ---------------------------
 
-  void tokenize_and_recognize(const char* text, std::vector<named_entity>& entities, bool unicode_offsets = false) const;
+  void tokenize_and_recognize(string_piece text, std::vector<named_entity>& entities, bool unicode_offsets = false) const;
 
 Perform named entity recognition on an untokenized text given in the text
 argument. The found entities are returned in the entities argument. The range of

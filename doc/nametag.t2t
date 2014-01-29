@@ -1,5 +1,5 @@
 NameTag: Name Entity Recognizer
-Version 0.91
+Version 0.92
 
 %!encoding: utf-8
 
@@ -34,8 +34,8 @@ NameTag will be available either as pre-compiled binaries and models from [LINDA
 
 == Roadmap ==
 
-- Jan 2014: NameTag 1.0 release
 - --Feb 2014: training custom models available-- (done)
+- Feb 2014: NameTag 1.0 release
 - March 2014: --Java-- (done), --Python-- (done), Perl language bindings
 
 

@@ -9,7 +9,7 @@
 
 <DIV CLASS="header" ID="header">
 <H1>NameTag: Name Entity Recognizer</H1>
-<H2>Version 0.91</H2>
+<H2>Version 0.92</H2>
 </DIV>
 
 <DIV CLASS="toc">
@@ -120,8 +120,8 @@ NameTag will be available either as pre-compiled binaries and models from <A HRE
 <H2>2.2. Roadmap</H2>
 
 <UL>
-<LI>Jan 2014: NameTag 1.0 release
 <LI><S>Feb 2014: training custom models available</S> (done)
+<LI>Feb 2014: NameTag 1.0 release
 <LI>March 2014: <S>Java</S> (done), <S>Python</S> (done), Perl language bindings
 </UL>
 
@@ -162,9 +162,9 @@ To use the NameTag library, either in C++ or other languages, it must be compile
 <H2>3.1. Requirements</H2>
 
 <UL>
-<LI><CODE>G++ 4.7</CODE> or newer
+<LI><CODE>G++ 4.7</CODE> or newer, alternatively <CODE>clang 3.2</CODE> or newer
 <LI><CODE>make</CODE>
-<LI><CODE>SWIG 2.0.5+</CODE> for language bindings other than <CODE>C++</CODE>
+<LI><CODE>SWIG 2.0.5</CODE> or newer for language bindings other than <CODE>C++</CODE>
 </UL>
 
 <A NAME="toc9"></A>
@@ -666,7 +666,7 @@ class ner {
 
   virtual void <A HREF="#ner_recognize">recognize</A>(const std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;&amp; forms, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities) const = 0;
 
-  void <A HREF="#ner_tokenize_and_recognize">tokenize_and_recognize</A>(const char* text, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities, bool unicode_offsets = false) const;
+  void <A HREF="#ner_tokenize_and_recognize">tokenize_and_recognize</A>(<A HREF="#string_piece">string_piece</A> text, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities, bool unicode_offsets = false) const;
 };
 </PRE>
 
@@ -718,7 +718,7 @@ returned <A HREF="#named_entity">named_entity</A> is represented using form indi
 <H3>5.3.4. ner::tokenize_and_recognize</H3>
 
 <PRE>
-void tokenize_and_recognize(const char* text, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities, bool unicode_offsets = false) const;
+void tokenize_and_recognize(<A HREF="#string_piece">string_piece</A> text, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities, bool unicode_offsets = false) const;
 </PRE>
 
 <P>
