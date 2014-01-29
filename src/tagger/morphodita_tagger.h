@@ -42,6 +42,7 @@ class morphodita_tagger : public tagger {
   const ufal::morphodita::morpho* morpho;
 
   struct cache {
+    vector<ufal::morphodita::string_piece> forms;
     vector<ufal::morphodita::tagged_lemma> tags;
   };
   mutable threadsafe_stack<cache> caches;

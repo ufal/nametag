@@ -18,16 +18,26 @@
 
 #pragma once
 
+#include <cstring>
 #include "common.h"
-#include "string_piece.h"
 
 #include "morphodita.h"
 
 namespace ufal {
 namespace nametag {
 
-typedef ufal::morphodita::token_range token_range;
-typedef ufal::morphodita::tokenizer tokenizer;
+struct string_piece {
+  const char* str;
+  size_t len;
+
+  string_piece() : str(NULL), len(0) {}
+  string_piece(const char* str) : str(str), len(strlen(str)) {}
+  string_piece(const char* str, size_t len) : str(str), len(len) {}
+  string_piece(const std::string& str) : str(str.c_str()), len(str.size()) {}
+
+  string_piece(ufal::morphodita::string_piece other) : str(other.str), len(other.len) {}
+  operator ufal::morphodita::string_piece() const { return ufal::morphodita::string_piece(str, len); }
+};
 
 } // namespace nametag
 } // namespace ufal

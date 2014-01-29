@@ -20,7 +20,7 @@
 
 #include "common.h"
 #include "bilou/ner_sentence.h"
-#include "ner/ner.h"
+#include "ner/string_piece.h"
 #include "tagger_ids.h"
 
 namespace ufal {

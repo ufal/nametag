@@ -21,8 +21,8 @@
 namespace ufal {
 namespace nametag {
 
-tokenizer* czech_ner::new_tokenizer() const {
-  return tokenizer::new_czech_tokenizer();
+ufal::morphodita::tokenizer* czech_ner::new_tokenizer() const {
+  return ufal::morphodita::tokenizer::new_czech_tokenizer();
 }
 
 } // namespace nametag

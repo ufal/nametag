@@ -19,8 +19,10 @@
 #pragma once
 
 #include "common.h"
-#include "tokenizer/tokenizer.h"
+#include "string_piece.h"
 #include "utils/threadsafe_stack.h"
+
+#include "morphodita.h"
 
 namespace ufal {
 namespace nametag {
@@ -51,12 +53,13 @@ class EXPORT_ATTRIBUTES ner {
   void tokenize_and_recognize(string_piece text, vector<named_entity>& entities, bool unicode_offsets = false) const;
 
  protected:
-  virtual tokenizer* new_tokenizer() const = 0;
+  virtual ufal::morphodita::tokenizer* new_tokenizer() const = 0;
 
   struct cache {
-    unique_ptr<tokenizer> t;
+    unique_ptr<ufal::morphodita::tokenizer> t;
     vector<string_piece> forms;
-    vector<token_range> tokens;
+    vector<ufal::morphodita::string_piece> morphodita_forms;
+    vector<ufal::morphodita::token_range> tokens;
     vector<named_entity> entities;
 
     cache(const ner& self) : t(self.new_tokenizer()) {}

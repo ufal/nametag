@@ -53,8 +53,16 @@ void ner::tokenize_and_recognize(string_piece text, vector<named_entity>& entiti
   if (!c) c = new cache(*this);
 
   c->t->set_text(text);
-  while (c->t->next_sentence(&c->forms, unicode_offsets ? &c->tokens : nullptr)) {
+  while (c->t->next_sentence(&c->morphodita_forms, unicode_offsets ? &c->tokens : nullptr)) {
+    // Convert morphodita::stringpiece to stringpiece
+    c->forms.resize(c->morphodita_forms.size());
+    for (unsigned i = 0; i < c->morphodita_forms.size(); i++)
+      c->forms[i] = c->morphodita_forms[i];
+
+    // Recognize
     recognize(c->forms, c->entities);
+
+    // Fill results
     for (auto&& entity : c->entities)
       if (unicode_offsets)
         entities.emplace_back(c->tokens[entity.start].start, c->tokens[entity.start + entity.length - 1].start +
