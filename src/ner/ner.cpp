@@ -46,7 +46,7 @@ ner* ner::load(const char* fname) {
   return load(f);
 }
 
-void ner::tokenize_and_recognize(const char* text, vector<named_entity>& entities, bool unicode_offsets) const {
+void ner::tokenize_and_recognize(string_piece text, vector<named_entity>& entities, bool unicode_offsets) const {
   entities.clear();
 
   cache* c = caches.pop();
@@ -60,8 +60,8 @@ void ner::tokenize_and_recognize(const char* text, vector<named_entity>& entitie
         entities.emplace_back(c->tokens[entity.start].start, c->tokens[entity.start + entity.length - 1].start +
                               c->tokens[entity.start + entity.length - 1].length - c->tokens[entity.start].start, entity.type);
       else
-        entities.emplace_back(c->forms[entity.start].str - text, c->forms[entity.start + entity.length - 1].str - text +
-                              c->forms[entity.start + entity.length - 1].len - (c->forms[entity.start].str - text), entity.type);
+        entities.emplace_back(c->forms[entity.start].str - text.str, c->forms[entity.start + entity.length - 1].str - text.str +
+                              c->forms[entity.start + entity.length - 1].len - (c->forms[entity.start].str - text.str), entity.type);
   }
 
   caches.push(c);

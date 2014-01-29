@@ -48,7 +48,7 @@ class EXPORT_ATTRIBUTES ner {
   // Perform tokenization and named entity recognition and return found named
   // entities in the given vector. Return the entity ranges either in UTF8
   // bytes or Unicode characters as requested.
-  void tokenize_and_recognize(const char* text, vector<named_entity>& entities, bool unicode_offsets = false) const;
+  void tokenize_and_recognize(string_piece text, vector<named_entity>& entities, bool unicode_offsets = false) const;
 
  protected:
   virtual tokenizer* new_tokenizer() const = 0;

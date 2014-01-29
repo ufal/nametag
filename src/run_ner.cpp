@@ -102,7 +102,7 @@ void recognize_untokenized(FILE* in, FILE* out, const ner& recognizer) {
   while (getpara(in, para)) {
     // Tokenize the text and find named entities
     size_t unprinted = 0;
-    recognizer.tokenize_and_recognize(para.c_str(), entities);
+    recognizer.tokenize_and_recognize(para, entities);
     for (auto&& entity : entities) {
       // Close entities that end sooned than current entity
       while (!entity_ends.empty() && entity_ends.back() < entity.start) {
