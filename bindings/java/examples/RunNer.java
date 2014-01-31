@@ -62,9 +62,12 @@ class RunNer {
   }
 
   public static void recognizeUntokenized(Ner ner) {
+    Forms forms = new Forms();
+    TokenRanges tokens = new TokenRanges();
+    Tokenizer tokenizer = ner.newTokenizer();
     NamedEntities entities = new NamedEntities();
     Scanner reader = new Scanner(System.in);
-    Stack<Integer> openEntities = new Stack();
+    Stack<Integer> openEntities = new Stack<Integer>();
 
     boolean not_eof = true;
     while (not_eof) {
@@ -80,35 +83,37 @@ class RunNer {
 
       // Tokenize and recognize
       String text = textBuilder.toString();
-      ner.tokenizeAndRecognize(text, entities);
-
-      // Write entities
+      tokenizer.setText(text);
       int unprinted = 0;
-      for (int i = 0; i < entities.size(); i++) {
-        NamedEntity entity = entities.get(i);
-        int entity_start = (int) entity.getStart(), entity_length = (int) entity.getLength();
+      while (tokenizer.nextSentence(forms, tokens)) {
+        ner.recognize(forms, entities);
 
-        // Close entities that end sooned than current entity
-        while (!openEntities.empty() && openEntities.peek() < entity_start) {
+        for (int i = 0; i < entities.size(); i++) {
+          NamedEntity entity = entities.get(i);
+          int entity_start = (int) tokens.get((int) entity.getStart()).getStart();
+          int entity_end = (int) (tokens.get((int) (entity.getStart() + entity.getLength() - 1)).getStart() + tokens.get((int) (entity.getStart() + entity.getLength() - 1)).getLength());
+
+          // Close entities that end sooned than current entity
+          while (!openEntities.empty() && openEntities.peek() < entity_start) {
+            if (unprinted < openEntities.peek()) System.out.print(encodeEntities(text.substring(unprinted, openEntities.peek())));
+            unprinted = openEntities.pop();
+            System.out.print("</ne>");
+          }
+
+          // Print text just before the entity, open it and add end to the stack
+          if (unprinted < entity_start) System.out.print(encodeEntities(text.substring(unprinted, entity_start)));
+          unprinted = entity_start;
+          System.out.printf("<ne type=\"%s\">", entity.getType());
+          openEntities.push(entity_end);
+        }
+
+        // Close unclosed entities
+        while (!openEntities.empty()) {
           if (unprinted < openEntities.peek()) System.out.print(encodeEntities(text.substring(unprinted, openEntities.peek())));
           unprinted = openEntities.pop();
           System.out.print("</ne>");
         }
-
-        // Print text just before the entity, open it and add end to the stack
-        if (unprinted < entity_start) System.out.print(encodeEntities(text.substring(unprinted, entity_start)));
-        unprinted = entity_start;
-        System.out.printf("<ne type=\"%s\">", entity.getType());
-        openEntities.push(entity_start + entity_length);
       }
-
-      // Close unclosed entities
-      while (!openEntities.empty()) {
-        if (unprinted < openEntities.peek()) System.out.print(encodeEntities(text.substring(unprinted, openEntities.peek())));
-        unprinted = openEntities.pop();
-        System.out.print("</ne>");
-      }
-
       // Write rest of the text (should be just spaces)
       if (unprinted < text.length()) System.out.print(encodeEntities(text.substring(unprinted)));
     }

@@ -29,6 +29,14 @@ using namespace ufal::nametag;
 %template(Forms) std::vector<std::string>;
 typedef std::vector<std::string> Forms;
 
+%rename(TokenRange) token_range;
+struct token_range {
+  size_t start;
+  size_t length;
+};
+%template(TokenRanges) std::vector<token_range>;
+typedef std::vector<token_range> TokenTanges;
+
 %rename(NamedEntity) named_entity;
 struct named_entity {
   size_t start;
@@ -41,6 +49,31 @@ struct named_entity {
 %template(NamedEntities) std::vector<named_entity>;
 typedef std::vector<named_entity> NamedEntities;
 
+%rename(Tokenizer) tokenizer;
+%nodefaultctor tokenizer;
+class tokenizer {
+ public:
+  virtual ~tokenizer() {}
+
+  %extend {
+    %rename(setText) set_text;
+    void set_text(const char* text) {
+      $self->set_text(text, true);
+    }
+
+    %rename(nextSentence) next_sentence;
+    bool next_sentence(std::vector<std::string>* forms, std::vector<token_range>* tokens) {
+      if (!forms) return $self->next_sentence(NULL, tokens);
+
+      std::vector<string_piece> string_pieces;
+      bool result = $self->next_sentence(&string_pieces, tokens);
+      forms->resize(string_pieces.size());
+      for (unsigned i = 0; i < string_pieces.size(); i++)
+        forms->operator[](i).assign(string_pieces[i].str, string_pieces[i].len);
+      return result;
+    }
+  }
+};
 
 %rename(Ner) ner;
 %nodefaultctor ner;
@@ -59,10 +92,9 @@ class ner {
         string_pieces.emplace_back(form);
       $self->recognize(string_pieces, entities);
     }
-
-    %rename(tokenizeAndRecognize) tokenize_and_recognize;
-    void tokenize_and_recognize(const char* text, std::vector<named_entity>& entities) const {
-      $self->tokenize_and_recognize(text, entities, true);
-    }
   }
+
+  %rename(newTokenizer) new_tokenizer;
+  %newobject new_tokenizer;
+  virtual tokenizer* new_tokenizer() const;
 };

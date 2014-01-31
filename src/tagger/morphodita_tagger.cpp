@@ -54,13 +54,8 @@ void morphodita_tagger::tag(const vector<string_piece>& forms, ner_sentence& sen
   cache* c = caches.pop();
   if (!c) c = new cache();
 
-  // Convert string_piece to morphodita::string_piece
-  c->forms.resize(forms.size());
-  for (unsigned i = 0; i < forms.size(); i++)
-    c->forms[i] = forms[i];
-
   // Tag
-  tagger->tag(c->forms, c->tags);
+  tagger->tag((const vector<ufal::morphodita::string_piece>&) forms, c->tags);
 
   // Fill sentence
   if (c->tags.size() >= forms.size()) {

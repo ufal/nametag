@@ -26,6 +26,20 @@ The [``string_piece`` #string_piece] is used for efficient string passing. The s
 referenced in [``string_piece`` #string_piece] is not owned by it, so users have to make sure
 the referenced string exists as long as the [``string_piece`` #string_piece].
 
+
+== Struct token_range ==[token_range]
+```
+struct token_range {
+  size_t start;
+  size_t length;
+};
+```
+
+The [``token_range`` #token_range] represent a range of a token as returned by a [tokenizer #tokenizer].
+The ``start`` and ``length`` fields specify the token position in Unicode
+characters, not in bytes of UTF-8 encoding.
+
+
 == Struct named_entity ==[named_entity]
 ```
 struct named_entity {
@@ -43,6 +57,43 @@ The [``named_entity`` #named_entity] is used to represend a named entity. The
 unicode characters or bytes, depending on the usage. The ``type`` represents
 the entity type.
 
+
+== Class tokenizer ==[tokenizer]
+```
+class tokenizer {
+ public:
+  virtual ~tokenizer() {}
+
+  virtual void [set_text #tokenizer_set_text]([string_piece #string_piece] text, bool make_copy = false) = 0;
+  virtual bool [next_sentence #tokenizer_next_sentence](std::vector<[string_piece #string_piece]>* forms, std::vector<[token_range #token_range]>* tokens) = 0;
+};
+```
+
+The [``tokenizer`` #tokenizer] class performs segmentation and tokenization of given text.
+The class is //not// threadsafe.
+
+The [``tokenizer`` #tokenizer] instances can be obtained only through instances of [``ner`` #ner].
+
+=== tokenizer::set_text ===[tokenizer_set_text]
+``` virtual void set_text([string_piece #string_piece] text, bool make_copy = false) = 0;
+
+Set the text which is to be tokenized.
+
+If ``make_copy`` is ``false``, only a reference to the given text is
+stored and the user has to make sure it exists until the tokenizer
+is released or ``set_text`` is called again. If ``make_copy``
+is ``true``, a copy of the given text is made and retained until the
+tokenizer is released or ``set_text`` is called again.
+
+=== tokenizer::next_sentence ===[tokenizer_next_sentence]
+``` virtual bool next_sentence(std::vector<[string_piece #string_piece]>* forms, std::vector<[token_range #token_range]>* tokens) = 0;
+
+Locate and return next sentence of the given text. Returns ``true`` when successful and ``false`` when
+there are no more sentences in the given text. The arguments are filled with found tokens if not ``NULL``.
+The ``forms`` contain token ranges in bytes of UTF-8 encoding, the ``tokens`` contain token ranges
+in Unicode characters.
+
+
 == Class ner ==[ner]
 ```
 class ner {
@@ -54,7 +105,7 @@ class ner {
 
   virtual void [recognize #ner_recognize](const std::vector<[string_piece #string_piece]>& forms, std::vector<[named_entity #named_entity]>& entities) const = 0;
 
-  void [tokenize_and_recognize #ner_tokenize_and_recognize]([string_piece #string_piece] text, std::vector<[named_entity #named_entity]>& entities, bool unicode_offsets = false) const;
+  virtual [tokenizer #tokenizer]* [new_tokenizer #ner_new_tokenizer]() const = 0;
 };
 ```
 
@@ -90,3 +141,10 @@ Perform named entity recognition on an untokenized text given in the ``text`` ar
 The found entities are returned in the ``entities`` argument. The range of the
 returned [named_entity #named_entity] is represented either in Unicode characters
 (when ``unicode_offsets == true``), or in UTF-8 bytes (when ``unicode_offset == false``).
+
+
+=== ner::new_tokenizer ===[ner_new_tokenizer]
+``` virtual [tokenizer #tokenizer]* new_tokenizer() const = 0;
+
+Returns a new instance of a suitable tokenizer. The user should delete it after
+use.

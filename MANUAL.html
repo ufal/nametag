@@ -59,20 +59,27 @@
   <LI><A HREF="#toc26">NameTag API Reference</A>
     <UL>
     <LI><A HREF="#string_piece">5.1. Struct string_piece</A>
-    <LI><A HREF="#named_entity">5.2. Struct named_entity</A>
-    <LI><A HREF="#ner">5.3. Class ner</A>
+    <LI><A HREF="#token_range">5.2. Struct token_range</A>
+    <LI><A HREF="#named_entity">5.3. Struct named_entity</A>
+    <LI><A HREF="#tokenizer">5.4. Class tokenizer</A>
       <UL>
-      <LI><A HREF="#ner_load_cstring">5.3.1. ner::load(const char*)</A>
-      <LI><A HREF="#ner_load_FILE">5.3.2. ner::load(FILE*)</A>
-      <LI><A HREF="#ner_recognize">5.3.3. ner::recognize</A>
-      <LI><A HREF="#ner_tokenize_and_recognize">5.3.4. ner::tokenize_and_recognize</A>
+      <LI><A HREF="#tokenizer_set_text">5.4.1. tokenizer::set_text</A>
+      <LI><A HREF="#tokenizer_next_sentence">5.4.2. tokenizer::next_sentence</A>
+      </UL>
+    <LI><A HREF="#ner">5.5. Class ner</A>
+      <UL>
+      <LI><A HREF="#ner_load_cstring">5.5.1. ner::load(const char*)</A>
+      <LI><A HREF="#ner_load_FILE">5.5.2. ner::load(FILE*)</A>
+      <LI><A HREF="#ner_recognize">5.5.3. ner::recognize</A>
+      <LI><A HREF="#ner_tokenize_and_recognize">5.5.4. ner::tokenize_and_recognize</A>
+      <LI><A HREF="#ner_new_tokenizer">5.5.5. ner::new_tokenizer</A>
       </UL>
     </UL>
-  <LI><A HREF="#toc34">Contact</A>
-  <LI><A HREF="#toc35">Acknowledgements</A>
-  <LI><A HREF="#toc36">References</A>
+  <LI><A HREF="#toc39">Contact</A>
+  <LI><A HREF="#toc40">Acknowledgements</A>
+  <LI><A HREF="#toc41">References</A>
     <UL>
-    <LI><A HREF="#toc37">8.1. Bibtex for referencing</A>
+    <LI><A HREF="#toc42">8.1. Bibtex for referencing</A>
     </UL>
   </OL>
 
@@ -632,8 +639,24 @@ referenced in <A HREF="#string_piece"><CODE>string_piece</CODE></A> is not owned
 the referenced string exists as long as the <A HREF="#string_piece"><CODE>string_piece</CODE></A>.
 </P>
 
+<A NAME="token_range"></A>
+<H2>5.2. Struct token_range</H2>
+
+<PRE>
+struct token_range {
+  size_t start;
+  size_t length;
+};
+</PRE>
+
+<P>
+The <A HREF="#token_range"><CODE>token_range</CODE></A> represent a range of a token as returned by a <A HREF="#tokenizer">tokenizer</A>.
+The <CODE>start</CODE> and <CODE>length</CODE> fields specify the token position in Unicode
+characters, not in bytes of UTF-8 encoding.
+</P>
+
 <A NAME="named_entity"></A>
-<H2>5.2. Struct named_entity</H2>
+<H2>5.3. Struct named_entity</H2>
 
 <PRE>
 struct named_entity {
@@ -653,8 +676,61 @@ unicode characters or bytes, depending on the usage. The <CODE>type</CODE> repre
 the entity type.
 </P>
 
+<A NAME="tokenizer"></A>
+<H2>5.4. Class tokenizer</H2>
+
+<PRE>
+class tokenizer {
+ public:
+  virtual ~tokenizer() {}
+
+  virtual void <A HREF="#tokenizer_set_text">set_text</A>(<A HREF="#string_piece">string_piece</A> text, bool make_copy = false) = 0;
+  virtual bool <A HREF="#tokenizer_next_sentence">next_sentence</A>(std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;* forms, std::vector&lt;<A HREF="#token_range">token_range</A>&gt;* tokens) = 0;
+};
+</PRE>
+
+<P>
+The <A HREF="#tokenizer"><CODE>tokenizer</CODE></A> class performs segmentation and tokenization of given text.
+The class is <I>not</I> threadsafe.
+</P>
+<P>
+The <A HREF="#tokenizer"><CODE>tokenizer</CODE></A> instances can be obtained only through instances of <A HREF="#ner"><CODE>ner</CODE></A>.
+</P>
+
+<A NAME="tokenizer_set_text"></A>
+<H3>5.4.1. tokenizer::set_text</H3>
+
+<PRE>
+virtual void set_text(<A HREF="#string_piece">string_piece</A> text, bool make_copy = false) = 0;
+</PRE>
+
+<P>
+Set the text which is to be tokenized.
+</P>
+<P>
+If <CODE>make_copy</CODE> is <CODE>false</CODE>, only a reference to the given text is
+stored and the user has to make sure it exists until the tokenizer
+is released or <CODE>set_text</CODE> is called again. If <CODE>make_copy</CODE>
+is <CODE>true</CODE>, a copy of the given text is made and retained until the
+tokenizer is released or <CODE>set_text</CODE> is called again.
+</P>
+
+<A NAME="tokenizer_next_sentence"></A>
+<H3>5.4.2. tokenizer::next_sentence</H3>
+
+<PRE>
+virtual bool next_sentence(std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;* forms, std::vector&lt;<A HREF="#token_range">token_range</A>&gt;* tokens) = 0;
+</PRE>
+
+<P>
+Locate and return next sentence of the given text. Returns <CODE>true</CODE> when successful and <CODE>false</CODE> when
+there are no more sentences in the given text. The arguments are filled with found tokens if not <CODE>NULL</CODE>.
+The <CODE>forms</CODE> contain token ranges in bytes of UTF-8 encoding, the <CODE>tokens</CODE> contain token ranges
+in Unicode characters.
+</P>
+
 <A NAME="ner"></A>
-<H2>5.3. Class ner</H2>
+<H2>5.5. Class ner</H2>
 
 <PRE>
 class ner {
@@ -666,7 +742,7 @@ class ner {
 
   virtual void <A HREF="#ner_recognize">recognize</A>(const std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;&amp; forms, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities) const = 0;
 
-  void <A HREF="#ner_tokenize_and_recognize">tokenize_and_recognize</A>(<A HREF="#string_piece">string_piece</A> text, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities, bool unicode_offsets = false) const;
+  virtual <A HREF="#tokenizer">tokenizer</A>* <A HREF="#ner_new_tokenizer">new_tokenizer</A>() const = 0;
 };
 </PRE>
 
@@ -676,7 +752,7 @@ are thread-safe.
 </P>
 
 <A NAME="ner_load_cstring"></A>
-<H3>5.3.1. ner::load(const char*)</H3>
+<H3>5.5.1. ner::load(const char*)</H3>
 
 <PRE>
 static <A HREF="#ner">ner</A>* load(const char* fname);
@@ -689,7 +765,7 @@ after use.
 </P>
 
 <A NAME="ner_load_FILE"></A>
-<H3>5.3.2. ner::load(FILE*)</H3>
+<H3>5.5.2. ner::load(FILE*)</H3>
 
 <PRE>
 static <A HREF="#ner">ner</A>* load(FILE* f);
@@ -702,7 +778,7 @@ delete after use.
 </P>
 
 <A NAME="ner_recognize"></A>
-<H3>5.3.3. ner::recognize</H3>
+<H3>5.5.3. ner::recognize</H3>
 
 <PRE>
 virtual void recognize(const std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;&amp; forms, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities) const = 0;
@@ -715,7 +791,7 @@ returned <A HREF="#named_entity">named_entity</A> is represented using form indi
 </P>
 
 <A NAME="ner_tokenize_and_recognize"></A>
-<H3>5.3.4. ner::tokenize_and_recognize</H3>
+<H3>5.5.4. ner::tokenize_and_recognize</H3>
 
 <PRE>
 void tokenize_and_recognize(<A HREF="#string_piece">string_piece</A> text, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities, bool unicode_offsets = false) const;
@@ -728,7 +804,19 @@ returned <A HREF="#named_entity">named_entity</A> is represented either in Unico
 (when <CODE>unicode_offsets == true</CODE>), or in UTF-8 bytes (when <CODE>unicode_offset == false</CODE>).
 </P>
 
-<A NAME="toc34"></A>
+<A NAME="ner_new_tokenizer"></A>
+<H3>5.5.5. ner::new_tokenizer</H3>
+
+<PRE>
+virtual <A HREF="#tokenizer">tokenizer</A>* new_tokenizer() const = 0;
+</PRE>
+
+<P>
+Returns a new instance of a suitable tokenizer. The user should delete it after
+use.
+</P>
+
+<A NAME="toc39"></A>
 <H1>6. Contact</H1>
 
 <P>
@@ -744,21 +832,21 @@ Authors:
 <A HREF="http://ufal.mff.cuni.cz/nametag">NameTag website</A>.
 </P>
 
-<A NAME="toc35"></A>
+<A NAME="toc40"></A>
 <H1>7. Acknowledgements</H1>
 
 <P>
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT-Clarin project of the Ministry of Education of the Czech Republic (project LM2010013).
 </P>
 
-<A NAME="toc36"></A>
+<A NAME="toc41"></A>
 <H1>8. References</H1>
 
 <P>
 Straková Jana, Straka Milan, Hajič Jan: <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</A>.</I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
 </P>
 
-<A NAME="toc37"></A>
+<A NAME="toc42"></A>
 <H2>8.1. Bibtex for referencing</H2>
 
 <PRE>

@@ -19,10 +19,7 @@
 #pragma once
 
 #include "common.h"
-#include "string_piece.h"
-#include "utils/threadsafe_stack.h"
-
-#include "morphodita.h"
+#include "tokenizer/tokenizer.h"
 
 namespace ufal {
 namespace nametag {
@@ -40,31 +37,15 @@ class EXPORT_ATTRIBUTES ner {
  public:
   virtual ~ner() {}
 
-  static ner* load(FILE* f);
   static ner* load(const char* fname);
+  static ner* load(FILE* f);
 
   // Perform named entity recognition on a tokenizes sentence and return found
   // named entities in the given vector.
   virtual void recognize(const vector<string_piece>& forms, vector<named_entity>& entities) const = 0;
 
-  // Perform tokenization and named entity recognition and return found named
-  // entities in the given vector. Return the entity ranges either in UTF8
-  // bytes or Unicode characters as requested.
-  void tokenize_and_recognize(string_piece text, vector<named_entity>& entities, bool unicode_offsets = false) const;
-
- protected:
-  virtual ufal::morphodita::tokenizer* new_tokenizer() const = 0;
-
-  struct cache {
-    unique_ptr<ufal::morphodita::tokenizer> t;
-    vector<string_piece> forms;
-    vector<ufal::morphodita::string_piece> morphodita_forms;
-    vector<ufal::morphodita::token_range> tokens;
-    vector<named_entity> entities;
-
-    cache(const ner& self) : t(self.new_tokenizer()) {}
-  };
-  mutable threadsafe_stack<cache> caches;
+  // Construct a new tokenizer instance appropriate for this recognizer.
+  virtual tokenizer* new_tokenizer() const = 0;
 };
 
 } // namespace nametag

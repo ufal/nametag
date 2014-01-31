@@ -96,37 +96,43 @@ void recognize_vertical(FILE* in, FILE* out, const ner& recognizer) {
 
 void recognize_untokenized(FILE* in, FILE* out, const ner& recognizer) {
   string para;
+  vector<string_piece> forms;
   vector<named_entity> entities;
-  vector<size_t> entity_ends;
+  vector<const char*> entity_ends;
+
+  unique_ptr<tokenizer> tokenizer(recognizer.new_tokenizer());
 
   while (getpara(in, para)) {
     // Tokenize the text and find named entities
-    size_t unprinted = 0;
-    recognizer.tokenize_and_recognize(para, entities);
-    for (auto&& entity : entities) {
-      // Close entities that end sooned than current entity
-      while (!entity_ends.empty() && entity_ends.back() < entity.start) {
-        if (unprinted < entity_ends.back()) print_xml_content(out, para.c_str() + unprinted, entity_ends.back() - unprinted);
+    tokenizer->set_text(para);
+    const char* unprinted = para.c_str();
+    while (tokenizer->next_sentence(&forms, nullptr)) {
+      recognizer.recognize(forms, entities);
+      for (auto&& entity : entities) {
+        // Close entities that end sooned than current entity
+        while (!entity_ends.empty() && entity_ends.back() < forms[entity.start].str) {
+          if (unprinted < entity_ends.back()) print_xml_content(out, unprinted, entity_ends.back() - unprinted);
+          unprinted = entity_ends.back();
+          entity_ends.pop_back();
+          fputs("</ne>", out);
+        }
+
+        // Print text just before the entity, open it and add end to the stack
+        if (unprinted < forms[entity.start].str) print_xml_content(out, unprinted, forms[entity.start].str - unprinted);
+        unprinted = forms[entity.start].str;
+        fprintf(out, "<ne type=\"%s\">", entity.type.c_str());
+        entity_ends.push_back(forms[entity.start + entity.length - 1].str + forms[entity.start + entity.length - 1].len);
+      }
+
+      // Close unclosed entities
+      while (!entity_ends.empty()) {
+        if (unprinted < entity_ends.back()) print_xml_content(out, unprinted, entity_ends.back() - unprinted);
         unprinted = entity_ends.back();
         entity_ends.pop_back();
         fputs("</ne>", out);
       }
-
-      // Print text just before the entity, open it and add end to the stack
-      if (unprinted < entity.start) print_xml_content(out, para.c_str() + unprinted, entity.start - unprinted);
-      unprinted = entity.start;
-      fprintf(out, "<ne type=\"%s\">", entity.type.c_str());
-      entity_ends.push_back(entity.start + entity.length);
-    }
-
-    // Close unclosed entities
-    while (!entity_ends.empty()) {
-      if (unprinted < entity_ends.back()) print_xml_content(out, para.c_str() + unprinted, entity_ends.back() - unprinted);
-      unprinted = entity_ends.back();
-      entity_ends.pop_back();
-      fputs("</ne>", out);
     }
     // Write rest of the text (should be just spaces)
-    if (unprinted < para.size()) print_xml_content(out, para.c_str() + unprinted, para.size() - unprinted);
+    if (unprinted < para.c_str() + para.size()) print_xml_content(out, unprinted, para.c_str() + para.size() - unprinted);
   }
 }

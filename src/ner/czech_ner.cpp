@@ -18,11 +18,13 @@
 
 #include "czech_ner.h"
 
+#include "morphodita.h"
+
 namespace ufal {
 namespace nametag {
 
-ufal::morphodita::tokenizer* czech_ner::new_tokenizer() const {
-  return ufal::morphodita::tokenizer::new_czech_tokenizer();
+tokenizer* czech_ner::new_tokenizer() const {
+  return (tokenizer*) ufal::morphodita::tokenizer::new_czech_tokenizer();
 }
 
 } // namespace nametag

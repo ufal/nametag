@@ -19,7 +19,7 @@
 #pragma once
 
 #include "common.h"
-#include "ner/string_piece.h"
+#include "tokenizer/string_piece.h"
 
 namespace ufal {
 namespace nametag {

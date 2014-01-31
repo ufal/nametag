@@ -1,5 +1,10 @@
+Version 0.93 [not yet released]
+-------------------------------
+- Big API change
+  - Instead of tokenize_and_recognize, provide a tokenizer
+
 Version 0.92 [29 Jan 2014]
----------------------------
+--------------------------
 - Small API change
   - tokenizer::set_text takes string_piece instead of const char*
 - Required SWIG version is 2.0.5 due to SWIG bug #1187
@@ -7,11 +12,11 @@ Version 0.92 [29 Jan 2014]
 
 
 Version 0.91 [22 Jan 2014]
----------------------------
+--------------------------
 - First internal beta
 - More features, change names of existing ones
 
 
 Version 0.90 [27 Nov 2013]
----------------------------
+--------------------------
 - Initial import

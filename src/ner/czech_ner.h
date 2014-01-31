@@ -26,7 +26,7 @@ namespace nametag {
 
 class czech_ner : public bilou_ner {
  protected:
-  virtual ufal::morphodita::tokenizer* new_tokenizer() const override;
+  virtual tokenizer* new_tokenizer() const override;
 };
 
 } // namespace nametag

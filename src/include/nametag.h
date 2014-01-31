@@ -44,6 +44,14 @@ struct string_piece {
   string_piece(const std::string& str) : str(str.c_str()), len(str.size()) {}
 };
 
+struct token_range {
+  size_t start;
+  size_t length;
+
+  token_range() {}
+  token_range(size_t start, size_t length) : start(start), length(length) {}
+};
+
 struct named_entity {
   size_t start;
   size_t length;
@@ -53,21 +61,27 @@ struct named_entity {
   named_entity(size_t start, size_t length, const std::string& type) : start(start), length(length), type(type) {}
 };
 
+class NAMETAG_IMPORT tokenizer {
+ public:
+  virtual ~tokenizer() {}
+
+  virtual void set_text(string_piece text, bool make_copy = false) = 0;
+  virtual bool next_sentence(std::vector<string_piece>* forms, std::vector<token_range>* tokens) = 0;
+};
+
 class NAMETAG_IMPORT ner {
  public:
   virtual ~ner() {}
 
-  static ner* load(FILE* f);
   static ner* load(const char* fname);
+  static ner* load(FILE* f);
 
   // Perform named entity recognition on a tokenizes sentence and return found
   // named entities in the given vector.
   virtual void recognize(const std::vector<string_piece>& forms, std::vector<named_entity>& entities) const = 0;
 
-  // Perform tokenization and named entity recognition and return found named
-  // entities in the given vector. Return the entity ranges either in UTF8
-  // bytes or Unicode characters as requested.
-  void tokenize_and_recognize(string_piece text, std::vector<named_entity>& entities, bool unicode_offsets = false) const;
+  // Construct a new tokenizer instance appropriate for this recognizer.
+  virtual tokenizer* new_tokenizer() const = 0;
 };
 
 } // namespace nametag

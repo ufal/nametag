@@ -61,6 +61,9 @@ def encode_entities(text):
   return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
 
 def recognize_untokenized(ner):
+  forms = Forms()
+  tokens = TokenRanges()
+  tokenizer = ner.newTokenizer()
   entities = NamedEntities()
   openEntities = []
 
@@ -79,25 +82,27 @@ def recognize_untokenized(ner):
       if not line: break
 
     # Tokenize and recognize
-    ner.tokenizeAndRecognize(text, entities)
-
-    # Write entities
+    tokenizer.setText(text)
     t = 0
-    for entity in entities:
-      # Close entities that end sooner than current one
-      while openEntities and openEntities[-1] < entity.start:
+    while tokenizer.nextSentence(forms, tokens):
+      ner.recognize(forms, entities)
+
+      # Write entities
+      for entity in entities:
+        # Close entities that end sooner than current one
+        while openEntities and openEntities[-1] < tokens[entity.start].start:
+          sys.stdout.write('%s</ne>' % encode_entities(text[t : openEntities[-1]]))
+          t = openEntities.pop()
+
+        # Print text just before entity, open it and add end to the stack
+        sys.stdout.write('%s<ne type="%s">' % (encode_entities(text[t : tokens[entity.start].start]), entity.type))
+        t = tokens[entity.start].start
+        openEntities.append(tokens[entity.start + entity.length - 1].start + tokens[entity.start + entity.length - 1].length)
+
+      # Close unclosed entities
+      while openEntities:
         sys.stdout.write('%s</ne>' % encode_entities(text[t : openEntities[-1]]))
         t = openEntities.pop()
-
-      # Print text just before entity, open it and add end to the stack
-      sys.stdout.write('%s<ne type="%s">' % (encode_entities(text[t : entity.start]), entity.type))
-      t = entity.start
-      openEntities.append(entity.start + entity.length)
-
-    # Close unclosed entities
-    while openEntities:
-      sys.stdout.write('%s</ne>' % encode_entities(text[t : openEntities[-1]]))
-      t = openEntities.pop()
 
     # Write rest of the text
     sys.stdout.write(text[t:])
