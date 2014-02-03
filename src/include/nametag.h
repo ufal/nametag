@@ -81,6 +81,7 @@ class NAMETAG_IMPORT ner {
   virtual void recognize(const std::vector<string_piece>& forms, std::vector<named_entity>& entities) const = 0;
 
   // Construct a new tokenizer instance appropriate for this recognizer.
+  // Can return NULL if no such tokenizer exists.
   virtual tokenizer* new_tokenizer() const = 0;
 };
 

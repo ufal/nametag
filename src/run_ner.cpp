@@ -101,6 +101,7 @@ void recognize_untokenized(FILE* in, FILE* out, const ner& recognizer) {
   vector<const char*> entity_ends;
 
   unique_ptr<tokenizer> tokenizer(recognizer.new_tokenizer());
+  if (!tokenizer) runtime_errorf("No tokenizer is defined for the supplied model!");
 
   while (getpara(in, para)) {
     // Tokenize the text and find named entities

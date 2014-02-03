@@ -146,5 +146,5 @@ returned [named_entity #named_entity] is represented either in Unicode character
 === ner::new_tokenizer ===[ner_new_tokenizer]
 ``` virtual [tokenizer #tokenizer]* new_tokenizer() const = 0;
 
-Returns a new instance of a suitable tokenizer. The user should delete it after
-use.
+Returns a new instance of a suitable tokenizer or ``NULL`` if no such tokenizer
+exists. The user should delete it after use.

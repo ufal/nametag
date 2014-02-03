@@ -64,10 +64,14 @@ class RunNer {
   public static void recognizeUntokenized(Ner ner) {
     Forms forms = new Forms();
     TokenRanges tokens = new TokenRanges();
-    Tokenizer tokenizer = ner.newTokenizer();
     NamedEntities entities = new NamedEntities();
     Scanner reader = new Scanner(System.in);
     Stack<Integer> openEntities = new Stack<Integer>();
+    Tokenizer tokenizer = ner.newTokenizer();
+    if (tokenizer == null) {
+      System.err.println("No tokenizer is defined for the supplied model!");
+      System.exit(1);
+    }
 
     boolean not_eof = true;
     while (not_eof) {

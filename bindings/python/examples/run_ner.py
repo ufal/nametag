@@ -63,9 +63,12 @@ def encode_entities(text):
 def recognize_untokenized(ner):
   forms = Forms()
   tokens = TokenRanges()
-  tokenizer = ner.newTokenizer()
   entities = NamedEntities()
   openEntities = []
+  tokenizer = ner.newTokenizer()
+  if tokenizer is None:
+    sys.stderr.write("No tokenizer is defined for the supplied model!")
+    sys.exit(1)
 
   not_eof = True
   while not_eof:

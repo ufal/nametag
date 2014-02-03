@@ -45,6 +45,7 @@ class EXPORT_ATTRIBUTES ner {
   virtual void recognize(const vector<string_piece>& forms, vector<named_entity>& entities) const = 0;
 
   // Construct a new tokenizer instance appropriate for this recognizer.
+  // Can return NULL if no such tokenizer exists.
   virtual tokenizer* new_tokenizer() const = 0;
 };
 
