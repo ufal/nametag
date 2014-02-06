@@ -1,0 +1,13 @@
+NameTag
+=======
+
+%!encoding: utf-8
+
+%!include: nametag_about.t2t
+
+NameTag website http://ufal.mff.cuni.cz/nametag contains download links
+of both the released packages and trained models, hosts documentation and
+offers online demo.
+
+NameTag development repository http://github.com/ufal/nametag is hosted on
+GitHub.

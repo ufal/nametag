@@ -1,19 +1,11 @@
 NameTag: Name Entity Recognizer
-Version 0.92
+Version 0.93
 
 %!encoding: utf-8
 
 = Introduction =
 
-NameTag is an open-source tool for named entity recognition (NER). NameTag
-identifies proper names in text and classifies them into predefined categories,
-such as names of persons, locations, organizations, etc. NameTag is distributed
-as a standalone tool or a library, along with trained linguistic models. In the
-Czech language, NameTag achieves state-of-the-art performance
-([Straková et al. 2013 http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf]).
-NameTag is a free software under [LGPL http://www.gnu.org/licenses/lgpl.html]
-license and the linguistic models are free for non-commercial use and
-distributed under [CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/] license.
+%!include: nametag_about.t2t
 
 
 = Release =
