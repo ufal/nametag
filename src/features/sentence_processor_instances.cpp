@@ -286,6 +286,49 @@ class lemma : public sentence_processor {
 };
 
 
+// NumericTimeValue
+class number_time_value : public sentence_processor {
+ public:
+  virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const override {
+    ner_feature hour = lookup(buffer.assign("H"), total_features);
+    ner_feature minute = lookup(buffer.assign("M"), total_features);
+    ner_feature time = lookup(buffer.assign("t"), total_features);
+    ner_feature day = lookup(buffer.assign("d"), total_features);
+    ner_feature month = lookup(buffer.assign("m"), total_features);
+    ner_feature year = lookup(buffer.assign("y"), total_features);
+
+    for (unsigned i = 0; i < sentence.size; i++) {
+      const char* form = sentence.words[i].form.c_str();
+      unsigned num;
+      bool digit;
+
+      for (digit = false, num = 0; *form; form++) {
+        if (*form < '0' || *form > '9') break;
+        digit = true;
+        num = num * 10 + *form - '0';
+      }
+      if (digit && !*form) {
+        // We have a number
+        if (num < 24) apply_in_window(i, hour);
+        if (num < 60) apply_in_window(i, minute);
+        if (num >= 1 && num <= 31) apply_in_window(i, day);
+        if (num >= 1 && num <= 12) apply_in_window(i, month);
+        if (num >= 1000 && num <= 2200) apply_in_window(i, year);;
+      }
+      if (digit && num < 24 && (*form == '.' || *form == ':')) {
+        // Maybe time
+        for (digit = false, num = 0, form++; *form; form++) {
+          if (*form < '0' || *form > '9') break;
+          digit = true;
+          num = num * 10 + *form - '0';
+        }
+        if (digit && !*form && num < 60) apply_in_window(i, time);
+      }
+    }
+  }
+};
+
+
 // PreviousStage
 class previous_stage : public sentence_processor {
  public:
@@ -411,6 +454,7 @@ sentence_processor* sentence_processor::create(const string& name) {
   if (name.compare("Form") == 0) return new sentence_processors::form();
   if (name.compare("Gazetteers") == 0) return new sentence_processors::gazetteers();
   if (name.compare("Lemma") == 0) return new sentence_processors::lemma();
+  if (name.compare("NumericTimeValue") == 0) return new sentence_processors::number_time_value();
   if (name.compare("PreviousStage") == 0) return new sentence_processors::previous_stage();
   if (name.compare("RawLemma") == 0) return new sentence_processors::raw_lemma();
   if (name.compare("RawLemmaCapitalization") == 0) return new sentence_processors::raw_lemma_capitalization();
