@@ -1,0 +1,8 @@
+NameTag
+=======
+
+%!encoding: utf-8
+
+To use this model, you need NameTag, an open-source tool for named entity
+recognition (NER). Please visit the NameTag website
+http://ufal.mff.cuni.cz/nametag for more information.

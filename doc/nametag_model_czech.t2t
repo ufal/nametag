@@ -1,0 +1,73 @@
+Czech NameTag Models
+====================
+
+%!encoding: utf-8
+
+== Czech NameTag Models ==
+
+Czech models are distributed under the
+[CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/] licence.
+They are trained on [Czech Named Entity Corpus http://ufal.mff.cuni.cz/cnec/]
+1.1 and 2.0 and internally use [MorphoDiTa http://ufal.mff.cuni.cz/morphodita/]
+as a tagger and lemmatizer. Czech models work in NameTag version 1.0 or later.
+
+Czech models are versioned according to the date when released, the version
+format is ``YYMMDD``, where ``YY``, ``MM`` and ``DD`` are two-digit
+representation of year, month and day, respectively. The latest version is
+140205.
+
+
+=== Czech Named Entity Corpus 2.0 Model ===
+
+The model is trained on the training portion of the
+[Czech Named Entity Corpus 2.0 http://ufal.mff.cuni.cz/cnec/cnec2.0].
+The corpus uses a
+[detailed two-level named entity hierarchy http://ufal.mff.cuni.cz/~strakova/cnec2.0/ne-type-hierarchy.pdf],
+whose detailed description is available in the documentation of the
+[Czech Named Entity Corpus 2.0 http://ufal.mff.cuni.cz/cnec/cnec2.0].
+This hierarchy is an updated version of CNEC
+1.1 hierarchy and is more suitable for automatic named entity recognition.
+
+: ``czech-<version>-cnec2.0.ner``
+  Czech named entity recognizer trained on training portion of [CNEC 2.0 http://ufal.mff.cuni.cz/cnec/cnec2.0].
+
+  The latest version ``czech-140205-cnec2.0.ner`` reaches 75.42% F1-measure on
+  [CNEC 2.0 http://ufal.mff.cuni.cz/cnec/cnec2.0] etest data.  Model speed:
+  ~40k words/s, model size: ~8MB.
+
+: ``czech-<version>-cnec2.0-no_numbers.ner``
+  Czech named entity recognizer trained on training portion of [CNEC 2.0 http://ufal.mff.cuni.cz/cnec/cnec2.0],
+  except for the supertype ``n`` (Number expressions), which is not included.
+
+  The latest version ``czech-140205-cnec2.0-no_numbers.ner`` reaches 77.12%
+  F1-measure on [CNEC 2.0 http://ufal.mff.cuni.cz/cnec/cnec2.0] etest data
+  without ``n`` (Number expressions) supertype.  Model speed: ~45k words/s,
+  model size: ~8MB.
+
+
+=== Czech Named Entity Corpus 1.1 Model ===
+
+The model is trained on the training portion of the
+[Czech Named Entity Corpus 1.1 http://ufal.mff.cuni.cz/cnec/cnec1.1].
+The corpus uses a
+[detailed two-level named entity hierarchy http://ufal.mff.cuni.cz/~strakova/cnec1.0/ne-type-hierarchy.pdf],
+whose detailed description is available in the documentation of the
+[Czech Named Entity Corpus 1.1 http://ufal.mff.cuni.cz/cnec/cnec1.1].
+
+: ``czech-<version>-cnec1.1.ner``
+  Czech named entity recognizer trained on training portion of [CNEC 1.1 http://ufal.mff.cuni.cz/cnec/cnec1.1].
+
+  The latest version ``czech-140205-cnec1.1.ner`` reaches 75.63% F1-measure on
+  [CNEC 1.1 http://ufal.mff.cuni.cz/cnec/cnec1.1] etest data.  Model speed:
+  ~35k words/s, model size: ~7MB.
+
+: ``czech-<version>-cnec1.1-no_numbers.ner``
+  Czech named entity recognizer trained on training portion of [CNEC 1.1 http://ufal.mff.cuni.cz/cnec/cnec1.1],
+  except for the supertypes ``c`` (Bibliographic items), ``n`` (Number expressions) and
+  ``q`` (Quantitative expressions), which are not included.
+
+  The latest version ``czech-140205-cnec1.1-no_numbers.ner`` reaches 77.56%
+  F1-measure on [CNEC 1.1 http://ufal.mff.cuni.cz/cnec/cnec1.1] etest data
+  without ``c`` (Bibliographic items), ``n`` (Number expressions) and ``q``
+  (Quantitative expressions) supertypes.  Model speed: ~40k words/s,
+  model size: ~7MB.

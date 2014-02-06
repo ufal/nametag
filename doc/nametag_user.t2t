@@ -13,34 +13,12 @@ and NameTag identifies and classifies named entities by an algorithm described i
 NameTag can also performs NER in custom tokenized and morphologically analyzed and
 tagged texts.
 
-This section describes the command line tool and the model.
-
-== Models ==
-
 Like any supervised machine learning tool, NameTag needs a trained linguistic
-model. Czech models trained on [CNEC http://ufal.mff.cuni.cz/cnec/] 1.1 and 2.0
-are distributed with the tool. All models are distributed under the
-[CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/] licence.
-Please make sure you are using the linguistic models in a version corresponding
-to your NameTag release. The best way to assure this is to use the most
-current NameTag release with the most current model release.
+model.  This section describes the available language models and also the
+commandline tools. The C++ library is described in NameTag API Reference.
 
 
-=== Czech NER - CNEC 1.1 ===
-
-The model is trained on the training portion of the [Czech Named Entity Corpus 1.1 http://ufal.mff.cuni.cz/cnec/].
-The corpus uses a detailed two-level named entity hierarchy, whose description
-is available in the documentation of the [Czech Named Entity Corpus 1.1
-http://ufal.mff.cuni.cz/cnec/].
-
-
-=== Czech NER - CNEC 2.0 ===
-
-The model is trained on the training portion of the [Czech Named Entity Corpus 2.0 http://ufal.mff.cuni.cz/cnec/].
-The corpus uses a detailed two-level named entity hierarchy, whose description
-is available in the documentation of the [Czech Named Entity Corpus 2.0
-http://ufal.mff.cuni.cz/cnec/]. This hierarchy is an updated version of CNEC
-1.1 hierarchy and is more suitable for automatic named entity recognition.
+%!include: nametag_model_czech.t2t
 
 
 == Running the Recognizer ==[run_ner]
@@ -163,14 +141,14 @@ The lemmas used by the recognizer can be structured and consist of three parts:
 - //raw lemma// is the textual form of the lemma, possibly ambiguous
 - //lemma id// is the unique lemma identification (for example a raw lemma plus
   a numeric identifier)
-- //lemma info// is additional information about a lemma occurrence, not used
+- //lemma comment// is additional information about a lemma occurrence, not used
   to identify the lemma. If used, it usually contains information which is not
   possible to encode in part of speech tags.
 
 
 Currently, all these parts are filled only when ``morphodita`` tagger is used.
 If ``external`` tagger is used, raw lemma and lemma id are the same and lemma
-info is empty.
+comment is empty.
 
 
 === Feature Templates===[feature_templates]
@@ -195,12 +173,14 @@ exhaustive (see the sources in the ``features`` directory).
 - ``CzechLemmaTerm`` -- feature template specific for Czech morphologic system
   by Jan Hajič ([Hajič 2004 http://books.google.cz/books?id=sB63AAAACAAJ]).
   The term information (personal name, geographic name, ...) specified in lemma
-  info are used as features.
+  comment are used as features.
 - ``Form`` -- use forms as features
 - ``Gazetteers [files]`` -- use given files as gazetteers. Each file is one
   gazetteers list independent of the others and must contain a set of lemma
   sequences, each on a line, represented as raw lemmas separated by spaces.
 - ``Lemma`` -- use lemma ids as a feature
+- ``NumericTimeValue`` -- recognize numbers which could represent hours,
+  minutes, hour:minute time, days, months or years
 - ``PreviousStage`` -- use named entities predicted by previous stage as features
 - ``RawLemma`` -- use raw lemmas as features
 - ``RawLemmaCapitalization`` -- use capitalization of raw lemma as features

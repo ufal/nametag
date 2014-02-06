@@ -38,10 +38,10 @@
     </UL>
   <LI><A HREF="#toc14">NameTag User's Manual</A>
     <UL>
-    <LI><A HREF="#toc15">4.1. Models</A>
+    <LI><A HREF="#toc15">4.1. Czech NameTag Models</A>
       <UL>
-      <LI><A HREF="#toc16">4.1.1. Czech NER - CNEC 1.1</A>
-      <LI><A HREF="#toc17">4.1.2. Czech NER - CNEC 2.0</A>
+      <LI><A HREF="#toc16">4.1.1. Czech Named Entity Corpus 2.0 Model</A>
+      <LI><A HREF="#toc17">4.1.2. Czech Named Entity Corpus 1.1 Model</A>
       </UL>
     <LI><A HREF="#run_ner">4.2. Running the Recognizer</A>
       <UL>
@@ -165,10 +165,10 @@ recognition. The models for the Czech language are available with the tool.
 <H1>3. NameTag Installation</H1>
 
 <P>
-Pre-compiled binaries and models are available from <A HREF="http://www.lindat.cz">LINDAT-Clarin</A> infrastructure.
+Trained models and pre-compiled binaries and <CODE>C++</CODE> library are available from <A HREF="http://www.lindat.cz">LINDAT-Clarin</A> infrastructure.
 </P>
 <P>
-To use the NameTag library, either in C++ or other languages, it must be compiled manually. The sources are available either at <A HREF="http://www.lindat.cz">LINDAT-Clarin</A> or in the <A HREF="https://github.com/ufal/nametag">GitHub repository</A>.
+To use the NameTag in other languages than <CODE>C++</CODE>, it must be compiled manually. The sources are available either at <A HREF="http://www.lindat.cz">LINDAT-Clarin</A> or in the <A HREF="https://github.com/ufal/nametag">GitHub repository</A>.
 </P>
 
 <A NAME="toc8"></A>
@@ -280,42 +280,91 @@ NameTag can also performs NER in custom tokenized and morphologically analyzed a
 tagged texts.
 </P>
 <P>
-This section describes the command line tool and the model.
+Like any supervised machine learning tool, NameTag needs a trained linguistic
+model.  This section describes the available language models and also the
+commandline tools. The C++ library is described in NameTag API Reference.
 </P>
 
 <A NAME="toc15"></A>
-<H2>4.1. Models</H2>
+<H2>4.1. Czech NameTag Models</H2>
 
 <P>
-Like any supervised machine learning tool, NameTag needs a trained linguistic
-model. Czech models trained on <A HREF="http://ufal.mff.cuni.cz/cnec/">CNEC</A> 1.1 and 2.0
-are distributed with the tool. All models are distributed under the
+Czech models are distributed under the
 <A HREF="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</A> licence.
-Please make sure you are using the linguistic models in a version corresponding
-to your NameTag release. The best way to assure this is to use the most
-current NameTag release with the most current model release.
+They are trained on <A HREF="http://ufal.mff.cuni.cz/cnec/">Czech Named Entity Corpus</A>
+1.1 and 2.0 and internally use <A HREF="http://ufal.mff.cuni.cz/morphodita/">MorphoDiTa</A>
+as a tagger and lemmatizer. Czech models work in NameTag version 1.0 or later.
+</P>
+<P>
+Czech models are versioned according to the date when released, the version
+format is <CODE>YYMMDD</CODE>, where <CODE>YY</CODE>, <CODE>MM</CODE> and <CODE>DD</CODE> are two-digit
+representation of year, month and day, respectively. The latest version is
+140205.
 </P>
 
 <A NAME="toc16"></A>
-<H3>4.1.1. Czech NER - CNEC 1.1</H3>
+<H3>4.1.1. Czech Named Entity Corpus 2.0 Model</H3>
 
 <P>
-The model is trained on the training portion of the <A HREF="http://ufal.mff.cuni.cz/cnec/">Czech Named Entity Corpus 1.1</A>.
-The corpus uses a detailed two-level named entity hierarchy, whose description
-is available in the documentation of the [Czech Named Entity Corpus 1.1
-<A HREF="http://ufal.mff.cuni.cz/cnec/">http://ufal.mff.cuni.cz/cnec/</A>].
-</P>
-
-<A NAME="toc17"></A>
-<H3>4.1.2. Czech NER - CNEC 2.0</H3>
-
-<P>
-The model is trained on the training portion of the <A HREF="http://ufal.mff.cuni.cz/cnec/">Czech Named Entity Corpus 2.0</A>.
-The corpus uses a detailed two-level named entity hierarchy, whose description
-is available in the documentation of the [Czech Named Entity Corpus 2.0
-<A HREF="http://ufal.mff.cuni.cz/cnec/">http://ufal.mff.cuni.cz/cnec/</A>]. This hierarchy is an updated version of CNEC
+The model is trained on the training portion of the
+<A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">Czech Named Entity Corpus 2.0</A>.
+The corpus uses a
+<A HREF="http://ufal.mff.cuni.cz/~strakova/cnec2.0/ne-type-hierarchy.pdf">detailed two-level named entity hierarchy</A>,
+whose detailed description is available in the documentation of the
+<A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">Czech Named Entity Corpus 2.0</A>.
+This hierarchy is an updated version of CNEC
 1.1 hierarchy and is more suitable for automatic named entity recognition.
 </P>
+
+<DL>
+<DT><CODE>czech-&lt;version&gt;-cnec2.0.ner</CODE></DT><DD>
+  Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A>.
+<P></P>
+  The latest version <CODE>czech-140205-cnec2.0.ner</CODE> reaches 75.42% F1-measure on
+  <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A> etest data.  Model speed:
+  ~40k words/s, model size: ~8MB.
+<P></P>
+<DT><CODE>czech-&lt;version&gt;-cnec2.0-no_numbers.ner</CODE></DT><DD>
+  Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A>,
+  except for the supertype <CODE>n</CODE> (Number expressions), which is not included.
+<P></P>
+  The latest version <CODE>czech-140205-cnec2.0-no_numbers.ner</CODE> reaches 77.12%
+  F1-measure on <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A> etest data
+  without <CODE>n</CODE> (Number expressions) supertype.  Model speed: ~45k words/s,
+  model size: ~8MB.
+</DL>
+
+<A NAME="toc17"></A>
+<H3>4.1.2. Czech Named Entity Corpus 1.1 Model</H3>
+
+<P>
+The model is trained on the training portion of the
+<A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">Czech Named Entity Corpus 1.1</A>.
+The corpus uses a
+<A HREF="http://ufal.mff.cuni.cz/~strakova/cnec1.0/ne-type-hierarchy.pdf">detailed two-level named entity hierarchy</A>,
+whose detailed description is available in the documentation of the
+<A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">Czech Named Entity Corpus 1.1</A>.
+</P>
+
+<DL>
+<DT><CODE>czech-&lt;version&gt;-cnec1.1.ner</CODE></DT><DD>
+  Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A>.
+<P></P>
+  The latest version <CODE>czech-140205-cnec1.1.ner</CODE> reaches 75.63% F1-measure on
+  <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A> etest data.  Model speed:
+  ~35k words/s, model size: ~7MB.
+<P></P>
+<DT><CODE>czech-&lt;version&gt;-cnec1.1-no_numbers.ner</CODE></DT><DD>
+  Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A>,
+  except for the supertypes <CODE>c</CODE> (Bibliographic items), <CODE>n</CODE> (Number expressions) and
+  <CODE>q</CODE> (Quantitative expressions), which are not included.
+<P></P>
+  The latest version <CODE>czech-140205-cnec1.1-no_numbers.ner</CODE> reaches 77.56%
+  F1-measure on <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A> etest data
+  without <CODE>c</CODE> (Bibliographic items), <CODE>n</CODE> (Number expressions) and <CODE>q</CODE>
+  (Quantitative expressions) supertypes.  Model speed: ~40k words/s,
+  model size: ~7MB.
+</DL>
 
 <A NAME="run_ner"></A>
 <H2>4.2. Running the Recognizer</H2>
@@ -495,7 +544,7 @@ The lemmas used by the recognizer can be structured and consist of three parts:
 <LI><I>raw lemma</I> is the textual form of the lemma, possibly ambiguous
 <LI><I>lemma id</I> is the unique lemma identification (for example a raw lemma plus
   a numeric identifier)
-<LI><I>lemma info</I> is additional information about a lemma occurrence, not used
+<LI><I>lemma comment</I> is additional information about a lemma occurrence, not used
   to identify the lemma. If used, it usually contains information which is not
   possible to encode in part of speech tags.
 </UL>
@@ -503,7 +552,7 @@ The lemmas used by the recognizer can be structured and consist of three parts:
 <P>
 Currently, all these parts are filled only when <CODE>morphodita</CODE> tagger is used.
 If <CODE>external</CODE> tagger is used, raw lemma and lemma id are the same and lemma
-info is empty.
+comment is empty.
 </P>
 
 <A NAME="feature_templates"></A>
@@ -535,12 +584,14 @@ exhaustive (see the sources in the <CODE>features</CODE> directory).
 <LI><CODE>CzechLemmaTerm</CODE> &ndash; feature template specific for Czech morphologic system
   by Jan Hajič (<A HREF="http://books.google.cz/books?id=sB63AAAACAAJ">Hajič 2004</A>).
   The term information (personal name, geographic name, ...) specified in lemma
-  info are used as features.
+  comment are used as features.
 <LI><CODE>Form</CODE> &ndash; use forms as features
 <LI><CODE>Gazetteers [files]</CODE> &ndash; use given files as gazetteers. Each file is one
   gazetteers list independent of the others and must contain a set of lemma
   sequences, each on a line, represented as raw lemmas separated by spaces.
 <LI><CODE>Lemma</CODE> &ndash; use lemma ids as a feature
+<LI><CODE>NumericTimeValue</CODE> &ndash; recognize numbers which could represent hours,
+  minutes, hour:minute time, days, months or years
 <LI><CODE>PreviousStage</CODE> &ndash; use named entities predicted by previous stage as features
 <LI><CODE>RawLemma</CODE> &ndash; use raw lemmas as features
 <LI><CODE>RawLemmaCapitalization</CODE> &ndash; use capitalization of raw lemma as features
