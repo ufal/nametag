@@ -1,7 +1,9 @@
-Version 0.93 [not yet released]
--------------------------------
+Version 0.93 [10 Feb 2014 ]
+---------------------------
 - Big API change
   - Instead of tokenize_and_recognize, provide a tokenizer
+- Add NumericTimeValue feature
+- Add C++ library to the binary package
 
 Version 0.92 [29 Jan 2014]
 --------------------------
