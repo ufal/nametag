@@ -88,10 +88,10 @@ contains Linux and Windows binaries and C++ library, all language bindings
 To use NameTag, a language model is needed. Here is a list of available language
 models (http://ufal.mff.cuni.cz/nametag#language_models).
 
-To use the NameTag in other languages than C++, it must be compiled manually.
-The sources are available on GitHub (http://github.com/ufal/nametag), both in
-the pre-compiled binary package releases
-(http://github.com/ufal/nametag/releases) and also separately.
+To use NameTag in other languages than C++, it must be compiled manually. The
+sources are available on GitHub (http://github.com/ufal/nametag), both in the
+pre-compiled binary package releases (http://github.com/ufal/nametag/releases)
+and also separately.
 
 
 Requirements
