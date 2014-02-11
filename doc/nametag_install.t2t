@@ -3,9 +3,18 @@ NameTag Installation
 
 %!encoding: utf-8
 
-Trained models and pre-compiled binaries and ``C++`` library are available from [LINDAT-Clarin http://www.lindat.cz] infrastructure.
+NameTag releases are available on GitHub (http://github.com/ufal/nametag),
+either as a pre-compiled binary package, or source code only. The binary package
+contains Linux and Windows binaries and C++ library, all language bindings
+(Java, Python) and source code (needed to compile the language bindings).
 
-To use the NameTag in other languages than ``C++``, it must be compiled manually. The sources are available either at [LINDAT-Clarin http://www.lindat.cz] or in the [GitHub repository https://github.com/ufal/nametag].
+To use NameTag, a language model is needed. Here is a list of available
+language models (http://ufal.mff.cuni.cz/nametag#language_models).
+
+To use the NameTag in other languages than ``C++``, it must be compiled manually. The
+sources are available on GitHub (http://github.com/ufal/nametag), both in the
+pre-compiled binary package releases
+(http://github.com/ufal/nametag/releases) and also separately.
 
 == Requirements ==
 

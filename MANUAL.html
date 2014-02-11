@@ -19,44 +19,48 @@
   <LI><A HREF="#toc2">Release</A>
     <UL>
     <LI><A HREF="#toc3">2.1. Download</A>
-    <LI><A HREF="#toc4">2.2. Roadmap</A>
-    <LI><A HREF="#toc5">2.3. License</A>
-    <LI><A HREF="#toc6">2.4. Platforms and Requirements</A>
-    </UL>
-  <LI><A HREF="#toc7">NameTag Installation</A>
-    <UL>
-    <LI><A HREF="#toc8">3.1. Requirements</A>
-    <LI><A HREF="#toc9">3.2. Compilation</A>
       <UL>
-      <LI><A HREF="#toc10">3.2.1. Windows</A>
+      <LI><A HREF="#language_models">2.1.1. Language Models</A>
       </UL>
-    <LI><A HREF="#toc11">3.3. Other language bindings</A>
+    <LI><A HREF="#toc5">2.2. Roadmap</A>
+    <LI><A HREF="#toc6">2.3. License</A>
+    <LI><A HREF="#toc7">2.4. Platforms and Requirements</A>
+    </UL>
+  <LI><A HREF="#toc8">NameTag Installation</A>
+    <UL>
+    <LI><A HREF="#toc9">3.1. Requirements</A>
+    <LI><A HREF="#toc10">3.2. Compilation</A>
       <UL>
-      <LI><A HREF="#toc12">3.3.1. Java</A>
-      <LI><A HREF="#toc13">3.3.2. Python</A>
+      <LI><A HREF="#toc11">3.2.1. Windows</A>
+      </UL>
+    <LI><A HREF="#toc12">3.3. Other language bindings</A>
+      <UL>
+      <LI><A HREF="#toc13">3.3.1. Java</A>
+      <LI><A HREF="#toc14">3.3.2. Python</A>
       </UL>
     </UL>
-  <LI><A HREF="#toc14">NameTag User's Manual</A>
+  <LI><A HREF="#toc15">NameTag User's Manual</A>
     <UL>
-    <LI><A HREF="#toc15">4.1. Czech NameTag Models</A>
+    <LI><A HREF="#toc16">4.1. Czech NameTag Models</A>
       <UL>
-      <LI><A HREF="#toc16">4.1.1. Czech Named Entity Corpus 2.0 Model</A>
-      <LI><A HREF="#toc17">4.1.2. Czech Named Entity Corpus 1.1 Model</A>
+      <LI><A HREF="#czech_cnec_acknowledgements">4.1.1. Acknowledgements</A>
+      <LI><A HREF="#toc18">4.1.2. Czech Named Entity Corpus 2.0 Model</A>
+      <LI><A HREF="#toc19">4.1.3. Czech Named Entity Corpus 1.1 Model</A>
       </UL>
     <LI><A HREF="#run_ner">4.2. Running the Recognizer</A>
       <UL>
       <LI><A HREF="#run_ner_untokenized">4.2.1. Untokenized Input</A>
       <LI><A HREF="#run_ner_vertical">4.2.2. Vertical Input Format</A>
       </UL>
-    <LI><A HREF="#toc21">4.3. Training of Custom Models</A>
+    <LI><A HREF="#toc23">4.3. Training of Custom Models</A>
       <UL>
       <LI><A HREF="#training_data">4.3.1. Training data</A>
       <LI><A HREF="#tagger">4.3.2. Tagger</A>
       <LI><A HREF="#feature_templates">4.3.3. Feature Templates</A>
-      <LI><A HREF="#toc25">4.3.4. Running train_ner</A>
+      <LI><A HREF="#toc27">4.3.4. Running train_ner</A>
       </UL>
     </UL>
-  <LI><A HREF="#toc26">NameTag API Reference</A>
+  <LI><A HREF="#toc28">NameTag API Reference</A>
     <UL>
     <LI><A HREF="#string_piece">5.1. Struct string_piece</A>
     <LI><A HREF="#token_range">5.2. Struct token_range</A>
@@ -75,11 +79,11 @@
       <LI><A HREF="#ner_new_tokenizer">5.5.5. ner::new_tokenizer</A>
       </UL>
     </UL>
-  <LI><A HREF="#toc39">Contact</A>
-  <LI><A HREF="#toc40">Acknowledgements</A>
-  <LI><A HREF="#toc41">References</A>
+  <LI><A HREF="#toc41">Contact</A>
+  <LI><A HREF="#nametag_acknowledgements">Acknowledgements</A>
     <UL>
-    <LI><A HREF="#toc42">8.1. Bibtex for referencing</A>
+    <LI><A HREF="#toc43">7.1. Publications</A>
+    <LI><A HREF="#toc44">7.2. Bibtex for referencing</A>
     </UL>
   </OL>
 
@@ -114,44 +118,55 @@ Mathematics and Physics, Charles University in Prague, Czech Republic.
 <H2>2.1. Download</H2>
 
 <P>
-NameTag is currently undergoing beta testing. Please let us know if you wish to participate. The beta version includes:
+NameTag releases are available on <A HREF="http://github.com/ufal/nametag">GitHub</A>, either as
+a pre-compiled binary package, or source code only. The binary package contains Linux
+and Windows binaries and <CODE>C++</CODE> library, all language bindings (Java, Python)
+and source code (needed to compile the language bindings).
 </P>
 
 <UL>
-<LI>named entity recognizer commandline tool
-<LI>Czech models trained on <A HREF="http://ufal.mff.cuni.cz/cnec/">CNEC</A> 1.1 and 2.0
-<LI>C++ library
-<LI>Java bindings
-<LI>Python bindings
+<LI><A HREF="http://github.com/ufal/nametag/releases/latest">Latest release</A>
+<LI><A HREF="http://github.com/ufal/nametag/releases">All releases</A>
 </UL>
 
+<A NAME="language_models"></A>
+<H3>2.1.1. Language Models</H3>
+
 <P>
-NameTag will be available either as pre-compiled binaries and models from <A HREF="http://www.lindat.cz">LINDAT-Clarin</A> infrastructure or as open-source from <A HREF="https://github.com/ufal/nametag">GitHub</A>. If you use this tool for scientific work, please give credit to us by referencing <A HREF="http://ufal.mff.cuni.cz/nametag">NameTag website</A> and <A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">Straková et al. 2013</A>.
+To use NameTag, a language model is needed. The language models are available
+from <A HREF="http://www.lindat.cz">LINDAT-Clarin</A> infrastructure and described further
+in the User's Manual. Currently the following language models are available:
 </P>
 
-<A NAME="toc4"></A>
-<H2>2.2. Roadmap</H2>
-
 <UL>
-<LI><S>Feb 2014: training custom models available</S> (done)
-<LI>Feb 2014: NameTag 1.0 release
-<LI>March 2014: <S>Java</S> (done), <S>Python</S> (done), Perl language bindings
+<LI>Czech: <A HREF="...">latest version 140205</A>
 </UL>
 
 <A NAME="toc5"></A>
+<H2>2.2. Roadmap</H2>
+
+<UL>
+<LI>further programming language bindings (Perl is planned)
+</UL>
+
+<A NAME="toc6"></A>
 <H2>2.3. License</H2>
 
 <P>
 NameTag is an open-source project and is freely available for non-commercial
 purposes. The source code is distributed under <A HREF="http://www.gnu.org/licenses/lgpl.html">LGPL</A>
 and the pre-compiled binaries and the associated models and data under
-<A HREF="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</A>. If you use this tool for
-scientific work, please give credit to us by referencing
-<A HREF="http://ufal.mff.cuni.cz/nametag">NameTag website</A> and
+<A HREF="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</A>, although for
+some models the original data used to create the model may impose additional
+licensing conditions.
+</P>
+<P>
+If you use this tool for scientific work, please give credit to us by
+referencing <A HREF="http://ufal.mff.cuni.cz/nametag">NameTag website</A> and
 <A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">Straková et al. 2013</A>.
 </P>
 
-<A NAME="toc6"></A>
+<A NAME="toc7"></A>
 <H2>2.4. Platforms and Requirements</H2>
 
 <P>
@@ -161,17 +176,27 @@ learning tool, it needs trained linguistic models to perform named entity
 recognition. The models for the Czech language are available with the tool.
 </P>
 
-<A NAME="toc7"></A>
+<A NAME="toc8"></A>
 <H1>3. NameTag Installation</H1>
 
 <P>
-Trained models and pre-compiled binaries and <CODE>C++</CODE> library are available from <A HREF="http://www.lindat.cz">LINDAT-Clarin</A> infrastructure.
+NameTag releases are available on GitHub (<A HREF="http://github.com/ufal/nametag">http://github.com/ufal/nametag</A>),
+either as a pre-compiled binary package, or source code only. The binary package
+contains Linux and Windows binaries and C++ library, all language bindings
+(Java, Python) and source code (needed to compile the language bindings).
 </P>
 <P>
-To use the NameTag in other languages than <CODE>C++</CODE>, it must be compiled manually. The sources are available either at <A HREF="http://www.lindat.cz">LINDAT-Clarin</A> or in the <A HREF="https://github.com/ufal/nametag">GitHub repository</A>.
+To use NameTag, a language model is needed. Here is a list of available
+language models (<A HREF="http://ufal.mff.cuni.cz/nametag#language_models">http://ufal.mff.cuni.cz/nametag#language_models</A>).
+</P>
+<P>
+To use the NameTag in other languages than <CODE>C++</CODE>, it must be compiled manually. The
+sources are available on GitHub (<A HREF="http://github.com/ufal/nametag">http://github.com/ufal/nametag</A>), both in the
+pre-compiled binary package releases
+(<A HREF="http://github.com/ufal/nametag/releases">http://github.com/ufal/nametag/releases</A>) and also separately.
 </P>
 
-<A NAME="toc8"></A>
+<A NAME="toc9"></A>
 <H2>3.1. Requirements</H2>
 
 <UL>
@@ -180,7 +205,7 @@ To use the NameTag in other languages than <CODE>C++</CODE>, it must be compiled
 <LI><CODE>SWIG 2.0.5</CODE> or newer for language bindings other than <CODE>C++</CODE>
 </UL>
 
-<A NAME="toc9"></A>
+<A NAME="toc10"></A>
 <H2>3.2. Compilation</H2>
 
 <P>
@@ -199,7 +224,7 @@ Make targets and options:
 <LI><CODE>DEBUG=1</CODE>: compile with debug informations and C++ library debugging
 </UL>
 
-<A NAME="toc10"></A>
+<A NAME="toc11"></A>
 <H3>3.2.1. Windows</H3>
 
 <P>
@@ -221,10 +246,10 @@ make WINCMD=1
 Note that <CODE>make</CODE> in MinGW is usually distributed as <CODE>mingw32-make</CODE>.
 </P>
 
-<A NAME="toc11"></A>
+<A NAME="toc12"></A>
 <H2>3.3. Other language bindings</H2>
 
-<A NAME="toc12"></A>
+<A NAME="toc13"></A>
 <H3>3.3.1. Java</H3>
 
 <P>
@@ -245,7 +270,7 @@ make JAVA_HOME=path_to_Java_installation
 Java 6 and newer is supported.
 </P>
 
-<A NAME="toc13"></A>
+<A NAME="toc14"></A>
 <H3>3.3.2. Python</H3>
 
 <P>
@@ -265,7 +290,7 @@ make PYTHON_INCLUDE=path_to_Python_includes
 Both Python 2.6+ and Python 3+ are supported.
 </P>
 
-<A NAME="toc14"></A>
+<A NAME="toc15"></A>
 <H1>4. NameTag User's Manual</H1>
 
 <P>
@@ -285,7 +310,7 @@ model.  This section describes the available language models and also the
 commandline tools. The C++ library is described in NameTag API Reference.
 </P>
 
-<A NAME="toc15"></A>
+<A NAME="toc16"></A>
 <H2>4.1. Czech NameTag Models</H2>
 
 <P>
@@ -293,7 +318,7 @@ Czech models are distributed under the
 <A HREF="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</A> licence.
 They are trained on <A HREF="http://ufal.mff.cuni.cz/cnec/">Czech Named Entity Corpus</A>
 1.1 and 2.0 and internally use <A HREF="http://ufal.mff.cuni.cz/morphodita/">MorphoDiTa</A>
-as a tagger and lemmatizer. Czech models work in NameTag version 1.0 or later.
+as a tagger and lemmatizer. Czech models work in NameTag version 1.0.0 or later.
 </P>
 <P>
 Czech models are versioned according to the date when released, the version
@@ -302,8 +327,39 @@ representation of year, month and day, respectively. The latest version is
 140205.
 </P>
 
-<A NAME="toc16"></A>
-<H3>4.1.1. Czech Named Entity Corpus 2.0 Model</H3>
+<A NAME="czech_cnec_acknowledgements"></A>
+<H3>4.1.1. Acknowledgements</H3>
+
+<P>
+This work has been using language resources developed and/or stored and/or
+distributed by the LINDAT-Clarin project of the Ministry of Education of the
+Czech Republic (project <I>LM2010013</I>).
+</P>
+<P>
+Czech models are trained on Czech Named Entity Corpus, which was created by
+Magda Ševčíková, Zdeněk Žabokrtský, Jana Straková and Milan Straka.
+</P>
+<P>
+The recognizer research was supported by the projects
+<I>MSM0021620838</I> and <I>LC536</I> of Ministry of Education, Youth and Sports of the Czech Republic,
+<I>1ET101120503</I> of Academy of Sciences of the Czech Republic, LINDAT-Clarin
+project of the Ministry of Education of the Czech Republic (project <I>LM2010013</I>),
+and partially by SVV project number 267 314.  The research was performed by
+Jana Straková, Zdeněk Žabokrtský and Milan Straka.
+</P>
+
+<H4>4.1.1.1. Publications</H4>
+
+<UL>
+<LI>Ševčíková Magda, Žabokrtský Zdeněk, Krůza Ondřej: <I><A HREF="http://ufal.mff.cuni.cz/~zabokrtsky/publications/papers/tsd07-namedent.pdf">Named Entities in Czech: Annotating Data and Developing NE Tagger</A>.</I> In: Matoušek, V., Mautner, P. (eds.) TSD 2007. LNCS (LNAI), vol. 4629, pp. 188–195. Springer, Heidelberg (2007).
+<P></P>
+<LI>Kravalová Jana, Žabokrtský Zdeněk: <I><A HREF="http://aclweb.org/anthology//W/W09/W09-3538.pdf">Czech Named Entity Corpus and SVM-based Recognizer</A>.</I> In: Proceedings of the 2009 Named Entities Workshop: Shared Task on Transliteration. NEWS 2009, pp. 194–201. Association for Computational Linguistics (2009).
+<P></P>
+<LI>Straková Jana, Straka Milan, Hajič Jan: <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</A>.</I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
+</UL>
+
+<A NAME="toc18"></A>
+<H3>4.1.2. Czech Named Entity Corpus 2.0 Model</H3>
 
 <P>
 The model is trained on the training portion of the
@@ -317,25 +373,25 @@ This hierarchy is an updated version of CNEC
 </P>
 
 <DL>
-<DT><CODE>czech-&lt;version&gt;-cnec2.0.ner</CODE></DT><DD>
+<DT><CODE>czech-cnec2.0-&lt;version&gt;.ner</CODE></DT><DD>
   Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A>.
 <P></P>
-  The latest version <CODE>czech-140205-cnec2.0.ner</CODE> reaches 75.42% F1-measure on
+  The latest version <CODE>czech-cnec2.0-140205.ner</CODE> reaches 75.42% F1-measure on
   <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A> etest data.  Model speed:
   ~40k words/s, model size: ~8MB.
 <P></P>
-<DT><CODE>czech-&lt;version&gt;-cnec2.0-no_numbers.ner</CODE></DT><DD>
+<DT><CODE>czech-cnec2.0-&lt;version&gt;-no_numbers.ner</CODE></DT><DD>
   Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A>,
   except for the supertype <CODE>n</CODE> (Number expressions), which is not included.
 <P></P>
-  The latest version <CODE>czech-140205-cnec2.0-no_numbers.ner</CODE> reaches 77.12%
+  The latest version <CODE>czech-cnec2.0-140205-no_numbers.ner</CODE> reaches 77.12%
   F1-measure on <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A> etest data
   without <CODE>n</CODE> (Number expressions) supertype.  Model speed: ~45k words/s,
   model size: ~8MB.
 </DL>
 
-<A NAME="toc17"></A>
-<H3>4.1.2. Czech Named Entity Corpus 1.1 Model</H3>
+<A NAME="toc19"></A>
+<H3>4.1.3. Czech Named Entity Corpus 1.1 Model</H3>
 
 <P>
 The model is trained on the training portion of the
@@ -347,19 +403,19 @@ whose detailed description is available in the documentation of the
 </P>
 
 <DL>
-<DT><CODE>czech-&lt;version&gt;-cnec1.1.ner</CODE></DT><DD>
+<DT><CODE>czech-cnec1.1-&lt;version&gt;.ner</CODE></DT><DD>
   Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A>.
 <P></P>
-  The latest version <CODE>czech-140205-cnec1.1.ner</CODE> reaches 75.63% F1-measure on
+  The latest version <CODE>czech-cnec1.1-140205.ner</CODE> reaches 75.63% F1-measure on
   <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A> etest data.  Model speed:
   ~35k words/s, model size: ~7MB.
 <P></P>
-<DT><CODE>czech-&lt;version&gt;-cnec1.1-no_numbers.ner</CODE></DT><DD>
+<DT><CODE>czech-cnec1.1-&lt;version&gt;-no_numbers.ner</CODE></DT><DD>
   Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A>,
   except for the supertypes <CODE>c</CODE> (Bibliographic items), <CODE>n</CODE> (Number expressions) and
   <CODE>q</CODE> (Quantitative expressions), which are not included.
 <P></P>
-  The latest version <CODE>czech-140205-cnec1.1-no_numbers.ner</CODE> reaches 77.56%
+  The latest version <CODE>czech-cnec1.1-140205-no_numbers.ner</CODE> reaches 77.56%
   F1-measure on <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A> etest data
   without <CODE>c</CODE> (Bibliographic items), <CODE>n</CODE> (Number expressions) and <CODE>q</CODE>
   (Quantitative expressions) supertypes.  Model speed: ~40k words/s,
@@ -475,7 +531,7 @@ Example output:
 ...
 </PRE>
 
-<A NAME="toc21"></A>
+<A NAME="toc23"></A>
 <H2>4.3. Training of Custom Models</H2>
 
 <P>
@@ -601,7 +657,7 @@ exhaustive (see the sources in the <CODE>features</CODE> directory).
   type and not used in further processing.
 </UL>
 
-<A NAME="toc25"></A>
+<A NAME="toc27"></A>
 <H3>4.3.4. Running train_ner</H3>
 
 <P>
@@ -663,7 +719,7 @@ input and the trained model is written to the standard output if the training
 is successful.
 </P>
 
-<A NAME="toc26"></A>
+<A NAME="toc28"></A>
 <H1>5. NameTag API Reference</H1>
 
 <P>
@@ -873,7 +929,7 @@ Returns a new instance of a suitable tokenizer or <CODE>NULL</CODE> if no such t
 exists. The user should delete it after use.
 </P>
 
-<A NAME="toc39"></A>
+<A NAME="toc41"></A>
 <H1>6. Contact</H1>
 
 <P>
@@ -889,22 +945,22 @@ Authors:
 <A HREF="http://ufal.mff.cuni.cz/nametag">NameTag website</A>.
 </P>
 
-<A NAME="toc40"></A>
+<A NAME="nametag_acknowledgements"></A>
 <H1>7. Acknowledgements</H1>
 
 <P>
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT-Clarin project of the Ministry of Education of the Czech Republic (project LM2010013).
 </P>
 
-<A NAME="toc41"></A>
-<H1>8. References</H1>
+<A NAME="toc43"></A>
+<H2>7.1. Publications</H2>
 
-<P>
-Straková Jana, Straka Milan, Hajič Jan: <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</A>.</I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
-</P>
+<UL>
+<LI>Straková Jana, Straka Milan, Hajič Jan: <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</A>.</I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
+</UL>
 
-<A NAME="toc42"></A>
-<H2>8.1. Bibtex for referencing</H2>
+<A NAME="toc44"></A>
+<H2>7.2. Bibtex for referencing</H2>
 
 <PRE>
   @inproceedings{biblio:StStANew2013,

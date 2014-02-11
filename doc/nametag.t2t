@@ -12,23 +12,27 @@ Version 0.93
 
 == Download ==
 
-NameTag is currently undergoing beta testing. Please let us know if you wish to participate. The beta version includes:
+NameTag releases are available on [GitHub http://github.com/ufal/nametag], either as
+a pre-compiled binary package, or source code only. The binary package contains Linux
+and Windows binaries and ``C++`` library, all language bindings (Java, Python)
+and source code (needed to compile the language bindings).
 
-- named entity recognizer commandline tool
-- Czech models trained on [CNEC http://ufal.mff.cuni.cz/cnec/] 1.1 and 2.0
-- C++ library
-- Java bindings
-- Python bindings
+- [Latest release http://github.com/ufal/nametag/releases/latest]
+- [All releases http://github.com/ufal/nametag/releases]
 
 
-NameTag will be available either as pre-compiled binaries and models from [LINDAT-Clarin http://www.lindat.cz] infrastructure or as open-source from [GitHub https://github.com/ufal/nametag]. If you use this tool for scientific work, please give credit to us by referencing [NameTag website http://ufal.mff.cuni.cz/nametag] and [Straková et al. 2013 http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf].
+=== Language Models ===[language_models]
+
+To use NameTag, a language model is needed. The language models are available
+from [LINDAT-Clarin http://www.lindat.cz] infrastructure and described further
+in the User's Manual. Currently the following language models are available:
+
+- Czech: [latest version 140205 ...]
 
 
 == Roadmap ==
 
-- --Feb 2014: training custom models available-- (done)
-- Feb 2014: NameTag 1.0 release
-- March 2014: --Java-- (done), --Python-- (done), Perl language bindings
+- further programming language bindings (Perl is planned)
 
 
 == License ==
@@ -36,9 +40,12 @@ NameTag will be available either as pre-compiled binaries and models from [LINDA
 NameTag is an open-source project and is freely available for non-commercial
 purposes. The source code is distributed under [LGPL http://www.gnu.org/licenses/lgpl.html]
 and the pre-compiled binaries and the associated models and data under
-[CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/]. If you use this tool for
-scientific work, please give credit to us by referencing
-[NameTag website http://ufal.mff.cuni.cz/nametag] and
+[CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/], although for
+some models the original data used to create the model may impose additional
+licensing conditions.
+
+If you use this tool for scientific work, please give credit to us by
+referencing [NameTag website http://ufal.mff.cuni.cz/nametag] and
 [Straková et al. 2013 http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf].
 
 
@@ -78,14 +85,14 @@ Authors:
 [NameTag website http://ufal.mff.cuni.cz/nametag].
 
 
-= Acknowledgements =
+= Acknowledgements =[nametag_acknowledgements]
 
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT-Clarin project of the Ministry of Education of the Czech Republic (project LM2010013).
 
 
-= References =
+== Publications ==
 
-Straková Jana, Straka Milan, Hajič Jan: //[A New State-of-The-Art Czech Named Entity Recognizer http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf].// In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
+- Straková Jana, Straka Milan, Hajič Jan: //[A New State-of-The-Art Czech Named Entity Recognizer http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf].// In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
 
 
 == Bibtex for referencing ==

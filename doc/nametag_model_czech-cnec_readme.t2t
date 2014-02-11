@@ -5,4 +5,4 @@ NameTag
 
 %!include: nametag_model_about.t2t
 
-%!include: nametag_model_czech.t2t
+%!include: nametag_model_czech-cnec.t2t
