@@ -71,8 +71,9 @@
     <LI><A HREF="#named_entity">5.3. Struct named_entity</A>
     <LI><A HREF="#tokenizer">5.4. Class tokenizer</A>
       <UL>
-      <LI><A HREF="#tokenizer_set_text">5.4.1. tokenizer::set_text</A>
-      <LI><A HREF="#tokenizer_next_sentence">5.4.2. tokenizer::next_sentence</A>
+      <LI><A HREF="#tokenizer_new_vertical_tokenizer">5.4.1. tokenizer::new_vertical_tokenizer</A>
+      <LI><A HREF="#tokenizer_set_text">5.4.2. tokenizer::set_text</A>
+      <LI><A HREF="#tokenizer_next_sentence">5.4.3. tokenizer::next_sentence</A>
       </UL>
     <LI><A HREF="#ner">5.5. Class ner</A>
       <UL>
@@ -83,11 +84,11 @@
       <LI><A HREF="#ner_new_tokenizer">5.5.5. ner::new_tokenizer</A>
       </UL>
     </UL>
-  <LI><A HREF="#toc43">Contact</A>
+  <LI><A HREF="#toc44">Contact</A>
   <LI><A HREF="#nametag_acknowledgements">Acknowledgements</A>
     <UL>
-    <LI><A HREF="#toc45">7.1. Publications</A>
-    <LI><A HREF="#toc46">7.2. Bibtex for referencing</A>
+    <LI><A HREF="#toc46">7.1. Publications</A>
+    <LI><A HREF="#toc47">7.2. Bibtex for referencing</A>
     </UL>
   </OL>
 
@@ -863,6 +864,8 @@ class tokenizer {
  public:
   virtual ~tokenizer() {}
 
+  static <A HREF="#tokenizer">tokenizer</A>* <A HREF="#tokenizer_new_vertical_tokenizer">new_vertical_tokenizer</A>();
+
   virtual void <A HREF="#tokenizer_set_text">set_text</A>(<A HREF="#string_piece">string_piece</A> text, bool make_copy = false) = 0;
   virtual bool <A HREF="#tokenizer_next_sentence">next_sentence</A>(std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;* forms, std::vector&lt;<A HREF="#token_range">token_range</A>&gt;* tokens) = 0;
 };
@@ -873,11 +876,26 @@ The <A HREF="#tokenizer"><CODE>tokenizer</CODE></A> class performs segmentation 
 The class is <I>not</I> threadsafe.
 </P>
 <P>
-The <A HREF="#tokenizer"><CODE>tokenizer</CODE></A> instances can be obtained only through instances of <A HREF="#ner"><CODE>ner</CODE></A>.
+The <A HREF="#tokenizer"><CODE>tokenizer</CODE></A> instances can be obtained either directly using the
+static method <A HREF="#tokenizer_new_vertical_tokenizer"><CODE>new_vertical_tokenizer</CODE></A> or
+through instances of <A HREF="#ner"><CODE>ner</CODE></A>.
+</P>
+
+<A NAME="tokenizer_new_vertical_tokenizer"></A>
+<H3>5.4.1. tokenizer::new_vertical_tokenizer</H3>
+
+<PRE>
+static <A HREF="#tokenizer">tokenizer</A> new_vertical_tokenizer();
+</PRE>
+
+<P>
+Returns a new instance of a vertical tokenizer, which considers every line to
+be one token, with empty line denoting end of sentence. The user should delete
+the instance after use.
 </P>
 
 <A NAME="tokenizer_set_text"></A>
-<H3>5.4.1. tokenizer::set_text</H3>
+<H3>5.4.2. tokenizer::set_text</H3>
 
 <PRE>
 virtual void set_text(<A HREF="#string_piece">string_piece</A> text, bool make_copy = false) = 0;
@@ -895,7 +913,7 @@ tokenizer is released or <CODE>set_text</CODE> is called again.
 </P>
 
 <A NAME="tokenizer_next_sentence"></A>
-<H3>5.4.2. tokenizer::next_sentence</H3>
+<H3>5.4.3. tokenizer::next_sentence</H3>
 
 <PRE>
 virtual bool next_sentence(std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;* forms, std::vector&lt;<A HREF="#token_range">token_range</A>&gt;* tokens) = 0;
@@ -995,7 +1013,7 @@ Returns a new instance of a suitable tokenizer or <CODE>NULL</CODE> if no such t
 exists. The user should delete it after use.
 </P>
 
-<A NAME="toc43"></A>
+<A NAME="toc44"></A>
 <H1>6. Contact</H1>
 
 <P>
@@ -1018,14 +1036,14 @@ Authors:
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT-Clarin project of the Ministry of Education of the Czech Republic (project LM2010013).
 </P>
 
-<A NAME="toc45"></A>
+<A NAME="toc46"></A>
 <H2>7.1. Publications</H2>
 
 <UL>
 <LI>Straková Jana, Straka Milan, Hajič Jan: <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</A>.</I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
 </UL>
 
-<A NAME="toc46"></A>
+<A NAME="toc47"></A>
 <H2>7.2. Bibtex for referencing</H2>
 
 <PRE>

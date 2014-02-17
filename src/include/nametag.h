@@ -67,6 +67,9 @@ class NAMETAG_IMPORT tokenizer {
 
   virtual void set_text(string_piece text, bool make_copy = false) = 0;
   virtual bool next_sentence(std::vector<string_piece>* forms, std::vector<token_range>* tokens) = 0;
+
+  // Static factory method
+  static tokenizer* new_vertical_tokenizer();
 };
 
 class NAMETAG_IMPORT ner {

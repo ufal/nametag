@@ -16,35 +16,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
+#include "tokenizer.h"
 
-#include "common.h"
-#include "string_piece.h"
+#include "morphodita.h"
 
 namespace ufal {
 namespace nametag {
 
-// Range of a token, measured in Unicode characters, not UTF8 bytes.
-// It must be in sync with ufal::morphodita::token_range.
-struct token_range {
-  size_t start;
-  size_t length;
-
-  token_range() {}
-  token_range(size_t start, size_t length) : start(start), length(length) {}
-};
-
-// This must be in sync with ufal::morphodita::tokenizer.
-class EXPORT_ATTRIBUTES tokenizer {
- public:
-  virtual ~tokenizer() {}
-
-  virtual void set_text(string_piece text, bool make_copy = false) = 0;
-  virtual bool next_sentence(vector<string_piece>* forms, vector<token_range>* tokens) = 0;
-
-  // Static factory method
-  static tokenizer* new_vertical_tokenizer();
-};
+tokenizer* tokenizer::new_vertical_tokenizer() {
+    return (tokenizer*) ufal::morphodita::tokenizer::new_vertical_tokenizer();
+}
 
 } // namespace nametag
 } // namespace ufal

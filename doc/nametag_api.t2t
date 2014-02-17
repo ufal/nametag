@@ -64,6 +64,8 @@ class tokenizer {
  public:
   virtual ~tokenizer() {}
 
+  static [tokenizer #tokenizer]* [new_vertical_tokenizer #tokenizer_new_vertical_tokenizer]();
+
   virtual void [set_text #tokenizer_set_text]([string_piece #string_piece] text, bool make_copy = false) = 0;
   virtual bool [next_sentence #tokenizer_next_sentence](std::vector<[string_piece #string_piece]>* forms, std::vector<[token_range #token_range]>* tokens) = 0;
 };
@@ -72,7 +74,18 @@ class tokenizer {
 The [``tokenizer`` #tokenizer] class performs segmentation and tokenization of given text.
 The class is //not// threadsafe.
 
-The [``tokenizer`` #tokenizer] instances can be obtained only through instances of [``ner`` #ner].
+The [``tokenizer`` #tokenizer] instances can be obtained either directly using the
+static method [``new_vertical_tokenizer`` #tokenizer_new_vertical_tokenizer] or
+through instances of [``ner`` #ner].
+
+
+=== tokenizer::new_vertical_tokenizer ===[tokenizer_new_vertical_tokenizer]
+``` static [tokenizer #tokenizer] new_vertical_tokenizer();
+
+Returns a new instance of a vertical tokenizer, which considers every line to
+be one token, with empty line denoting end of sentence. The user should delete
+the instance after use.
+
 
 === tokenizer::set_text ===[tokenizer_set_text]
 ``` virtual void set_text([string_piece #string_piece] text, bool make_copy = false) = 0;

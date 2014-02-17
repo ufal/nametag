@@ -73,6 +73,10 @@ class tokenizer {
       return result;
     }
   }
+
+  %rename(newVerticalTokenizer) new_vertical_tokenizer;
+  %newobject new_vertical_tokenizer;
+  static tokenizer* new_vertical_tokenizer();
 };
 
 %rename(Ner) ner;

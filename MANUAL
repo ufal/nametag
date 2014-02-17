@@ -654,6 +654,8 @@ Class tokenizer
    public:
     virtual ~tokenizer() {}
   
+    static tokenizer* new_vertical_tokenizer();
+  
     virtual void set_text(string_piece text, bool make_copy = false) = 0;
     virtual bool next_sentence(std::vector<string_piece>* forms, std::vector<token_range>* tokens) = 0;
   };
@@ -661,7 +663,18 @@ Class tokenizer
 The tokenizer class performs segmentation and tokenization of given text. The
 class is not threadsafe.
 
-The tokenizer instances can be obtained only through instances of ner.
+The tokenizer instances can be obtained either directly using the static method
+new_vertical_tokenizer or through instances of ner.
+
+
+tokenizer::new_vertical_tokenizer
+---------------------------------
+
+  static tokenizer new_vertical_tokenizer();
+
+Returns a new instance of a vertical tokenizer, which considers every line to be
+one token, with empty line denoting end of sentence. The user should delete the
+instance after use.
 
 
 tokenizer::set_text
