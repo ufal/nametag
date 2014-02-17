@@ -375,6 +375,55 @@ Example output:
   ...
 
 
+Running the Tokenizer
+---------------------
+
+Using the run_tokenizer executable it is possible to perform only tokenization
+and segmentation used in a specified model.
+
+The input is a UTF-8 encoded plain text and the input files are specified same
+as with the run_ner command.
+
+The full command syntax of run_tokenizer is
+
+  run_tokenizer [options] recognizer_model [file[:output_file]]...
+  Options: --output=vertical|xml
+
+
+Output Formats
+--------------
+
+The output format is specified using the --output option. Currently supported
+output formats are:
+
+- xml (default): Simple XML format without a root element, using <sentence>
+  element to mark sentences and <token> element to mark tokens.
+  
+  Example output for input Děti pojedou k babičce. Už se těší. (line
+  breaks added):
+  <sentence><token>Děti</token> <token>pojedou</token> <token>k</token>
+  <token>babičce</token><token>.</token></sentence> <sentence><token>Už</token>
+  <token>se</token> <token>těší</token><token>.</token></sentence>
+
+  
+- vertical: Each token is on a separate line, every sentence is ended by a
+  blank line.
+  
+  Example output for input Děti pojedou k babičce. Už se těší.:
+  Děti
+  pojedou
+  k
+  babičce
+  .
+  
+  Už
+  se
+  těší
+  .
+  
+
+
+
 Training of Custom Models
 -------------------------
 

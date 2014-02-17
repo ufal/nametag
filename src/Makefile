@@ -2,7 +2,7 @@ MORPHODITA_DIR=../morphodita/src
 
 include $(MORPHODITA_DIR)/Makefile.options
 
-EXECUTABLES = $(call exe,run_ner train_ner)
+EXECUTABLES = $(call exe,run_ner run_tokenizer train_ner)
 LIBRARIES = $(call lib,libnametag libnametag.dyn) $(call dynlib,libnametag)
 all: $(EXECUTABLES)
 lib: $(LIBRARIES)
@@ -33,6 +33,7 @@ $(call dynlib,libnametag): $(call lib,libnametag.dyn) $(call lib,$(MORPHODITA_DI
 
 # executables
 $(call exe,run_ner): $(call obj, $(NAMETAG_O) utils/input utils/output) $(call lib,$(MORPHODITA_DIR)/libmorphodita)
+$(call exe,run_tokenizer): $(call obj, $(NAMETAG_O) utils/input utils/output utils/parse_options) $(call lib,$(MORPHODITA_DIR)/libmorphodita)
 $(call exe,train_ner): $(call obj, $(LZMA_ENC_O) $(NAMETAG_O) classifier/network_classifier_encoder features/feature_templates_encoder ner/bilou_ner_trainer ner/entity_map_encoder utils/input) $(call lib,$(MORPHODITA_DIR)/libmorphodita)
 $(EXECUTABLES): $(call exe,%): $(call obj,%)
 	$(CXX) $^ -o $@ $(LD_FLAGS)

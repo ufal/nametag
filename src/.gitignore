@@ -1,5 +1,6 @@
 .objs/
 run_ner
+run_tokenizer
 train_ner
 libnametag.a
 libnametag.dyn.a

@@ -52,15 +52,19 @@
       <LI><A HREF="#run_ner_untokenized">4.2.1. Untokenized Input</A>
       <LI><A HREF="#run_ner_vertical">4.2.2. Vertical Input Format</A>
       </UL>
-    <LI><A HREF="#toc23">4.3. Training of Custom Models</A>
+    <LI><A HREF="#run_tokenizer">4.3. Running the Tokenizer</A>
       <UL>
-      <LI><A HREF="#training_data">4.3.1. Training data</A>
-      <LI><A HREF="#tagger">4.3.2. Tagger</A>
-      <LI><A HREF="#feature_templates">4.3.3. Feature Templates</A>
-      <LI><A HREF="#toc27">4.3.4. Running train_ner</A>
+      <LI><A HREF="#toc24">4.3.1. Output Formats</A>
+      </UL>
+    <LI><A HREF="#toc25">4.4. Training of Custom Models</A>
+      <UL>
+      <LI><A HREF="#training_data">4.4.1. Training data</A>
+      <LI><A HREF="#tagger">4.4.2. Tagger</A>
+      <LI><A HREF="#feature_templates">4.4.3. Feature Templates</A>
+      <LI><A HREF="#toc29">4.4.4. Running train_ner</A>
       </UL>
     </UL>
-  <LI><A HREF="#toc28">NameTag API Reference</A>
+  <LI><A HREF="#toc30">NameTag API Reference</A>
     <UL>
     <LI><A HREF="#string_piece">5.1. Struct string_piece</A>
     <LI><A HREF="#token_range">5.2. Struct token_range</A>
@@ -79,11 +83,11 @@
       <LI><A HREF="#ner_new_tokenizer">5.5.5. ner::new_tokenizer</A>
       </UL>
     </UL>
-  <LI><A HREF="#toc41">Contact</A>
+  <LI><A HREF="#toc43">Contact</A>
   <LI><A HREF="#nametag_acknowledgements">Acknowledgements</A>
     <UL>
-    <LI><A HREF="#toc43">7.1. Publications</A>
-    <LI><A HREF="#toc44">7.2. Bibtex for referencing</A>
+    <LI><A HREF="#toc45">7.1. Publications</A>
+    <LI><A HREF="#toc46">7.2. Bibtex for referencing</A>
     </UL>
   </OL>
 
@@ -530,15 +534,78 @@ Example output:
 ...
 </PRE>
 
-<A NAME="toc23"></A>
-<H2>4.3. Training of Custom Models</H2>
+<A NAME="run_tokenizer"></A>
+<H2>4.3. Running the Tokenizer</H2>
+
+<P>
+Using the <CODE>run_tokenizer</CODE> executable it is possible to perform only
+tokenization and segmentation used in a specified model.
+</P>
+<P>
+The input is a UTF-8 encoded plain text and the input files are specified same
+as with the <A HREF="#run_ner"><CODE>run_ner</CODE></A> command.
+</P>
+<P>
+The full command syntax of <CODE>run_tokenizer</CODE> is
+</P>
+
+<PRE>
+run_tokenizer [options] recognizer_model [file[:output_file]]...
+Options: --output=vertical|xml
+</PRE>
+
+<A NAME="toc24"></A>
+<H3>4.3.1. Output Formats</H3>
+
+<P>
+The output format is specified using the <CODE>--output</CODE> option. Currently
+supported output formats are:
+</P>
+
+<UL>
+<LI><CODE>xml</CODE> (default): Simple XML format without a root element, using
+  <CODE>&lt;sentence&gt;</CODE> element to mark sentences and <CODE>&lt;token&gt;</CODE> element to mark
+  tokens.
+<P></P>
+  Example output for input <CODE>Děti pojedou k babičce. Už se těší.</CODE> (line breaks added):
+
+<PRE>
+&lt;sentence&gt;&lt;token&gt;Děti&lt;/token&gt; &lt;token&gt;pojedou&lt;/token&gt; &lt;token&gt;k&lt;/token&gt;
+&lt;token&gt;babičce&lt;/token&gt;&lt;token&gt;.&lt;/token&gt;&lt;/sentence&gt; &lt;sentence&gt;&lt;token&gt;Už&lt;/token&gt;
+&lt;token&gt;se&lt;/token&gt; &lt;token&gt;těší&lt;/token&gt;&lt;token&gt;.&lt;/token&gt;&lt;/sentence&gt;
+</PRE>
+
+<P></P>
+<LI><CODE>vertical</CODE>: Each token is on a separate line, every sentence is ended by
+  a blank line.
+<P></P>
+  Example output for input <CODE>Děti pojedou k babičce. Už se těší.</CODE>:
+
+<PRE>
+Děti
+pojedou
+k
+babičce
+.
+
+Už
+se
+těší
+.
+
+</PRE>
+
+</UL>
+
+<A NAME="toc25"></A>
+<H2>4.4. Training of Custom Models</H2>
 
 <P>
 Training of custom models is possible using the <CODE>train_ner</CODE> binary.
 </P>
 
 <A NAME="training_data"></A>
-<H3>4.3.1. Training data</H3>
+<H3>4.4.1. Training data</H3>
 
 <P>
 To train a named entity recognizer model, training data is needed. The training
@@ -563,7 +630,7 @@ except for one case &ndash; if the previous word is also a named entity of same 
  </UL>
 
 <A NAME="tagger"></A>
-<H3>4.3.2. Tagger</H3>
+<H3>4.4.2. Tagger</H3>
 
 <P>
 Most named entity recognizer models utilize part of speech tags and lemmas.
@@ -589,7 +656,7 @@ NameTag can utilize several taggers to obtain the tags and lemmas:
   significantly.
 </DL>
 
-<H4>4.3.2.1. Lemma Structure</H4>
+<H4>4.4.2.1. Lemma Structure</H4>
 
 <P>
 The lemmas used by the recognizer can be structured and consist of three parts:
@@ -611,7 +678,7 @@ comment is empty.
 </P>
 
 <A NAME="feature_templates"></A>
-<H3>4.3.3. Feature Templates</H3>
+<H3>4.4.3. Feature Templates</H3>
 
 <P>
 The recognizer utilizes feature templates to generate features which are used
@@ -656,8 +723,8 @@ exhaustive (see the sources in the <CODE>features</CODE> directory).
   type and not used in further processing.
 </UL>
 
-<A NAME="toc27"></A>
-<H3>4.3.4. Running train_ner</H3>
+<A NAME="toc29"></A>
+<H3>4.4.4. Running train_ner</H3>
 
 <P>
 The <CODE>train_ner</CODE> binary has the following arguments (which has to be specified
@@ -718,7 +785,7 @@ input and the trained model is written to the standard output if the training
 is successful.
 </P>
 
-<A NAME="toc28"></A>
+<A NAME="toc30"></A>
 <H1>5. NameTag API Reference</H1>
 
 <P>
@@ -928,7 +995,7 @@ Returns a new instance of a suitable tokenizer or <CODE>NULL</CODE> if no such t
 exists. The user should delete it after use.
 </P>
 
-<A NAME="toc41"></A>
+<A NAME="toc43"></A>
 <H1>6. Contact</H1>
 
 <P>
@@ -951,14 +1018,14 @@ Authors:
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT-Clarin project of the Ministry of Education of the Czech Republic (project LM2010013).
 </P>
 
-<A NAME="toc43"></A>
+<A NAME="toc45"></A>
 <H2>7.1. Publications</H2>
 
 <UL>
 <LI>Straková Jana, Straka Milan, Hajič Jan: <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</A>.</I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
 </UL>
 
-<A NAME="toc44"></A>
+<A NAME="toc46"></A>
 <H2>7.2. Bibtex for referencing</H2>
 
 <PRE>
