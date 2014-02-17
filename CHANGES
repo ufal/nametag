@@ -1,3 +1,10 @@
+Version 0.94 [17 Feb 2014]
+--------------------------
+- Provide better options (--input, --output), which also allows
+  to specify input and output format separately.
+- Add tokenization into to xml output format.
+- Add static tokenizer::new_vertical_tokenizer method.
+
 Version 0.93 [10 Feb 2014 ]
 ---------------------------
 - Big API change

@@ -1,5 +1,5 @@
 NameTag: Name Entity Recognizer
-Version 0.93
+Version 0.94
 
 Introduction
 ============
@@ -780,6 +780,9 @@ Authors:
   strakova@ufal.mff.cuni.cz
 
 NameTag website (http://ufal.mff.cuni.cz/nametag).
+
+NameTag LINDAT-Clarin entry
+(http://hdl.handle.net/11858/00-097C-0000-0023-43CE-E).
 
 
 Acknowledgements
