@@ -17,54 +17,53 @@
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
 import cz.cuni.mff.ufal.nametag.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 import java.util.Stack;
 
 class RunNer {
-  public static void recognizeVertical(Ner ner) {
-    Forms forms = new Forms();
-    NamedEntities entities = new NamedEntities();
-    Scanner reader = new Scanner(System.in);
-
-    int lines = 0;
-    boolean not_eof = true;
-    while (not_eof) {
-      String line;
-
-      forms.clear();
-      while ((not_eof = reader.hasNextLine()) && !(line = reader.nextLine()).isEmpty())
-        forms.add(line);
-
-      if (!forms.isEmpty()) {
-        ner.recognize(forms, entities);
-
-        for (int i = 0; i < entities.size(); i++) {
-          NamedEntity entity = entities.get(i);
-
-          StringBuilder entity_ids = new StringBuilder(), entity_text = new StringBuilder();
-          for (int j = (int) entity.getStart(); j < entity.getStart() + entity.getLength(); j++) {
-            if (j > entity.getStart()) {
-              entity_ids.append(',');
-              entity_ids.append(' ');
-            }
-            entity_ids.append(lines + j + 1);
-            entity_text.append(forms.get(j));
-          }
-          System.out.printf("%s\t%s\t%s\n", entity_ids.toString(), entity.getType(), entity_text.toString());
-        }
-      }
-      lines += forms.size() + 1;
-    }
-  }
-
   public static String encodeEntities(String text) {
     return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
   }
 
-  public static void recognizeUntokenized(Ner ner) {
+  public static void sortEntities(NamedEntities entities, ArrayList<NamedEntity> sortedEntities) {
+    class NamedEntitiesComparator implements Comparator<NamedEntity> {
+      public int compare(NamedEntity a, NamedEntity b) {
+        if (a.getStart() < b.getStart()) return -1;
+        if (a.getStart() > b.getStart()) return 1;
+        if (a.getLength() > b.getLength()) return -1;
+        if (a.getLength() < b.getLength()) return 1;
+        return 0;
+      }
+    }
+    NamedEntitiesComparator comparator = new NamedEntitiesComparator();
+
+    sortedEntities.clear();
+    for (int i = 0; i < entities.size(); i++)
+      sortedEntities.add(entities.get(i));
+    Collections.sort(sortedEntities, comparator);
+  }
+
+  public static void main(String[] args) {
+    if (args.length == 0) {
+      System.err.println("Usage: RunNer recognizer_model");
+      System.exit(1);
+    }
+
+    System.err.print("Loading ner: ");
+    Ner ner = Ner.load(args[0]);
+    if (ner == null) {
+      System.err.println("Cannot load recognizer from file '" + args[0] + "'");
+      System.exit(1);
+    }
+    System.err.println("done");
+
     Forms forms = new Forms();
     TokenRanges tokens = new TokenRanges();
     NamedEntities entities = new NamedEntities();
+    ArrayList<NamedEntity> sortedEntities = new ArrayList<NamedEntity>();
     Scanner reader = new Scanner(System.in);
     Stack<Integer> openEntities = new Stack<Integer>();
     Tokenizer tokenizer = ner.newTokenizer();
@@ -91,57 +90,36 @@ class RunNer {
       int unprinted = 0;
       while (tokenizer.nextSentence(forms, tokens)) {
         ner.recognize(forms, entities);
+        sortEntities(entities, sortedEntities);
 
-        for (int i = 0; i < entities.size(); i++) {
-          NamedEntity entity = entities.get(i);
-          int entity_start = (int) tokens.get((int) entity.getStart()).getStart();
-          int entity_end = (int) (tokens.get((int) (entity.getStart() + entity.getLength() - 1)).getStart() + tokens.get((int) (entity.getStart() + entity.getLength() - 1)).getLength());
+        for (int i = 0, e = 0; i < tokens.size(); i++) {
+          TokenRange token = tokens.get(i);
+          int token_start = (int)token.getStart();
+          int token_end = (int)token.getStart() + (int)token.getLength();
 
-          // Close entities that end sooned than current entity
-          while (!openEntities.empty() && openEntities.peek() < entity_start) {
-            if (unprinted < openEntities.peek()) System.out.print(encodeEntities(text.substring(unprinted, openEntities.peek())));
-            unprinted = openEntities.pop();
-            System.out.print("</ne>");
+          if (unprinted < token_start) System.out.print(encodeEntities(text.substring(unprinted, token_start)));
+          if (i == 0) System.out.print("<sentence>");
+
+          // Open entities starting at current token
+          for (; e < sortedEntities.size() && sortedEntities.get(e).getStart() == i; e++) {
+            System.out.printf("<ne type=\"%s\">", sortedEntities.get(e).getType());
+            openEntities.push((int)sortedEntities.get(e).getStart() + (int)sortedEntities.get(e).getLength() - 1);
           }
 
-          // Print text just before the entity, open it and add end to the stack
-          if (unprinted < entity_start) System.out.print(encodeEntities(text.substring(unprinted, entity_start)));
-          unprinted = entity_start;
-          System.out.printf("<ne type=\"%s\">", entity.getType());
-          openEntities.push(entity_end);
-        }
+          // The token itself
+          System.out.printf("<token>%s</token>", encodeEntities(text.substring(token_start, token_end)));
 
-        // Close unclosed entities
-        while (!openEntities.empty()) {
-          if (unprinted < openEntities.peek()) System.out.print(encodeEntities(text.substring(unprinted, openEntities.peek())));
-          unprinted = openEntities.pop();
-          System.out.print("</ne>");
+          // Close entities ending after current token
+          while (!openEntities.empty() && openEntities.peek() == i) {
+            System.out.printf("</ne>");
+            openEntities.pop();
+          }
+          if (i + 1 == tokens.size()) System.out.printf("</sentence>");
+          unprinted = token_end;
         }
       }
       // Write rest of the text (should be just spaces)
       if (unprinted < text.length()) System.out.print(encodeEntities(text.substring(unprinted)));
     }
-  }
-
-  public static void main(String[] args) {
-    int argi = 0;
-    if (argi < args.length && args[argi].equals("-v")) argi++;
-    boolean use_vertical = argi > 0;
-
-    if (!(argi < args.length)) {
-      System.err.println("Usage: RunNer ner_model");
-      System.exit(1);
-    }
-
-    System.err.print("Loading ner: ");
-    Ner ner = Ner.load(args[argi]);
-    if (ner == null) {
-      System.err.println("Cannot load recognizer from file '" + args[argi] + "'");
-      System.exit(1);
-    }
-    System.err.println("done");
-
-    if (use_vertical) recognizeVertical(ner);
-    else recognizeUntokenized(ner);
   }
 }

@@ -20,6 +20,12 @@ import sys
 
 from ufal.nametag import *
 
+def encode_entities(text):
+  return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+
+def sort_entities(entities):
+  return sorted(entities, key=lambda entity: (entity.start, -entity.length))
+
 # In Python2, wrap sys.stdin and sys.stdout to work with unicode.
 if sys.version_info[0] < 3:
   import codecs
@@ -28,102 +34,68 @@ if sys.version_info[0] < 3:
   sys.stdin = codecs.getreader(encoding)(sys.stdin)
   sys.stdout = codecs.getwriter(encoding)(sys.stdout)
 
-def recognize_vertical(ner):
-  forms = Forms()
-  entities = NamedEntities()
-
-  lines = 0
-  not_eof = True
-  while not_eof:
-    forms.clear()
-
-    # Read sentence
-    while True:
-      line = sys.stdin.readline()
-      not_eof = bool(line)
-      line = line.rstrip('\r\n')
-      if not line: break
-      forms.append(line)
-
-    # Tag
-    if forms:
-      ner.recognize(forms, entities)
-
-      for entity in entities:
-        sys.stdout.write('%s\t%s\t%s\n' % (
-          ','.join(map(str, range(lines + 1 + entity.start, lines + 1 + entity.start + entity.length))),
-          entity.type,
-          ' '.join(forms[entity.start : entity.start + entity.length])))
-
-    lines += forms.size() + 1
-
-def encode_entities(text):
-  return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
-
-def recognize_untokenized(ner):
-  forms = Forms()
-  tokens = TokenRanges()
-  entities = NamedEntities()
-  openEntities = []
-  tokenizer = ner.newTokenizer()
-  if tokenizer is None:
-    sys.stderr.write("No tokenizer is defined for the supplied model!")
-    sys.exit(1)
-
-  not_eof = True
-  while not_eof:
-    text = ''
-
-    # Read block
-    while True:
-      line = sys.stdin.readline()
-      not_eof = bool(line)
-      if not not_eof: break
-      line = line.rstrip('\r\n')
-      text += line
-      text += '\n';
-      if not line: break
-
-    # Tokenize and recognize
-    tokenizer.setText(text)
-    t = 0
-    while tokenizer.nextSentence(forms, tokens):
-      ner.recognize(forms, entities)
-
-      # Write entities
-      for entity in entities:
-        # Close entities that end sooner than current one
-        while openEntities and openEntities[-1] < tokens[entity.start].start:
-          sys.stdout.write('%s</ne>' % encode_entities(text[t : openEntities[-1]]))
-          t = openEntities.pop()
-
-        # Print text just before entity, open it and add end to the stack
-        sys.stdout.write('%s<ne type="%s">' % (encode_entities(text[t : tokens[entity.start].start]), entity.type))
-        t = tokens[entity.start].start
-        openEntities.append(tokens[entity.start + entity.length - 1].start + tokens[entity.start + entity.length - 1].length)
-
-      # Close unclosed entities
-      while openEntities:
-        sys.stdout.write('%s</ne>' % encode_entities(text[t : openEntities[-1]]))
-        t = openEntities.pop()
-
-    # Write rest of the text
-    sys.stdout.write(text[t:])
-
-argi = 1
-if argi < len(sys.argv) and sys.argv[argi] == "-v": argi = argi + 1
-use_vertical = argi > 1
-
-if not argi < len(sys.argv):
-  sys.stderr.write('Usage: %s [-v] ner_model\n' % sys.argv[0])
+if len(sys.argv) == 1:
+  sys.stderr.write('Usage: %s recognizer_model\n' % sys.argv[0])
   sys.exit(1)
 
 sys.stderr.write('Loading ner: ')
-ner = Ner.load(sys.argv[argi])
+ner = Ner.load(sys.argv[1])
 if not ner:
-  sys.stderr.write("Cannot load recognizer from file '%s'\n" % sys.argv[argi])
+  sys.stderr.write("Cannot load recognizer from file '%s'\n" % sys.argv[1])
   sys.exit(1)
 sys.stderr.write('done\n')
 
-if use_vertical: recognize_vertical(ner)
-else: recognize_untokenized(ner)
+forms = Forms()
+tokens = TokenRanges()
+entities = NamedEntities()
+sortedEntities = []
+openEntities = []
+tokenizer = ner.newTokenizer()
+if tokenizer is None:
+  sys.stderr.write("No tokenizer is defined for the supplied model!")
+  sys.exit(1)
+
+not_eof = True
+while not_eof:
+  text = ''
+
+  # Read block
+  while True:
+    line = sys.stdin.readline()
+    not_eof = bool(line)
+    if not not_eof: break
+    line = line.rstrip('\r\n')
+    text += line
+    text += '\n';
+    if not line: break
+
+  # Tokenize and recognize
+  tokenizer.setText(text)
+  t = 0
+  while tokenizer.nextSentence(forms, tokens):
+    ner.recognize(forms, entities)
+    sortedEntities = sort_entities(entities)
+
+    # Write entities
+    e = 0
+    for i in range(len(tokens)):
+      sys.stdout.write(encode_entities(text[t:tokens[i].start]))
+      if (i == 0): sys.stdout.write("<sentence>")
+
+      # Open entities starting at current token
+      while (e < len(sortedEntities) and sortedEntities[e].start == i):
+        sys.stdout.write('<ne type="%s">' % encode_entities(sortedEntities[e].type))
+        openEntities.append(sortedEntities[e].start + sortedEntities[e].length - 1)
+        e = e + 1
+
+      # The token itself
+      sys.stdout.write('<token>%s</token>' % encode_entities(text[tokens[i].start : tokens[i].start + tokens[i].length]))
+
+      # Close entities ending after current token
+      while openEntities and openEntities[-1] == i:
+        sys.stdout.write('</ne>')
+        openEntities.pop()
+      if (i + 1 == len(tokens)): sys.stdout.write("</sentence>")
+      t = tokens[i].start + tokens[i].length
+  # Write rest of the text
+  sys.stdout.write(text[t:])

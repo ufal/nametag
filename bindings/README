@@ -1,0 +1,7 @@
+This directory contains language bindings of the NameTag library.
+
+For instructions how to compile the language bindings, see
+the NameTag Installation either in INSTALL, or in MANUAL.
+
+For every language run_ner example is provided. The example is the same
+as the C++ run_ner, with untokenized input format and xml output format.
