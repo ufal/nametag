@@ -49,8 +49,8 @@
       </UL>
     <LI><A HREF="#run_ner">4.2. Running the Recognizer</A>
       <UL>
-      <LI><A HREF="#run_ner_untokenized">4.2.1. Untokenized Input</A>
-      <LI><A HREF="#run_ner_vertical">4.2.2. Vertical Input Format</A>
+      <LI><A HREF="#toc21">4.2.1. Input Formats</A>
+      <LI><A HREF="#toc22">4.2.2. Output Formats</A>
       </UL>
     <LI><A HREF="#run_tokenizer">4.3. Running the Tokenizer</A>
       <UL>
@@ -454,86 +454,82 @@ The full command syntax of <CODE>run_ner</CODE> is
 </P>
 
 <PRE>
-run_ner [-v] recognizer_model [input_file[:output_file]]...
+Usage: run_ner [options] recognizer_model [file[:output_file]]...
+Options: --input=untokenized|vertical
+         --output=vertical|xml
 </PRE>
 
-<A NAME="run_ner_untokenized"></A>
-<H3>4.2.1. Untokenized Input</H3>
+<A NAME="toc21"></A>
+<H3>4.2.1. Input Formats</H3>
 
 <P>
-By default (i.e., without specifying <CODE>-v</CODE>), the input is assumed to be
-a plain text and it is automatically tokenized and segmented by default. The
-output is in XML format without a root element, using
-<CODE>&lt;ne type="..."&gt;...&lt;/ne&gt;</CODE> element to encode a named entity.
+The input format is specified using the <CODE>--input</CODE> option. Currently supported
+input formats are:
 </P>
+
+<UL>
+<LI><CODE>untokenized</CODE> (default): the input is tokenized and segmented using
+  a tokenizer defined by the model,
+<LI><CODE>vertical</CODE>: the input is in vertical format, every line is considered
+  a word, with empty line denoting end of sentence.
+</UL>
+
+<A NAME="toc22"></A>
+<H3>4.2.2. Output Formats</H3>
+
 <P>
-Example input file <CODE>sample.txt</CODE>:
+The output format is specified using the <CODE>--output</CODE> option. Currently
+supported output formats are:
 </P>
+
+<UL>
+<LI><CODE>xml</CODE> (default): Simple XML format without a root element, using
+  <CODE>&lt;sentence&gt;</CODE> element to mark sentences and
+  <CODE>&lt;token&gt;</CODE> element to mark tokens. The recognized named entities
+  are encoded using <CODE>&lt;ne type="..."&gt;</CODE> element.
+<P></P>
+  Example input:
 
 <PRE>
 Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
 </PRE>
 
-<P>
-NameTag is run using:
-</P>
+<P></P>
+  A NameTag identifies a first name (<CODE>pf</CODE>), a surname (<CODE>ps</CODE>) and a person name container (<CODE>P</CODE>) in the input (line breaks added):
 
 <PRE>
-./run_ner recognizer_model sample.txt
+  &lt;sentence&gt;&lt;ne type="P"&gt;&lt;ne type="pf"&gt;&lt;token&gt;Václav&lt;/token&gt;&lt;/ne&gt; &lt;ne type="ps"&gt;&lt;token&gt;Havel&lt;/token&gt;&lt;/ne&gt;&lt;/ne&gt;
+  &lt;token&gt;byl&lt;/token&gt; &lt;token&gt;český&lt;/token&gt; &lt;token&gt;dramatik&lt;/token&gt;&lt;token&gt;,&lt;/token&gt; &lt;token&gt;esejista&lt;/token&gt;&lt;token&gt;,&lt;/token&gt;
+  &lt;token&gt;kritik&lt;/token&gt; &lt;token&gt;komunistického&lt;/token&gt; &lt;token&gt;režimu&lt;/token&gt; &lt;token&gt;a&lt;/token&gt; &lt;token&gt;později&lt;/token&gt;
+  &lt;token&gt;politik&lt;/token&gt;&lt;token&gt;.&lt;/token&gt;&lt;/sentence&gt;
 </PRE>
 
-<P>
-A NameTag identifies a first name (<CODE>pf</CODE>), a surname (<CODE>ps</CODE>) and a person name container (<CODE>P</CODE>) in the input:
-</P>
+<P></P>
+<LI><CODE>vertical</CODE>: Every found named entity is on a separate line. Each line
+  contains three tab-separated fields: <I>entity_range</I>, <I>entity_type</I>
+  and <I>entity_text</I>. The <I>entity_range</I> is composed of token identifiers
+  (counting from 1 and including end-of-sentence; if the input is also <CODE>vertical</CODE>,
+  token identifiers correspond exactly to line numbers) of tokens forming the
+  named entity and <I>entity_type</I> represents its type. The <I>entity_text</I> is
+  not strictly necessary and contains space separated words of this named
+  entity.
+<P></P>
+  Example input:
 
 <PRE>
-&lt;ne type='P'&gt;&lt;ne type='pf'&gt;Václav&lt;/ne&gt; &lt;ne type='ps'&gt;Havel&lt;/ne&gt;&lt;/ne&gt; byl český dramatik, esejista, kritik komunistického režimu a později politik.
+Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
 </PRE>
 
-<A NAME="run_ner_vertical"></A>
-<H3>4.2.2. Vertical Input Format</H3>
-
-<P>
-If the input is already tokenized and segmented, <CODE>run_ner</CODE> accepts tokenized
-and segmented text in a CoNLL-style vertical format, where every word is on
-a separate line, with empty line representing an end of sentence.
-</P>
-<P>
-The output in this case consists of lines representing found named entities.
-Each line contains three tab-separated fields: <I>entity_range</I>, <I>entity_type</I> and
-<I>entity_text</I>. The <I>entity_range</I> represents the lines of the input file containing
-the named entity and <I>entity_type</I> represents its type. The <I>entity_text</I> is not
-strictly necessary and contains space separated words of this named entity.
-</P>
-<P>
-Example input:
-</P>
-
-<PRE>
-Václav
-Havel
-byl
-...
-</PRE>
-
-<P>
-NameTag is run using:
-</P>
-
-<PRE>
-./run_ner -v recognizer_model
-</PRE>
-
-<P>
-Example output:
-</P>
+<P></P>
+  Example output:
 
 <PRE>
 1,2	P	Václav Havel
 1	pf	Václav
 2	ps	Havel
-...
 </PRE>
+
+</UL>
 
 <A NAME="run_tokenizer"></A>
 <H2>4.3. Running the Tokenizer</H2>

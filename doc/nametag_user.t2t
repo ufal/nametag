@@ -37,55 +37,62 @@ used, the result is saved to standard output. If no argument is given, input is
 read from standard input and written to standard output.
 
 The full command syntax of ``run_ner`` is
-``` run_ner [-v] recognizer_model [input_file[:output_file]]...
+```
+Usage: run_ner [options] recognizer_model [file[:output_file]]...
+Options: --input=untokenized|vertical
+         --output=vertical|xml
+```
 
-=== Untokenized Input ===[run_ner_untokenized]
 
-By default (i.e., without specifying ``-v``), the input is assumed to be
-a plain text and it is automatically tokenized and segmented by default. The
-output is in XML format without a root element, using
-``<ne type="...">...</ne>`` element to encode a named entity.
+=== Input Formats ===
 
-Example input file ``sample.txt``:
+The input format is specified using the ``--input`` option. Currently supported
+input formats are:
+- ``untokenized`` (default): the input is tokenized and segmented using
+  a tokenizer defined by the model,
+- ``vertical``: the input is in vertical format, every line is considered
+  a word, with empty line denoting end of sentence.
+
+
+=== Output Formats ===
+
+The output format is specified using the ``--output`` option. Currently
+supported output formats are:
+- ``xml`` (default): Simple XML format without a root element, using
+  ``<sentence>`` element to mark sentences and
+  ``<token>`` element to mark tokens. The recognized named entities
+  are encoded using ``<ne type="...">`` element.
+
+  Example input:
 ``` Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
 
-NameTag is run using:
-``` ./run_ner recognizer_model sample.txt
-
-A NameTag identifies a first name (``pf``), a surname (``ps``) and a person name container (``P``) in the input:
-``` <ne type='P'><ne type='pf'>Václav</ne> <ne type='ps'>Havel</ne></ne> byl český dramatik, esejista, kritik komunistického režimu a později politik.
-
-
-=== Vertical Input Format ===[run_ner_vertical]
-
-If the input is already tokenized and segmented, ``run_ner`` accepts tokenized
-and segmented text in a CoNLL-style vertical format, where every word is on
-a separate line, with empty line representing an end of sentence.
-
-The output in this case consists of lines representing found named entities.
-Each line contains three tab-separated fields: //entity_range//, //entity_type// and
-//entity_text//. The //entity_range// represents the lines of the input file containing
-the named entity and //entity_type// represents its type. The //entity_text// is not
-strictly necessary and contains space separated words of this named entity.
-
-Example input:
+  A NameTag identifies a first name (``pf``), a surname (``ps``) and a person name container (``P``) in the input (line breaks added):
 ```
-Václav
-Havel
-byl
-...
+  <sentence><ne type="P"><ne type="pf"><token>Václav</token></ne> <ne type="ps"><token>Havel</token></ne></ne>
+  <token>byl</token> <token>český</token> <token>dramatik</token><token>,</token> <token>esejista</token><token>,</token>
+  <token>kritik</token> <token>komunistického</token> <token>režimu</token> <token>a</token> <token>později</token>
+  <token>politik</token><token>.</token></sentence>
 ```
 
-NameTag is run using:
-``` ./run_ner -v recognizer_model
+- ``vertical``: Every found named entity is on a separate line. Each line
+  contains three tab-separated fields: //entity_range//, //entity_type//
+  and //entity_text//. The //entity_range// is composed of token identifiers
+  (counting from 1 and including end-of-sentence; if the input is also ``vertical``,
+  token identifiers correspond exactly to line numbers) of tokens forming the
+  named entity and //entity_type// represents its type. The //entity_text// is
+  not strictly necessary and contains space separated words of this named
+  entity.
 
-Example output:
+  Example input:
+``` Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
+
+  Example output:
 ```
 1,2	P	Václav Havel
 1	pf	Václav
 2	ps	Havel
-...
 ```
+
 
 == Running the Tokenizer ==[run_tokenizer]
 
