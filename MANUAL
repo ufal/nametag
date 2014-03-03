@@ -40,10 +40,10 @@ Language Models
 ---------------
 
 To use NameTag, a language model is needed. The language models are available
-from LINDAT-Clarin (http://www.lindat.cz) infrastructure and described further
+from LINDAT/CLARIN (http://www.lindat.cz) infrastructure and described further
 in the User's Manual. Currently the following language models are available:
 
-- Czech: latest version 140205 (...)
+- Czech: latest version 140205 (to be released soon)
 
 
 Roadmap
@@ -201,7 +201,7 @@ Acknowledgements
 ----------------
 
 This work has been using language resources developed and/or stored and/or
-distributed by the LINDAT-Clarin project of the Ministry of Education of the
+distributed by the LINDAT/CLARIN project of the Ministry of Education of the
 Czech Republic (project LM2010013).
 
 Czech models are trained on Czech Named Entity Corpus, which was created by
@@ -209,7 +209,7 @@ Magda Ševčíková, Zdeněk Žabokrtský, Jana Straková and Milan Straka.
 
 The recognizer research was supported by the projects MSM0021620838 and LC536 of
 Ministry of Education, Youth and Sports of the Czech Republic, 1ET101120503 of
-Academy of Sciences of the Czech Republic, LINDAT-Clarin project of the Ministry
+Academy of Sciences of the Czech Republic, LINDAT/CLARIN project of the Ministry
 of Education of the Czech Republic (project LM2010013), and partially by SVV
 project number 267 314.  The research was performed by Jana Straková, Zdeněk
 Žabokrtský and Milan Straka.
@@ -781,7 +781,7 @@ Authors:
 
 NameTag website (http://ufal.mff.cuni.cz/nametag).
 
-NameTag LINDAT-Clarin entry
+NameTag LINDAT/CLARIN entry
 (http://hdl.handle.net/11858/00-097C-0000-0023-43CE-E).
 
 
@@ -789,7 +789,7 @@ Acknowledgements
 ================
 
 This work has been using language resources developed and/or stored and/or
-distributed by the LINDAT-Clarin project of the Ministry of Education of the
+distributed by the LINDAT/CLARIN project of the Ministry of Education of the
 Czech Republic (project LM2010013).
 
 

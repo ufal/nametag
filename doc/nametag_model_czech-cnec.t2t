@@ -20,7 +20,7 @@ representation of year, month and day, respectively. The latest version is
 === Acknowledgements ===[czech_cnec_acknowledgements]
 
 This work has been using language resources developed and/or stored and/or
-distributed by the LINDAT-Clarin project of the Ministry of Education of the
+distributed by the LINDAT/CLARIN project of the Ministry of Education of the
 Czech Republic (project //LM2010013//).
 
 Czech models are trained on Czech Named Entity Corpus, which was created by
@@ -28,7 +28,7 @@ Magda Ševčíková, Zdeněk Žabokrtský, Jana Straková and Milan Straka.
 
 The recognizer research was supported by the projects
 //MSM0021620838// and //LC536// of Ministry of Education, Youth and Sports of the Czech Republic,
-//1ET101120503// of Academy of Sciences of the Czech Republic, LINDAT-Clarin
+//1ET101120503// of Academy of Sciences of the Czech Republic, LINDAT/CLARIN
 project of the Ministry of Education of the Czech Republic (project //LM2010013//),
 and partially by SVV project number 267 314.  The research was performed by
 Jana Straková, Zdeněk Žabokrtský and Milan Straka.
