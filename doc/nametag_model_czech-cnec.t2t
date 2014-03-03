@@ -57,7 +57,7 @@ This hierarchy is an updated version of CNEC
 : ``czech-cnec2.0-<version>.ner``
   Czech named entity recognizer trained on training portion of [CNEC 2.0 http://ufal.mff.cuni.cz/cnec/cnec2.0].
 
-  The latest version ``czech-cnec2.0-140205.ner`` reaches 75.42% F1-measure on
+  The latest version ``czech-cnec2.0-140205.ner`` reaches 75.35% F1-measure on
   [CNEC 2.0 http://ufal.mff.cuni.cz/cnec/cnec2.0] etest data.  Model speed:
   ~40k words/s, model size: ~8MB.
 
@@ -65,7 +65,7 @@ This hierarchy is an updated version of CNEC
   Czech named entity recognizer trained on training portion of [CNEC 2.0 http://ufal.mff.cuni.cz/cnec/cnec2.0],
   except for the supertype ``n`` (Number expressions), which is not included.
 
-  The latest version ``czech-cnec2.0-140205-no_numbers.ner`` reaches 77.12%
+  The latest version ``czech-cnec2.0-140205-no_numbers.ner`` reaches 77.22%
   F1-measure on [CNEC 2.0 http://ufal.mff.cuni.cz/cnec/cnec2.0] etest data
   without ``n`` (Number expressions) supertype.  Model speed: ~45k words/s,
   model size: ~8MB.
@@ -92,7 +92,7 @@ whose detailed description is available in the documentation of the
   except for the supertypes ``c`` (Bibliographic items), ``n`` (Number expressions) and
   ``q`` (Quantitative expressions), which are not included.
 
-  The latest version ``czech-cnec1.1-140205-no_numbers.ner`` reaches 77.56%
+  The latest version ``czech-cnec1.1-140205-no_numbers.ner`` reaches 77.88%
   F1-measure on [CNEC 1.1 http://ufal.mff.cuni.cz/cnec/cnec1.1] etest data
   without ``c`` (Bibliographic items), ``n`` (Number expressions) and ``q``
   (Quantitative expressions) supertypes.  Model speed: ~40k words/s,
