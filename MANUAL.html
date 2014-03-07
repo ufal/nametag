@@ -71,9 +71,9 @@
     <LI><A HREF="#named_entity">5.3. Struct named_entity</A>
     <LI><A HREF="#tokenizer">5.4. Class tokenizer</A>
       <UL>
-      <LI><A HREF="#tokenizer_new_vertical_tokenizer">5.4.1. tokenizer::new_vertical_tokenizer</A>
-      <LI><A HREF="#tokenizer_set_text">5.4.2. tokenizer::set_text</A>
-      <LI><A HREF="#tokenizer_next_sentence">5.4.3. tokenizer::next_sentence</A>
+      <LI><A HREF="#tokenizer_set_text">5.4.1. tokenizer::set_text</A>
+      <LI><A HREF="#tokenizer_next_sentence">5.4.2. tokenizer::next_sentence</A>
+      <LI><A HREF="#tokenizer_new_vertical_tokenizer">5.4.3. tokenizer::new_vertical_tokenizer</A>
       </UL>
     <LI><A HREF="#ner">5.5. Class ner</A>
       <UL>
@@ -860,10 +860,10 @@ class tokenizer {
  public:
   virtual ~tokenizer() {}
 
-  static <A HREF="#tokenizer">tokenizer</A>* <A HREF="#tokenizer_new_vertical_tokenizer">new_vertical_tokenizer</A>();
-
   virtual void <A HREF="#tokenizer_set_text">set_text</A>(<A HREF="#string_piece">string_piece</A> text, bool make_copy = false) = 0;
   virtual bool <A HREF="#tokenizer_next_sentence">next_sentence</A>(std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;* forms, std::vector&lt;<A HREF="#token_range">token_range</A>&gt;* tokens) = 0;
+
+  static <A HREF="#tokenizer">tokenizer</A>* <A HREF="#tokenizer_new_vertical_tokenizer">new_vertical_tokenizer</A>();
 };
 </PRE>
 
@@ -877,21 +877,8 @@ static method <A HREF="#tokenizer_new_vertical_tokenizer"><CODE>new_vertical_tok
 through instances of <A HREF="#ner"><CODE>ner</CODE></A>.
 </P>
 
-<A NAME="tokenizer_new_vertical_tokenizer"></A>
-<H3>5.4.1. tokenizer::new_vertical_tokenizer</H3>
-
-<PRE>
-static <A HREF="#tokenizer">tokenizer</A> new_vertical_tokenizer();
-</PRE>
-
-<P>
-Returns a new instance of a vertical tokenizer, which considers every line to
-be one token, with empty line denoting end of sentence. The user should delete
-the instance after use.
-</P>
-
 <A NAME="tokenizer_set_text"></A>
-<H3>5.4.2. tokenizer::set_text</H3>
+<H3>5.4.1. tokenizer::set_text</H3>
 
 <PRE>
 virtual void set_text(<A HREF="#string_piece">string_piece</A> text, bool make_copy = false) = 0;
@@ -909,7 +896,7 @@ tokenizer is released or <CODE>set_text</CODE> is called again.
 </P>
 
 <A NAME="tokenizer_next_sentence"></A>
-<H3>5.4.3. tokenizer::next_sentence</H3>
+<H3>5.4.2. tokenizer::next_sentence</H3>
 
 <PRE>
 virtual bool next_sentence(std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;* forms, std::vector&lt;<A HREF="#token_range">token_range</A>&gt;* tokens) = 0;
@@ -920,6 +907,19 @@ Locate and return next sentence of the given text. Returns <CODE>true</CODE> whe
 there are no more sentences in the given text. The arguments are filled with found tokens if not <CODE>NULL</CODE>.
 The <CODE>forms</CODE> contain token ranges in bytes of UTF-8 encoding, the <CODE>tokens</CODE> contain token ranges
 in Unicode characters.
+</P>
+
+<A NAME="tokenizer_new_vertical_tokenizer"></A>
+<H3>5.4.3. tokenizer::new_vertical_tokenizer</H3>
+
+<PRE>
+static <A HREF="#tokenizer">tokenizer</A> new_vertical_tokenizer();
+</PRE>
+
+<P>
+Returns a new instance of a vertical tokenizer, which considers every line to
+be one token, with empty line denoting end of sentence. The user should delete
+the instance after use.
 </P>
 
 <A NAME="ner"></A>
