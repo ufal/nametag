@@ -1,3 +1,5 @@
+%module nametag_java
+
 %include "../common/nametag.i"
 
 %pragma(java) jniclasscode=%{
