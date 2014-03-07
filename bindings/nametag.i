@@ -92,7 +92,7 @@ class ner {
     void recognize(const std::vector<std::string>& forms, std::vector<named_entity>& entities) const {
       std::vector<string_piece> string_pieces;
       string_pieces.reserve(forms.size());
-      for (auto& form : forms)
+      for (auto&& form : forms)
         string_pieces.emplace_back(form);
       $self->recognize(string_pieces, entities);
     }
