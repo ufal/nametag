@@ -1,4 +1,4 @@
-%include "../nametag.i"
+%include "../common/nametag.i"
 
 %pragma(java) jniclasscode=%{
   static {
