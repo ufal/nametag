@@ -9,7 +9,7 @@ Czech models are distributed under the
 [CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/] licence.
 They are trained on [Czech Named Entity Corpus http://ufal.mff.cuni.cz/cnec/]
 1.1 and 2.0 and internally use [MorphoDiTa http://ufal.mff.cuni.cz/morphodita/]
-as a tagger and lemmatizer. Czech models work in NameTag version 1.0.0 or later.
+as a tagger and lemmatizer. Czech models work in NameTag version 1.0 or later.
 
 Czech models are versioned according to the date when released, the version
 format is ``YYMMDD``, where ``YY``, ``MM`` and ``DD`` are two-digit
