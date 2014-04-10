@@ -98,4 +98,4 @@ while not_eof:
       if (i + 1 == len(tokens)): sys.stdout.write("</sentence>")
       t = tokens[i].start + tokens[i].length
   # Write rest of the text
-  sys.stdout.write(text[t:])
+  sys.stdout.write(encode_entities(text[t:]))
