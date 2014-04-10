@@ -47,6 +47,16 @@ struct named_entity {
 %template(NamedEntities) std::vector<named_entity>;
 typedef std::vector<named_entity> NamedEntities;
 
+%rename(Version) version;
+class version {
+ public:
+  unsigned major;
+  unsigned minor;
+  unsigned patch;
+
+  static version current();
+};
+
 %rename(Tokenizer) tokenizer;
 %nodefaultctor tokenizer;
 class tokenizer {

@@ -61,6 +61,16 @@ struct named_entity {
   named_entity(size_t start, size_t length, const std::string& type) : start(start), length(length), type(type) {}
 };
 
+class NAMETAG_IMPORT version {
+ public:
+  unsigned major;
+  unsigned minor;
+  unsigned patch;
+
+  // Returns current NameTag version.
+  static version current();
+};
+
 class NAMETAG_IMPORT tokenizer {
  public:
   virtual ~tokenizer() {}

@@ -66,29 +66,34 @@
     </UL>
   <LI><A HREF="#toc30">NameTag API Reference</A>
     <UL>
-    <LI><A HREF="#string_piece">5.1. Struct string_piece</A>
-    <LI><A HREF="#token_range">5.2. Struct token_range</A>
-    <LI><A HREF="#named_entity">5.3. Struct named_entity</A>
-    <LI><A HREF="#tokenizer">5.4. Class tokenizer</A>
+    <LI><A HREF="#versioning">5.1. NameTag Versioning</A>
+    <LI><A HREF="#string_piece">5.2. Struct string_piece</A>
+    <LI><A HREF="#token_range">5.3. Struct token_range</A>
+    <LI><A HREF="#named_entity">5.4. Struct named_entity</A>
+    <LI><A HREF="#version">5.5. Class version</A>
       <UL>
-      <LI><A HREF="#tokenizer_set_text">5.4.1. tokenizer::set_text</A>
-      <LI><A HREF="#tokenizer_next_sentence">5.4.2. tokenizer::next_sentence</A>
-      <LI><A HREF="#tokenizer_new_vertical_tokenizer">5.4.3. tokenizer::new_vertical_tokenizer</A>
+      <LI><A HREF="#version_current">5.5.1. version::current</A>
       </UL>
-    <LI><A HREF="#ner">5.5. Class ner</A>
+    <LI><A HREF="#tokenizer">5.6. Class tokenizer</A>
       <UL>
-      <LI><A HREF="#ner_load_cstring">5.5.1. ner::load(const char*)</A>
-      <LI><A HREF="#ner_load_FILE">5.5.2. ner::load(FILE*)</A>
-      <LI><A HREF="#ner_recognize">5.5.3. ner::recognize</A>
-      <LI><A HREF="#ner_tokenize_and_recognize">5.5.4. ner::tokenize_and_recognize</A>
-      <LI><A HREF="#ner_new_tokenizer">5.5.5. ner::new_tokenizer</A>
+      <LI><A HREF="#tokenizer_set_text">5.6.1. tokenizer::set_text</A>
+      <LI><A HREF="#tokenizer_next_sentence">5.6.2. tokenizer::next_sentence</A>
+      <LI><A HREF="#tokenizer_new_vertical_tokenizer">5.6.3. tokenizer::new_vertical_tokenizer</A>
+      </UL>
+    <LI><A HREF="#ner">5.7. Class ner</A>
+      <UL>
+      <LI><A HREF="#ner_load_cstring">5.7.1. ner::load(const char*)</A>
+      <LI><A HREF="#ner_load_FILE">5.7.2. ner::load(FILE*)</A>
+      <LI><A HREF="#ner_recognize">5.7.3. ner::recognize</A>
+      <LI><A HREF="#ner_tokenize_and_recognize">5.7.4. ner::tokenize_and_recognize</A>
+      <LI><A HREF="#ner_new_tokenizer">5.7.5. ner::new_tokenizer</A>
       </UL>
     </UL>
-  <LI><A HREF="#toc44">Contact</A>
+  <LI><A HREF="#toc47">Contact</A>
   <LI><A HREF="#nametag_acknowledgements">Acknowledgements</A>
     <UL>
-    <LI><A HREF="#toc46">7.1. Publications</A>
-    <LI><A HREF="#toc47">7.2. Bibtex for referencing</A>
+    <LI><A HREF="#toc49">7.1. Publications</A>
+    <LI><A HREF="#toc50">7.2. Bibtex for referencing</A>
     </UL>
   </OL>
 
@@ -794,8 +799,30 @@ The strings used in the NameTag API are always UTF-8 encoded (except from
 file paths, whose encoding is system dependent).
 </P>
 
+<A NAME="versioning"></A>
+<H2>5.1. NameTag Versioning</H2>
+
+<P>
+NameTag version consists of three numbers <I>major.minor.patch</I> with the
+following semantics:
+</P>
+
+<UL>
+<LI>Even patch versions denote stable releases, odd patch versions denote
+  development releases.
+<LI>Two versions with the same <I>major.minor</I> have the same API with the same
+  behaviour, apart from bugs. Therefore, if only <I>patch</I> is increased, the
+  new version is only a bug-fix release.
+<LI>If two versions <I>v</I> and <I>u</I> have the same <I>major</I>, but <I>minor(v)</I> is
+  greater than <I>minor(u)</I>, version <I>v</I> contains only additions to the API.
+  In other words, the API of <I>u</I> is all present in <I>v</I> with the same
+  behaviour (once again apart from bugs). It is therefore safe to upgrade to
+  a newer NameTag version with the same <I>major</I>.
+<LI>If two versions differ in <I>major</I>, their API may differ in any way.
+</UL>
+
 <A NAME="string_piece"></A>
-<H2>5.1. Struct string_piece</H2>
+<H2>5.2. Struct string_piece</H2>
 
 <PRE>
 struct string_piece {
@@ -816,7 +843,7 @@ the referenced string exists as long as the <A HREF="#string_piece"><CODE>string
 </P>
 
 <A NAME="token_range"></A>
-<H2>5.2. Struct token_range</H2>
+<H2>5.3. Struct token_range</H2>
 
 <PRE>
 struct token_range {
@@ -832,7 +859,7 @@ characters, not in bytes of UTF-8 encoding.
 </P>
 
 <A NAME="named_entity"></A>
-<H2>5.3. Struct named_entity</H2>
+<H2>5.4. Struct named_entity</H2>
 
 <PRE>
 struct named_entity {
@@ -852,8 +879,38 @@ unicode characters or bytes, depending on the usage. The <CODE>type</CODE> repre
 the entity type.
 </P>
 
+<A NAME="version"></A>
+<H2>5.5. Class version</H2>
+
+<PRE>
+class version {
+ public:
+  unsigned major;
+  unsigned minor;
+  unsigned patch;
+
+  static <A HREF="#version">version</A> <A HREF="#version_current">current</A>();
+};
+</PRE>
+
+<P>
+The <A HREF="#version"><CODE>version</CODE></A> class represents NameTag version.
+See <A HREF="#versioning">NameTag Versioning</A> for more information.
+</P>
+
+<A NAME="version_current"></A>
+<H3>5.5.1. version::current</H3>
+
+<PRE>
+static <A HREF="#version">version</A> current();
+</PRE>
+
+<P>
+Returns current NameTag version.
+</P>
+
 <A NAME="tokenizer"></A>
-<H2>5.4. Class tokenizer</H2>
+<H2>5.6. Class tokenizer</H2>
 
 <PRE>
 class tokenizer {
@@ -878,7 +935,7 @@ through instances of <A HREF="#ner"><CODE>ner</CODE></A>.
 </P>
 
 <A NAME="tokenizer_set_text"></A>
-<H3>5.4.1. tokenizer::set_text</H3>
+<H3>5.6.1. tokenizer::set_text</H3>
 
 <PRE>
 virtual void set_text(<A HREF="#string_piece">string_piece</A> text, bool make_copy = false) = 0;
@@ -896,7 +953,7 @@ tokenizer is released or <CODE>set_text</CODE> is called again.
 </P>
 
 <A NAME="tokenizer_next_sentence"></A>
-<H3>5.4.2. tokenizer::next_sentence</H3>
+<H3>5.6.2. tokenizer::next_sentence</H3>
 
 <PRE>
 virtual bool next_sentence(std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;* forms, std::vector&lt;<A HREF="#token_range">token_range</A>&gt;* tokens) = 0;
@@ -910,7 +967,7 @@ in Unicode characters.
 </P>
 
 <A NAME="tokenizer_new_vertical_tokenizer"></A>
-<H3>5.4.3. tokenizer::new_vertical_tokenizer</H3>
+<H3>5.6.3. tokenizer::new_vertical_tokenizer</H3>
 
 <PRE>
 static <A HREF="#tokenizer">tokenizer</A> new_vertical_tokenizer();
@@ -923,7 +980,7 @@ the instance after use.
 </P>
 
 <A NAME="ner"></A>
-<H2>5.5. Class ner</H2>
+<H2>5.7. Class ner</H2>
 
 <PRE>
 class ner {
@@ -945,7 +1002,7 @@ are thread-safe.
 </P>
 
 <A NAME="ner_load_cstring"></A>
-<H3>5.5.1. ner::load(const char*)</H3>
+<H3>5.7.1. ner::load(const char*)</H3>
 
 <PRE>
 static <A HREF="#ner">ner</A>* load(const char* fname);
@@ -958,7 +1015,7 @@ after use.
 </P>
 
 <A NAME="ner_load_FILE"></A>
-<H3>5.5.2. ner::load(FILE*)</H3>
+<H3>5.7.2. ner::load(FILE*)</H3>
 
 <PRE>
 static <A HREF="#ner">ner</A>* load(FILE* f);
@@ -971,7 +1028,7 @@ delete after use.
 </P>
 
 <A NAME="ner_recognize"></A>
-<H3>5.5.3. ner::recognize</H3>
+<H3>5.7.3. ner::recognize</H3>
 
 <PRE>
 virtual void recognize(const std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;&amp; forms, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities) const = 0;
@@ -984,7 +1041,7 @@ returned <A HREF="#named_entity">named_entity</A> is represented using form indi
 </P>
 
 <A NAME="ner_tokenize_and_recognize"></A>
-<H3>5.5.4. ner::tokenize_and_recognize</H3>
+<H3>5.7.4. ner::tokenize_and_recognize</H3>
 
 <PRE>
 void tokenize_and_recognize(<A HREF="#string_piece">string_piece</A> text, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities, bool unicode_offsets = false) const;
@@ -998,7 +1055,7 @@ returned <A HREF="#named_entity">named_entity</A> is represented either in Unico
 </P>
 
 <A NAME="ner_new_tokenizer"></A>
-<H3>5.5.5. ner::new_tokenizer</H3>
+<H3>5.7.5. ner::new_tokenizer</H3>
 
 <PRE>
 virtual <A HREF="#tokenizer">tokenizer</A>* new_tokenizer() const = 0;
@@ -1009,7 +1066,7 @@ Returns a new instance of a suitable tokenizer or <CODE>NULL</CODE> if no such t
 exists. The user should delete it after use.
 </P>
 
-<A NAME="toc44"></A>
+<A NAME="toc47"></A>
 <H1>6. Contact</H1>
 
 <P>
@@ -1035,14 +1092,14 @@ Authors:
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT/CLARIN project of the Ministry of Education of the Czech Republic (project LM2010013).
 </P>
 
-<A NAME="toc46"></A>
+<A NAME="toc49"></A>
 <H2>7.1. Publications</H2>
 
 <UL>
 <LI>Straková Jana, Straka Milan, Hajič Jan: <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</A>.</I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
 </UL>
 
-<A NAME="toc47"></A>
+<A NAME="toc50"></A>
 <H2>7.2. Bibtex for referencing</H2>
 
 <PRE>
