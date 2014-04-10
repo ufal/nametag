@@ -28,4 +28,4 @@ nametag_perl.cpp: nametag_perl.i ../common/nametag.i
 
 .PHONY: clean
 clean:
-	@$(call rmdir,Ufal) $(call rmdir,auto) $(call rm,$(wildcard *.cpp)) $(call rmdir,cpan/Ufal-NameTag)
+	@$(call rmdir,Ufal) $(call rmdir,auto) $(call rm,$(wildcard *.cpp))
