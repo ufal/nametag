@@ -46,3 +46,7 @@ clean:
 
 veryclean: clean
 	$(MAKE) -C $(MORPHODITA_DIR) clean
+
+# dump library sources
+lib_sources:
+	@echo $(patsubst %,%.cpp,$(NAMETAG_O))
