@@ -14,7 +14,7 @@ Version 0.94
 
 NameTag releases are available on [GitHub http://github.com/ufal/nametag], either as
 a pre-compiled binary package, or source code only. The binary package contains Linux
-and Windows binaries and ``C++`` library, all language bindings (Java, Python)
+and Windows binaries and ``C++`` library, all language bindings (Java, Python, Perl)
 and source code (needed to compile the language bindings).
 
 - [Latest release http://github.com/ufal/nametag/releases/latest]
@@ -28,11 +28,7 @@ from [LINDAT/CLARIN http://www.lindat.cz] infrastructure and described further
 in the User's Manual. Currently the following language models are available:
 
 - Czech: latest version 140205 (to be released soon)
-
-
-== Roadmap ==
-
-- further programming language bindings (Perl is planned)
+- English: in development
 
 
 == License ==

@@ -22,21 +22,21 @@
       <UL>
       <LI><A HREF="#language_models">2.1.1. Language Models</A>
       </UL>
-    <LI><A HREF="#toc5">2.2. Roadmap</A>
-    <LI><A HREF="#toc6">2.3. License</A>
-    <LI><A HREF="#toc7">2.4. Platforms and Requirements</A>
+    <LI><A HREF="#toc5">2.2. License</A>
+    <LI><A HREF="#toc6">2.3. Platforms and Requirements</A>
     </UL>
-  <LI><A HREF="#toc8">NameTag Installation</A>
+  <LI><A HREF="#toc7">NameTag Installation</A>
     <UL>
-    <LI><A HREF="#toc9">3.1. Requirements</A>
-    <LI><A HREF="#toc10">3.2. Compilation</A>
+    <LI><A HREF="#toc8">3.1. Requirements</A>
+    <LI><A HREF="#toc9">3.2. Compilation</A>
       <UL>
-      <LI><A HREF="#toc11">3.2.1. Windows</A>
+      <LI><A HREF="#toc10">3.2.1. Windows</A>
       </UL>
-    <LI><A HREF="#toc12">3.3. Other language bindings</A>
+    <LI><A HREF="#toc11">3.3. Other language bindings</A>
       <UL>
-      <LI><A HREF="#toc13">3.3.1. Java</A>
-      <LI><A HREF="#toc14">3.3.2. Python</A>
+      <LI><A HREF="#toc12">3.3.1. Java</A>
+      <LI><A HREF="#toc13">3.3.2. Python</A>
+      <LI><A HREF="#toc14">3.3.3. Perl</A>
       </UL>
     </UL>
   <LI><A HREF="#toc15">NameTag User's Manual</A>
@@ -130,7 +130,7 @@ Mathematics and Physics, Charles University in Prague, Czech Republic.
 <P>
 NameTag releases are available on <A HREF="http://github.com/ufal/nametag">GitHub</A>, either as
 a pre-compiled binary package, or source code only. The binary package contains Linux
-and Windows binaries and <CODE>C++</CODE> library, all language bindings (Java, Python)
+and Windows binaries and <CODE>C++</CODE> library, all language bindings (Java, Python, Perl)
 and source code (needed to compile the language bindings).
 </P>
 
@@ -150,17 +150,11 @@ in the User's Manual. Currently the following language models are available:
 
 <UL>
 <LI>Czech: latest version 140205 (to be released soon)
+<LI>English: in development
 </UL>
 
 <A NAME="toc5"></A>
-<H2>2.2. Roadmap</H2>
-
-<UL>
-<LI>further programming language bindings (Perl is planned)
-</UL>
-
-<A NAME="toc6"></A>
-<H2>2.3. License</H2>
+<H2>2.2. License</H2>
 
 <P>
 NameTag is an open-source project and is freely available for non-commercial
@@ -176,8 +170,8 @@ referencing <A HREF="http://ufal.mff.cuni.cz/nametag">NameTag website</A> and
 <A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">Straková et al. 2013</A>.
 </P>
 
-<A NAME="toc7"></A>
-<H2>2.4. Platforms and Requirements</H2>
+<A NAME="toc6"></A>
+<H2>2.3. Platforms and Requirements</H2>
 
 <P>
 NameTag is available as a standalone tool and as a library for Linux/Windows.
@@ -186,13 +180,13 @@ learning tool, it needs trained linguistic models to perform named entity
 recognition. The models for the Czech language are available with the tool.
 </P>
 
-<A NAME="toc8"></A>
+<A NAME="toc7"></A>
 <H1>3. NameTag Installation</H1>
 
 <P>
 NameTag releases are available on <A HREF="http://github.com/ufal/nametag">GitHub</A>, either as
 a pre-compiled binary package, or source code only. The binary package contains Linux
-and Windows binaries and <CODE>C++</CODE> library, all language bindings (Java, Python)
+and Windows binaries and <CODE>C++</CODE> library, all language bindings (Java, Python, Perl)
 and source code (needed to compile the language bindings).
 </P>
 <P>
@@ -205,7 +199,7 @@ on <A HREF="http://github.com/ufal/nametag">GitHub</A>, both in the
 <A HREF="http://github.com/ufal/nametag/releases">pre-compiled binary package releases</A> and also separately.
 </P>
 
-<A NAME="toc9"></A>
+<A NAME="toc8"></A>
 <H2>3.1. Requirements</H2>
 
 <UL>
@@ -214,7 +208,7 @@ on <A HREF="http://github.com/ufal/nametag">GitHub</A>, both in the
 <LI><CODE>SWIG 2.0.5</CODE> or newer for language bindings other than <CODE>C++</CODE>
 </UL>
 
-<A NAME="toc10"></A>
+<A NAME="toc9"></A>
 <H2>3.2. Compilation</H2>
 
 <P>
@@ -233,7 +227,7 @@ Make targets and options:
 <LI><CODE>DEBUG=1</CODE>: compile with debug informations and C++ library debugging
 </UL>
 
-<A NAME="toc11"></A>
+<A NAME="toc10"></A>
 <H3>3.2.1. Windows</H3>
 
 <P>
@@ -255,10 +249,10 @@ make WINCMD=1
 Note that <CODE>make</CODE> in MinGW is usually distributed as <CODE>mingw32-make</CODE>.
 </P>
 
-<A NAME="toc12"></A>
+<A NAME="toc11"></A>
 <H2>3.3. Other language bindings</H2>
 
-<A NAME="toc13"></A>
+<A NAME="toc12"></A>
 <H3>3.3.1. Java</H3>
 
 <P>
@@ -279,7 +273,7 @@ make JAVA_HOME=path_to_Java_installation
 Java 6 and newer is supported.
 </P>
 
-<A NAME="toc14"></A>
+<A NAME="toc13"></A>
 <H3>3.3.2. Python</H3>
 
 <P>
@@ -297,6 +291,26 @@ make PYTHON_INCLUDE=path_to_Python_includes
 
 <P>
 Both Python 2.6+ and Python 3+ are supported.
+</P>
+
+<A NAME="toc14"></A>
+<H3>3.3.3. Perl</H3>
+
+<P>
+To compile Perl bindings, run <CODE>make</CODE> in the <CODE>bindings/perl</CODE> directory,
+optionally with the described Make options.
+</P>
+<P>
+Path to the include headers of the required Perl version must be specified
+in the <CODE>PERL_INCLUDE</CODE> variable using
+</P>
+
+<PRE>
+make PERL_INCLUDE=path_to_Perl_includes
+</PRE>
+
+<P>
+Perl 5.10 and later are supported.
 </P>
 
 <A NAME="toc15"></A>
