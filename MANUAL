@@ -44,7 +44,8 @@ To use NameTag, a language model is needed. The language models are available
 from LINDAT/CLARIN (http://www.lindat.cz) infrastructure and described further
 in the User's Manual. Currently the following language models are available:
 
-- Czech: latest version 140205 (to be released soon)
+- Czech: czech-cnec-140205 (to be released soon) (documentation
+  (http://ufal.mff.cuni.cz/nametag/users-manual#czech-cnec))
 - English: in development
 
 
