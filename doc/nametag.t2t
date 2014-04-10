@@ -18,7 +18,7 @@ and Windows binaries and ``C++`` library, all language bindings (Java, Python, P
 and source code (needed to compile the language bindings).
 
 - [Latest release http://github.com/ufal/nametag/releases/latest]
-- [All releases http://github.com/ufal/nametag/releases]
+- [All releases http://github.com/ufal/nametag/releases], [Changelog https://github.com/ufal/nametag/blob/master/CHANGES]
 
 
 === Language Models ===[language_models]
