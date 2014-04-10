@@ -13,7 +13,7 @@ else
   JAVA_MODULE=$(call dynlib,libnametag_java)
 endif
 
-TARGETS = $(JAVA_MODULE)
+TARGETS = $(JAVA_MODULE) nametag.jar
 
 all: $(TARGETS)
 
@@ -26,6 +26,10 @@ $(JAVA_MODULE): nametag_java.cpp $(JAVA_NAMETAG_LIB) $(JAVA_MORPHODITA_LIB)
 nametag_java.cpp: nametag_java.i ../common/nametag.i
 	@$(call mkdir,cz/cuni/mff/ufal/nametag)
 	swig $(SWIG_FLAGS) -java -package cz.cuni.mff.ufal.nametag -outdir cz/cuni/mff/ufal/nametag -o $@ $<
+
+nametag.jar: nametag_java.cpp
+	javac -source 1.4 -Xlint:-options $(wildcard cz/cuni/mff/ufal/nametag/*.java)
+	jar cf $@ $(patsubst %.java,%.class,$(wildcard cz/cuni/mff/ufal/nametag/*.java))
 
 .PHONY: clean
 clean:
