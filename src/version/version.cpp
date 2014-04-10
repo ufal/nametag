@@ -22,7 +22,7 @@ namespace ufal {
 namespace nametag {
 
 version version::current() {
-  return {0, 95, 0};
+  return {1, 0, 0};
 }
 
 } // namespace nametag
