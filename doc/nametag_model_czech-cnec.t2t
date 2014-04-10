@@ -3,7 +3,7 @@ Czech NameTag Models
 
 %!encoding: utf-8
 
-== Czech NameTag Models ==
+== Czech NameTag Models ==[czech-cnec]
 
 Czech models are distributed under the
 [CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/] licence.
@@ -17,7 +17,7 @@ representation of year, month and day, respectively. The latest version is
 140205.
 
 
-=== Acknowledgements ===[czech_cnec_acknowledgements]
+=== Acknowledgements ===[czech-cnec_acknowledgements]
 
 This work has been using language resources developed and/or stored and/or
 distributed by the LINDAT/CLARIN project of the Ministry of Education of the
