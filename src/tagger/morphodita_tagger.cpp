@@ -55,13 +55,14 @@ void morphodita_tagger::tag(const vector<string_piece>& forms, ner_sentence& sen
   if (!c) c = new cache();
 
   // Tag
-  tagger->tag((const vector<ufal::morphodita::string_piece>&) forms, c->tags);
+  auto morphodita_forms = (const vector<ufal::morphodita::string_piece>&) forms;
+  tagger->tag(morphodita_forms, c->tags);
 
   // Fill sentence
   if (c->tags.size() >= forms.size()) {
     sentence.resize(forms.size());
     for (unsigned i = 0; i < forms.size(); i++) {
-      sentence.words[i].form.assign(forms[i].str, forms[i].len);
+      sentence.words[i].form.assign(forms[i].str, morpho->raw_form_len(morphodita_forms[i]));
       const string& lemma = c->tags[i].lemma;
       unsigned raw_lemma_len = morpho->raw_lemma_len(lemma);
       sentence.words[i].raw_lemma = raw_lemma_len == lemma.size() ? lemma : lemma.substr(0, raw_lemma_len);
