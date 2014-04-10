@@ -1,4 +1,4 @@
 {
-  global: initnametag_python; PyInit_nametag_python;
+  global: initufal_nametag; PyInit_ufal_nametag;
   local: *;
 };

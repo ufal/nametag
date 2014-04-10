@@ -9,20 +9,20 @@ else
   PYTHON_MORPHODITA_LIB=$(call lib,../../morphodita/src/libmorphodita.dyn)
 endif
 
-TARGETS = $(call dynlib,nametag_python)
+TARGETS = $(call dynlib,ufal_nametag)
 
 all: $(TARGETS)
 
 include ../common/Makefile.rules
 
-$(call dynlib,nametag_python): nametag_python.cpp $(PYTHON_NAMETAG_LIB) $(PYTHON_MORPHODITA_LIB)
+$(call dynlib,ufal_nametag): nametag_python.cpp $(PYTHON_NAMETAG_LIB) $(PYTHON_MORPHODITA_LIB)
 	@$(if $(PYTHON_INCLUDE),,$(error PYTHON_INCLUDE must be set to the directory containing Python.h))
 	$(CXX) -I../../src/include -I$(PYTHON_INCLUDE) $(DYN_C_FLAGS) $(DYN_LD_FLAGS) $(PYTHON_C_FLAGS) $(PYTHON_LD_FLAGS) -Wl,--version-script=nametag_python.map $^ -o $@
 
 nametag_python.cpp: nametag_python.i ../common/nametag.i
 	@$(call mkdir,ufal)
 	@$(call touch,ufal/__init__.py)
-	swig $(SWIG_FLAGS) -python -outdir ufal -o $@ -interface nametag_python $<
+	swig $(SWIG_FLAGS) -python -outdir ufal -o $@ -interface ufal_nametag $<
 
 .PHONY: clean
 clean:
