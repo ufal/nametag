@@ -1,0 +1,17 @@
+Java NameTag Bindings
+========================
+
+%!encoding: utf-8
+
+NameTag library bindings is available in the ``cz.cuni.mff.ufal.nametag``
+package.
+
+The bindings is a straightforward conversion of the ``C++`` bindings API.
+Vectors do not have native Java interface, see
+``cz.cuni.mff.ufal.nametag.Forms`` class for reference. Also, class members
+are accessible and modifiable using using ``getField`` and ``setField``
+wrappers.
+
+The bindings require native C++ library ``nametag_java`` (called
+``libnametag_java`` on Linux). If the library is found in the current
+directory, it is used, otherwise standard library search process is used.

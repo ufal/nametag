@@ -201,3 +201,26 @@ returned [named_entity #named_entity] is represented either in Unicode character
 
 Returns a new instance of a suitable tokenizer or ``NULL`` if no such tokenizer
 exists. The user should delete it after use.
+
+
+== C++ Bindings API ==
+
+Bindings for other languages than C++ are created using SWIG from the C++
+bindings API, which is a slightly modified version of the native C++ API.
+Main changes are replacement of [``string_piece`` #string_piece] type by native
+strings and removal of methods using ``FILE``. Here is the C++ bindings API
+declaration:
+
+%!include: nametag_bindings_api.t2t
+
+== Java Bindings ==
+
+%!include: nametag_bindings_java_api.t2t
+
+== Perl Bindings ==
+
+%!include: nametag_bindings_perl_api.t2t
+
+== Python Bindings ==
+
+%!include: nametag_bindings_python_api.t2t

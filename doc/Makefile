@@ -8,10 +8,14 @@ txt: nametag.txt nametag_install.txt
 pdf: nametag.pdf
 web: web.html web_install.html web_user.html web_api.html web_about.html
 manual: nametag.html nametag.txt nametag_install.txt nametag_readme.txt
+manual: nametag_bindings_java_readme.txt nametag_bindings_perl_readme.txt nametag_bindings_python_readme.txt
 	cp nametag.txt ../MANUAL
 	cp nametag.html ../MANUAL.html
 	cp nametag_install.txt ../INSTALL
 	cp nametag_readme.txt ../README
+	cp nametag_bindings_java_readme.txt ../bindings/README.JAVA
+	cp nametag_bindings_perl_readme.txt ../bindings/README.PERL
+	cp nametag_bindings_python_readme.txt ../bindings/README.PYTHON
 
 nametag.html: nametag.t2t *.t2t
 	$(DIR)/txt2tags -t html -C $(DIR)/not_web.conf $<
@@ -30,6 +34,7 @@ nametag.txt: nametag.t2t *.t2t
 
 nametag_%.txt: nametag_%.t2t *.t2t
 	$(DIR)/txt2tags -t txt -C $(DIR)/not_web.conf -C $(DIR)/strip_level.conf --no-toc --no-enum-title -o- $< | sed '/^$$/{3d;$$d}' >$@
+
 nametag.tex: nametag.t2t *.t2t
 	$(DIR)/txt2tags -t tex -C $(DIR)/not_web.conf $<
 
