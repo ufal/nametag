@@ -561,6 +561,8 @@ this order):
    affects the tokenizer used in this model, and in theory any other aspect of
    the recognizer. Supported values:
    - czech
+   - english
+   - generic
      
 2. tagger - the tagger identifier as described in the Tagger section
    

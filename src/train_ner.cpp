@@ -42,6 +42,8 @@ int main(int argc, char* argv[]) {
 
   switch (id) {
     case ner_ids::CZECH_NER:
+    case ner_ids::ENGLISH_NER:
+    case ner_ids::GENERIC_NER:
       {
         if (argc < 10) runtime_errorf("Usage: %s %s tagger_id[:tagger_options] features stages iterations missing_weight initial_learning_rate final_learning_rate gaussian hidden_layer [heldout_data]", argv[0], argv[1]);
 

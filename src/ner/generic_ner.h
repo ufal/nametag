@@ -16,49 +16,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <memory>
+#pragma once
 
-#include "czech_ner.h"
-#include "english_ner.h"
-#include "generic_ner.h"
-#include "ner.h"
-#include "ner_ids.h"
-#include "utils/file_ptr.h"
+#include "common.h"
+#include "bilou_ner.h"
 
 namespace ufal {
 namespace nametag {
 
-ner* ner::load(FILE* f) {
-  switch (fgetc(f)) {
-    case ner_ids::CZECH_NER:
-      {
-        unique_ptr<czech_ner> res(new czech_ner());
-        if (res->load(f)) return res.release();
-        break;
-      }
-    case ner_ids::ENGLISH_NER:
-      {
-        unique_ptr<english_ner> res(new english_ner());
-        if (res->load(f)) return res.release();
-        break;
-      }
-    case ner_ids::GENERIC_NER:
-      {
-        unique_ptr<generic_ner> res(new generic_ner());
-        if (res->load(f)) return res.release();
-        break;
-      }
-  }
-
-  return nullptr;
-}
-
-ner* ner::load(const char* fname) {
-  file_ptr f = fopen(fname, "rb");
-  if (!f) return nullptr;
-
-  return load(f);
-}
+class generic_ner : public bilou_ner {
+ protected:
+  virtual tokenizer* new_tokenizer() const override;
+};
 
 } // namespace nametag
 } // namespace ufal

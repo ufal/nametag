@@ -256,6 +256,8 @@ in this order):
   the tokenizer used in this model, and in theory any other aspect of the recognizer.
   Supported values:
    - //czech//
+   - //english//
+   - //generic//
 
 + //tagger// -- the tagger identifier as described in the [Tagger #tagger] section
 
