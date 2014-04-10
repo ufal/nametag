@@ -34,6 +34,8 @@ static void recognize_vertical(FILE* in, FILE* out, const ner& recognizer, token
 static void recognize_untokenized(FILE* in, FILE* out, const ner& recognizer, tokenizer& tokenizer);
 
 int main(int argc, char* argv[]) {
+  show_version_if_requested(argc, argv);
+
   options_map options;
   if (!parse_options({{"input",{"untokenized", "vertical"}},
                       {"output",{"vertical","xml"}}}, argc, argv, options) ||
