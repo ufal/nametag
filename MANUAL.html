@@ -358,7 +358,7 @@ as a tagger and lemmatizer. Czech models work in NameTag version 1.0 or later.
 Czech models are versioned according to the date when released, the version
 format is <CODE>YYMMDD</CODE>, where <CODE>YY</CODE>, <CODE>MM</CODE> and <CODE>DD</CODE> are two-digit
 representation of year, month and day, respectively. The latest version is
-140205.
+140304.
 </P>
 
 <A NAME="czech-cnec_acknowledgements"></A>
@@ -380,6 +380,13 @@ The recognizer research was supported by the projects
 project of the Ministry of Education of the Czech Republic (project <I>LM2010013</I>),
 and partially by SVV project number 267 314.  The research was performed by
 Jana Straková, Zdeněk Žabokrtský and Milan Straka.
+</P>
+<P>
+Czech models use MorphoDiTa as a tagger and lemmatizer, therefore
+<A HREF="http://ufal.mff.cuni.cz/morphodita#morphodita_acknowledgements">http://ufal.mff.cuni.cz/morphodita#morphodita_acknowledgements</A>
+and
+<A HREF="http://ufal.mff.cuni.cz/morphodita/users-manual#czech-morfflex-pdt_acknowledgements">http://ufal.mff.cuni.cz/morphodita/users-manual#czech-morfflex-pdt_acknowledgements</A>
+also apply.
 </P>
 
 <H4>4.1.1.1. Publications</H4>
@@ -410,7 +417,8 @@ This hierarchy is an updated version of CNEC
 <DT><CODE>czech-cnec2.0-&lt;version&gt;.ner</CODE></DT><DD>
   Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A>.
 <P></P>
-  The latest version <CODE>czech-cnec2.0-140205.ner</CODE> reaches 75.35% F1-measure on
+  The latest version <CODE>czech-cnec2.0-140304.ner</CODE> reaches 75.38% F1-measure
+  on two-level hierarchy and 79.16% F1-measure on top-level hierarchy of
   <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A> etest data.  Model speed:
   ~40k words/s, model size: ~8MB.
 <P></P>
@@ -418,8 +426,9 @@ This hierarchy is an updated version of CNEC
   Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A>,
   except for the supertype <CODE>n</CODE> (Number expressions), which is not included.
 <P></P>
-  The latest version <CODE>czech-cnec2.0-140205-no_numbers.ner</CODE> reaches 77.22%
-  F1-measure on <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A> etest data
+  The latest version <CODE>czech-cnec2.0-140304-no_numbers.ner</CODE> reaches 77.35%
+  F1-measure on two-level hierarchy and 80.59% F1-measure on top-level
+  hierarchy of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A> etest data
   without <CODE>n</CODE> (Number expressions) supertype.  Model speed: ~45k words/s,
   model size: ~8MB.
 </DL>
@@ -440,7 +449,8 @@ whose detailed description is available in the documentation of the
 <DT><CODE>czech-cnec1.1-&lt;version&gt;.ner</CODE></DT><DD>
   Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A>.
 <P></P>
-  The latest version <CODE>czech-cnec1.1-140205.ner</CODE> reaches 75.63% F1-measure on
+  The latest version <CODE>czech-cnec1.1-140304.ner</CODE> reaches 75.47% F1-measure on
+  two-level hierarchy and 78.51% F1-measure on top-level hierarchy of
   <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A> etest data.  Model speed:
   ~35k words/s, model size: ~7MB.
 <P></P>
@@ -449,8 +459,9 @@ whose detailed description is available in the documentation of the
   except for the supertypes <CODE>c</CODE> (Bibliographic items), <CODE>n</CODE> (Number expressions) and
   <CODE>q</CODE> (Quantitative expressions), which are not included.
 <P></P>
-  The latest version <CODE>czech-cnec1.1-140205-no_numbers.ner</CODE> reaches 77.88%
-  F1-measure on <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A> etest data
+  The latest version <CODE>czech-cnec1.1-140304-no_numbers.ner</CODE> reaches 77.48%
+  F1-measure on two-level hierarchy and 80.72% F1-measure on top-level
+  hierarchy of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A> etest data
   without <CODE>c</CODE> (Bibliographic items), <CODE>n</CODE> (Number expressions) and <CODE>q</CODE>
   (Quantitative expressions) supertypes.  Model speed: ~40k words/s,
   model size: ~7MB.

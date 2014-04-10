@@ -210,7 +210,7 @@ lemmatizer. Czech models work in NameTag version 1.0 or later.
 
 Czech models are versioned according to the date when released, the version
 format is YYMMDD, where YY, MM and DD are two-digit representation of year,
-month and day, respectively. The latest version is 140205.
+month and day, respectively. The latest version is 140304.
 
 
 Acknowledgements
@@ -229,6 +229,9 @@ Academy of Sciences of the Czech Republic, LINDAT/CLARIN project of the Ministry
 of Education of the Czech Republic (project LM2010013), and partially by SVV
 project number 267 314.  The research was performed by Jana Straková, Zdeněk
 Žabokrtský and Milan Straka.
+
+Czech models use MorphoDiTa as a tagger and lemmatizer, therefore MorphoDiTa
+Acknowledgements and Czech MorphoDiTa Model Acknowledgements also apply.
 
 
 Publications
@@ -270,19 +273,20 @@ czech-cnec2.0-<version>.ner
   Czech named entity recognizer trained on training portion of CNEC 2.0
   (http://ufal.mff.cuni.cz/cnec/cnec2.0).
   
-  The latest version czech-cnec2.0-140205.ner reaches 75.35% F1-measure on CNEC
-  2.0 (http://ufal.mff.cuni.cz/cnec/cnec2.0) etest data.  Model speed: ~40k
-  words/s, model size: ~8MB.
+  The latest version czech-cnec2.0-140304.ner reaches 75.38% F1-measure on
+  two-level hierarchy and 79.16% F1-measure on top-level hierarchy of CNEC 2.0
+  (http://ufal.mff.cuni.cz/cnec/cnec2.0) etest data.  Model speed: ~40k words/s,
+  model size: ~8MB.
   
 czech-cnec2.0-<version>-no_numbers.ner
   Czech named entity recognizer trained on training portion of CNEC 2.0
   (http://ufal.mff.cuni.cz/cnec/cnec2.0), except for the supertype n (Number
   expressions), which is not included.
   
-  The latest version czech-cnec2.0-140205-no_numbers.ner reaches 77.22%
-  F1-measure on CNEC 2.0 (http://ufal.mff.cuni.cz/cnec/cnec2.0) etest data
-  without n (Number expressions) supertype.  Model speed: ~45k words/s, model
-  size: ~8MB.
+  The latest version czech-cnec2.0-140304-no_numbers.ner reaches 77.35%
+  F1-measure on two-level hierarchy and 80.59% F1-measure on top-level hierarchy
+  of CNEC 2.0 (http://ufal.mff.cuni.cz/cnec/cnec2.0) etest data without n
+  (Number expressions) supertype.  Model speed: ~45k words/s, model size: ~8MB.
 
 
 Czech Named Entity Corpus 1.1 Model
@@ -299,9 +303,10 @@ czech-cnec1.1-<version>.ner
   Czech named entity recognizer trained on training portion of CNEC 1.1
   (http://ufal.mff.cuni.cz/cnec/cnec1.1).
   
-  The latest version czech-cnec1.1-140205.ner reaches 75.63% F1-measure on CNEC
-  1.1 (http://ufal.mff.cuni.cz/cnec/cnec1.1) etest data.  Model speed: ~35k
-  words/s, model size: ~7MB.
+  The latest version czech-cnec1.1-140304.ner reaches 75.47% F1-measure on
+  two-level hierarchy and 78.51% F1-measure on top-level hierarchy of CNEC 1.1
+  (http://ufal.mff.cuni.cz/cnec/cnec1.1) etest data.  Model speed: ~35k words/s,
+  model size: ~7MB.
   
 czech-cnec1.1-<version>-no_numbers.ner
   Czech named entity recognizer trained on training portion of CNEC 1.1
@@ -309,10 +314,11 @@ czech-cnec1.1-<version>-no_numbers.ner
   (Bibliographic items), n (Number expressions) and q (Quantitative
   expressions), which are not included.
   
-  The latest version czech-cnec1.1-140205-no_numbers.ner reaches 77.88%
-  F1-measure on CNEC 1.1 (http://ufal.mff.cuni.cz/cnec/cnec1.1) etest data
-  without c (Bibliographic items), n (Number expressions) and q (Quantitative
-  expressions) supertypes.  Model speed: ~40k words/s, model size: ~7MB.
+  The latest version czech-cnec1.1-140304-no_numbers.ner reaches 77.48%
+  F1-measure on two-level hierarchy and 80.72% F1-measure on top-level hierarchy
+  of CNEC 1.1 (http://ufal.mff.cuni.cz/cnec/cnec1.1) etest data without c
+  (Bibliographic items), n (Number expressions) and q (Quantitative expressions)
+  supertypes.  Model speed: ~40k words/s, model size: ~7MB.
 
 
 Running the Recognizer
