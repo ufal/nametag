@@ -54,6 +54,7 @@ Helper Structures
     NamedEntity();
     NamedEntity(size_t start, size_t length, const string& type);
   };
+  typedef vector<NamedEntity> NamedEntities;
 
 
 Main Classes
