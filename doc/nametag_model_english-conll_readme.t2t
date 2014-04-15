@@ -1,0 +1,8 @@
+NameTag
+=======
+
+%!encoding: utf-8
+
+%!include: nametag_model_about.t2t
+
+%!include: nametag_model_english-conll.t2t
