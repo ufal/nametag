@@ -1,5 +1,5 @@
 NameTag: Name Entity Recognizer
-Version 1.0.0
+Version 1.0.1
 
 Introduction
 ============
@@ -870,6 +870,7 @@ Helper Structures
     NamedEntity();
     NamedEntity(size_t start, size_t length, const string& type);
   };
+  typedef vector<NamedEntity> NamedEntities;
 
 
 Main Classes
