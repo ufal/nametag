@@ -22,7 +22,7 @@ LZMA_ENC_O = utils/compressor_save utils/lzma/LzmaEnc utils/lzma/LzFind
 NAMETAG_O = $(LZMA_DEC_O) bilou/bilou_probabilities bilou/ner_sentence classifier/network_classifier features/entity_processor features/entity_processor_instances features/feature_templates features/sentence_processor features/sentence_processor_instances ner/bilou_ner ner/czech_ner ner/english_ner ner/entity_map ner/generic_ner ner/ner tagger/external_tagger tagger/morphodita_tagger tagger/tagger tagger/trivial_tagger tokenizer/tokenizer utils/distribution utils/input utils/url_detector utils/utf8 version/version
 
 # libraries
-$(MORPHODITA_DIR)/libmorphodita%:
+$(MORPHODITA_DIR)/libmorphodita%: force
 	$(MAKE) -C $(@D) $(@F)
 $(call lib,libnametag): $(call obj, $(NAMETAG_O))
 	ar -rcs $@ $^
@@ -46,6 +46,10 @@ clean:
 
 veryclean: clean
 	$(MAKE) -C $(MORPHODITA_DIR) clean
+
+# empty force target
+.PHONY: force
+force:
 
 # dump library sources
 lib_sources:
