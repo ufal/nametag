@@ -1,14 +1,17 @@
-$(call lib,../../src/libnametag):
+$(call lib,../../src/libnametag): force
 	$(MAKE) -C $(dir $@) $(notdir $@)
 
-$(call lib,../../src/libnametag.dyn):
+$(call lib,../../src/libnametag.dyn): force
 	$(MAKE) -C $(dir $@) $(notdir $@)
 
-$(call lib,../../morphodita/src/libmorphodita):
+$(call lib,../../morphodita/src/libmorphodita): force
 	$(MAKE) -C $(dir $@) $(notdir $@)
 
-$(call lib,../../morphodita/src/libmorphodita.dyn):
+$(call lib,../../morphodita/src/libmorphodita.dyn): force
 	$(MAKE) -C $(dir $@) $(notdir $@)
+
+.PHONY: force
+force:
 
 .PHONY: veryclean
 veryclean: clean
