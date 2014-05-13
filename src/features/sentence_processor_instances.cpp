@@ -19,12 +19,13 @@
 #include <algorithm>
 
 #include "sentence_processor.h"
+#include "unilib/unicode.h"
+#include "unilib/utf8.h"
 #include "utils/encode_utils.h"
 #include "utils/file_ptr.h"
 #include "utils/input.h"
 #include "utils/parse_int.h"
 #include "utils/url_detector.h"
-#include "utils/utf8.h"
 
 namespace ufal {
 namespace nametag {
@@ -371,8 +372,9 @@ class raw_lemma_capitalization : public sentence_processor {
       auto* raw_lemma = sentence.words[i].raw_lemma.c_str();
       char32_t chr;
       for (bool first = true; (chr = utf8::decode(raw_lemma)); first = false) {
-        was_upper |= utf8::is_Lut(chr);
-        was_lower |= utf8::is_Ll(chr);
+        auto category = unicode::category(chr);
+        was_upper = was_upper || category & unicode::Lut;
+        was_lower = was_lower || category & unicode::Ll;
 
         if (first && was_upper) apply_in_window(i, fst_cap);
       }

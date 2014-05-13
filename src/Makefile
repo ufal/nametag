@@ -19,7 +19,7 @@ include $(MORPHODITA_DIR)/Makefile.rules
 # object files groups
 LZMA_DEC_O = utils/compressor_load utils/lzma/LzmaDec
 LZMA_ENC_O = utils/compressor_save utils/lzma/LzmaEnc utils/lzma/LzFind
-NAMETAG_O = $(LZMA_DEC_O) bilou/bilou_probabilities bilou/ner_sentence classifier/network_classifier features/entity_processor features/entity_processor_instances features/feature_templates features/sentence_processor features/sentence_processor_instances ner/bilou_ner ner/czech_ner ner/english_ner ner/entity_map ner/generic_ner ner/ner tagger/external_tagger tagger/morphodita_tagger tagger/tagger tagger/trivial_tagger tokenizer/tokenizer utils/distribution utils/input utils/url_detector utils/utf8 version/version
+NAMETAG_O = $(LZMA_DEC_O) bilou/bilou_probabilities bilou/ner_sentence classifier/network_classifier features/entity_processor features/entity_processor_instances features/feature_templates features/sentence_processor features/sentence_processor_instances ner/bilou_ner ner/czech_ner ner/english_ner ner/entity_map ner/generic_ner ner/ner tagger/external_tagger tagger/morphodita_tagger tagger/tagger tagger/trivial_tagger tokenizer/tokenizer utils/distribution utils/input utils/url_detector version/version
 
 # libraries
 $(MORPHODITA_DIR)/libmorphodita%: force
