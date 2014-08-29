@@ -16,9 +16,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "binary_decoder.h"
 #include "compressor.h"
 #include "lzma/LzmaDec.h"
-#include "lzma/LzmaEnc.h"
 
 namespace ufal {
 namespace nametag {
