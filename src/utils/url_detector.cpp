@@ -568,10 +568,7 @@ static const char _url_detector_eof_actions[] = {
 };
 
 static const int url_detector_start = 1;
-static const int url_detector_first_final = 109;
-static const int url_detector_error = 0;
 
-static const int url_detector_en_main = 1;
 
 
 

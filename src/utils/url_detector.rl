@@ -23,7 +23,7 @@ namespace nametag {
 
 %%{
   machine url_detector;
-  write data;
+  write data noerror nofinal;
 }%%
 
 url_detector::url_type url_detector::detect(string_piece str) {
