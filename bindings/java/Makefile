@@ -1,25 +1,25 @@
 include ../common/Makefile.common
 
-ifdef WIN
-  JAVA_NAMETAG_LIB=$(call lib,../../src/libnametag)
-  JAVA_C_FLAGS=-DNAMETAG_STATIC -I"$(JAVA_HOME)"/include -I"$(JAVA_HOME)"/include/win32
-  JAVA_LD_FLAGS=-Wl,--kill-at
-  JAVA_MODULE=$(call dynlib,nametag_java)
-else
-  JAVA_NAMETAG_LIB=$(call lib,../../src/libnametag.dyn)
-  JAVA_C_FLAGS=-I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
-  JAVA_MODULE=$(call dynlib,libnametag_java)
+ifdef LINUX
+  BINDING_MODULE=$(call dynlib,libnametag_java)
+  BINDING_C_FLAGS+=-I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
+else ifdef WIN
+  BINDING_MODULE=$(call dynlib,nametag_java)
+  BINDING_C_FLAGS+=-I"$(JAVA_HOME)"/include -I"$(JAVA_HOME)"/include/win32
+  BINDING_LD_FLAGS+=-Wl,--kill-at
+else ifdef OSX
+  BINDING_MODULE=$(call dynlib,libnametag_java)
+  BINDING_C_FLAGS+=-I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/darwin $(patsubst %/Home,-I%/Headers,$(filter %/Home,$(JAVA_HOME)))
 endif
+BINDING_C_FLAGS += -fno-strict-aliasing
 
-TARGETS = $(JAVA_MODULE) nametag.jar
-
-all: $(TARGETS)
+all: $(BINDING_MODULE) nametag.jar
 
 include ../common/Makefile.rules
 
-$(JAVA_MODULE): nametag_java.cpp $(JAVA_NAMETAG_LIB)
+$(BINDING_MODULE): nametag_java.cpp $(BINDING_NAMETAG_LIB)
 	@$(if $(JAVA_HOME),,$(error JAVA_HOME must be set))
-	$(CXX) -I../../src/include $(DYN_C_FLAGS) $(DYN_LD_FLAGS) $(JAVA_C_FLAGS) $(JAVA_LD_FLAGS) -fno-strict-aliasing -Wl,--version-script=nametag_java.map $^ -o $@
+	$(CXX) -I../../src/include $(DYN_C_FLAGS) $(DYN_LD_FLAGS) $(BINDING_C_FLAGS) $(BINDING_LD_FLAGS) $(call version_script,nametag_java.map) $^ -o $@
 
 nametag_java.cpp: nametag_java.i ../common/nametag.i
 	@$(call mkdir,cz/cuni/mff/ufal/nametag)
@@ -31,4 +31,4 @@ nametag.jar: nametag_java.cpp
 
 .PHONY: clean
 clean:
-	@$(call rmdir,cz) $(call rm,$(TARGETS) nametag_java.cpp $(wildcard examples/*.class))
+	@$(call rmdir,cz) $(call rm,$(BINDING_MODULE) nametag.jar nametag_java.cpp $(wildcard examples/*.class))

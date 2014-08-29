@@ -1,3 +1,12 @@
 include ../../src/Makefile.options
 
 SWIG_FLAGS=-O -c++ -outcurrentdir
+ifdef LINUX
+  BINDING_NAMETAG_LIB=$(call lib,../../src/libnametag.dyn)
+else ifdef WIN
+  BINDING_NAMETAG_LIB=$(call lib,../../src/libnametag)
+  BINDING_C_FLAGS+=-DNAMETAG_STATIC
+else ifdef OSX
+  BINDING_NAMETAG_LIB=$(call lib,../../src/libnametag)
+  BINDING_LD_FLAGS+=-Wl,-undefined -Wl,dynamic_lookup
+endif

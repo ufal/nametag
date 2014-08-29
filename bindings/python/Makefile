@@ -1,22 +1,19 @@
 include ../common/Makefile.common
 
-ifdef WIN
-  PYTHON_NAMETAG_LIB=$(call lib,../../src/libnametag)
-  PYTHON_C_FLAGS=-DNAMETAG_STATIC
+ifdef OSX
+  BINDING_MODULE=ufal_nametag.so
 else
-  PYTHON_NAMETAG_LIB=$(call lib,../../src/libnametag.dyn)
+  BINDING_MODULE=$(call dynlib,ufal_nametag)
 endif
-PYTHON_C_FLAGS+=-w
+BINDING_C_FLAGS+=-w
 
-TARGETS = $(call dynlib,ufal_nametag)
-
-all: $(TARGETS)
+all: $(BINDING_MODULE)
 
 include ../common/Makefile.rules
 
-$(call dynlib,ufal_nametag): nametag_python.cpp $(PYTHON_NAMETAG_LIB)
+$(BINDING_MODULE): nametag_python.cpp $(BINDING_NAMETAG_LIB)
 	@$(if $(PYTHON_INCLUDE),,$(error PYTHON_INCLUDE must be set to the directory containing Python.h))
-	$(CXX) -I../../src/include -I$(PYTHON_INCLUDE) $(DYN_C_FLAGS) $(DYN_LD_FLAGS) $(PYTHON_C_FLAGS) $(PYTHON_LD_FLAGS) -Wl,--version-script=nametag_python.map $^ -o $@
+	$(CXX) -I../../src/include -I$(PYTHON_INCLUDE) $(DYN_C_FLAGS) $(DYN_LD_FLAGS) $(BINDING_C_FLAGS) $(BINDING_LD_FLAGS) $(call version_script,nametag_python.map) $^ -o $@
 
 nametag_python.cpp: nametag_python.i ../common/nametag.i
 	@$(call mkdir,ufal)
@@ -25,4 +22,4 @@ nametag_python.cpp: nametag_python.i ../common/nametag.i
 
 .PHONY: clean
 clean:
-	@$(call rmdir,ufal) $(call rm,$(TARGETS) morphodita_python.cpp)
+	@$(call rmdir,ufal) $(call rm,$(BINDING_MODULE) nametag_python.cpp)

@@ -1,24 +1,20 @@
 include ../common/Makefile.common
 
-ifdef WIN
-  PERL_NAMETAG_LIB=$(call lib,../../src/libnametag)
-  PERL_C_FLAGS=-DNAMETAG_STATIC
-else
-  PERL_NAMETAG_LIB=$(call lib,../../src/libnametag.dyn)
+ifdef OSX
+  BINDING_C_FLAGS+=-Wno-reserved-user-defined-literal
 endif
-PERL_C_FLAGS+=-w
+BINDING_C_FLAGS+=-w
+BINDING_MODULE=$(call dynlib,auto/Ufal/NameTag/NameTag)
 
-TARGETS = $(call dynlib,auto/Ufal/NameTag/NameTag)
-
-all: $(TARGETS)
+all: $(BINDING_MODULE)
 
 include ../common/Makefile.rules
 
-$(call dynlib,auto/Ufal/NameTag/NameTag): nametag_perl.cpp $(PERL_NAMETAG_LIB)
+$(BINDING_MODULE): nametag_perl.cpp $(BINDING_NAMETAG_LIB)
 	@$(if $(PERL_INCLUDE),,$(error PERL_INCLUDE must be set to the directory containing perl.h))
 	@$(call mkdir,$(dir $@))
 	@$(call touch,$(dir $@)NameTag.bs)
-	$(CXX) -I../../src/include -I$(PERL_INCLUDE) $(DYN_C_FLAGS) $(DYN_LD_FLAGS) $(PERL_C_FLAGS) $(PERL_LD_FLAGS) -Wl,--version-script=nametag_perl.map $^ -o $@
+	$(CXX) -I../../src/include -I$(PERL_INCLUDE) $(DYN_C_FLAGS) $(DYN_LD_FLAGS) $(BINDING_C_FLAGS) $(BINDING_LD_FLAGS) $(call version_script,nametag_perl.map) $^ -o $@
 
 nametag_perl.cpp: nametag_perl.i ../common/nametag.i
 	@$(call mkdir,Ufal)
@@ -26,4 +22,4 @@ nametag_perl.cpp: nametag_perl.i ../common/nametag.i
 
 .PHONY: clean
 clean:
-	@$(call rmdir,Ufal auto) $(call rm,morphodita_perl.cpp)
+	@$(call rmdir,Ufal auto) $(call rm,nametag_perl.cpp)
