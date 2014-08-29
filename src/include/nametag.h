@@ -34,7 +34,7 @@
 namespace ufal {
 namespace nametag {
 
-struct string_piece {
+struct NAMETAG_IMPORT string_piece {
   const char* str;
   size_t len;
 
@@ -44,7 +44,7 @@ struct string_piece {
   string_piece(const std::string& str) : str(str.c_str()), len(str.size()) {}
 };
 
-struct token_range {
+struct NAMETAG_IMPORT token_range {
   size_t start;
   size_t length;
 
@@ -52,7 +52,7 @@ struct token_range {
   token_range(size_t start, size_t length) : start(start), length(length) {}
 };
 
-struct named_entity {
+struct NAMETAG_IMPORT named_entity {
   size_t start;
   size_t length;
   std::string type;

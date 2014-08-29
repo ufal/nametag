@@ -24,7 +24,7 @@
 namespace ufal {
 namespace nametag {
 
-struct named_entity {
+struct EXPORT_ATTRIBUTES named_entity {
   size_t start;
   size_t length;
   string type;
