@@ -1,5 +1,3 @@
-DIR=../morphodita/doc
-
 all:
 	@echo "make [html | txt | pdf | web | manual]"
 
@@ -18,27 +16,27 @@ manual: nametag_bindings_java_readme.txt nametag_bindings_perl_readme.txt nameta
 	cp nametag_bindings_python_readme.txt ../bindings/README.PYTHON
 
 nametag.html: nametag.t2t *.t2t
-	$(DIR)/txt2tags -t html -C $(DIR)/not_web.conf $<
+	./txt2tags -t html -C not_web.conf $<
 
 nametag_%.html: nametag_%.t2t *.t2t
-	$(DIR)/txt2tags -t html -C $(DIR)/not_web.conf -C $(DIR)/strip_level.conf -o- $< | sed '/^<H2>=*<\/H2>$$/d' >$@
+	./txt2tags -t html -C not_web.conf -C strip_level.conf -o- $< | sed '/^<H2>=*<\/H2>$$/d' >$@
 
 web.html: nametag.t2t *.t2t
-	$(DIR)/txt2tags -t html -C $(DIR)/web.conf -o $@ $<
+	./txt2tags -t html -C web.conf -o $@ $<
 
 web_%.html: nametag_%.t2t *.t2t
-	$(DIR)/txt2tags -t html -C $(DIR)/web.conf -C $(DIR)/strip_level.conf -o- $< | sed '/^<H2>=*<\/H2>$$/d' >$@
+	./txt2tags -t html -C web.conf -C strip_level.conf -o- $< | sed '/^<H2>=*<\/H2>$$/d' >$@
 
 nametag.txt: nametag.t2t *.t2t
-	$(DIR)/txt2tags -t txt -C $(DIR)/not_web.conf --no-toc --no-enum-title -o- $< | sed '/^$$/{3d;$$d}' >$@
+	./txt2tags -t txt -C not_web.conf --no-toc --no-enum-title -o- $< | sed '/^$$/{3d;$$d}' >$@
 
 nametag_%.txt: nametag_%.t2t *.t2t
-	$(DIR)/txt2tags -t txt -C $(DIR)/not_web.conf -C $(DIR)/strip_level.conf --no-toc --no-enum-title -o- $< | sed '/^$$/{3d;$$d}' >$@
+	./txt2tags -t txt -C not_web.conf -C strip_level.conf --no-toc --no-enum-title -o- $< | sed '/^$$/{3d;$$d}' >$@
 
 nametag.tex: nametag.t2t *.t2t
-	$(DIR)/txt2tags -t tex -C $(DIR)/not_web.conf $<
+	./txt2tags -t tex -C not_web.conf $<
 
-nametag.pdf: nametag.tex $(DIR)/*.sty
+nametag.pdf: nametag.tex *.sty
 	TEXINPUTS=.:$(DIR): pdflatex $<
 	TEXINPUTS=.:$(DIR): pdflatex $<
 
