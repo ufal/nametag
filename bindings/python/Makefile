@@ -24,4 +24,4 @@ nametag_python.cpp: nametag_python.i ../common/nametag.i
 
 .PHONY: clean
 clean:
-	@$(call rmdir,ufal) $(call rm,$(TARGETS) $(wildcard *.cpp))
+	@$(call rmdir,ufal) $(call rm,$(TARGETS) morphodita_python.cpp)

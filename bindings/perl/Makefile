@@ -26,4 +26,4 @@ nametag_perl.cpp: nametag_perl.i ../common/nametag.i
 
 .PHONY: clean
 clean:
-	@$(call rmdir,Ufal) $(call rmdir,auto) $(call rm,$(wildcard *.cpp))
+	@$(call rmdir,Ufal auto) $(call rm,morphodita_perl.cpp)

@@ -31,4 +31,4 @@ nametag.jar: nametag_java.cpp
 
 .PHONY: clean
 clean:
-	@$(call rmdir,cz) $(call rm,$(TARGETS) $(wildcard *.cpp)) $(call rm,$(wildcard examples/*.class))
+	@$(call rmdir,cz) $(call rm,$(TARGETS) nametag_java.cpp $(wildcard examples/*.class))
