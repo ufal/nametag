@@ -23,7 +23,7 @@
 namespace ufal {
 namespace nametag {
 
-class EXPORT_ATTRIBUTES version {
+class NAMETAG_EXPORT version {
  public:
   unsigned major;
   unsigned minor;

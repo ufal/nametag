@@ -26,7 +26,7 @@ namespace nametag {
 
 // Range of a token, measured in Unicode characters, not UTF8 bytes.
 // It must be in sync with morphodita::token_range.
-struct EXPORT_ATTRIBUTES token_range {
+struct NAMETAG_EXPORT token_range {
   size_t start;
   size_t length;
 
@@ -35,7 +35,7 @@ struct EXPORT_ATTRIBUTES token_range {
 };
 
 // This must be in sync with morphodita::tokenizer.
-class EXPORT_ATTRIBUTES tokenizer {
+class NAMETAG_EXPORT tokenizer {
  public:
   virtual ~tokenizer() {}
 

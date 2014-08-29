@@ -24,7 +24,7 @@
 namespace ufal {
 namespace nametag {
 
-struct EXPORT_ATTRIBUTES named_entity {
+struct NAMETAG_EXPORT named_entity {
   size_t start;
   size_t length;
   string type;
@@ -33,7 +33,7 @@ struct EXPORT_ATTRIBUTES named_entity {
   named_entity(size_t start, size_t length, const string& type) : start(start), length(length), type(type) {}
 };
 
-class EXPORT_ATTRIBUTES ner {
+class NAMETAG_EXPORT ner {
  public:
   virtual ~ner() {}
 

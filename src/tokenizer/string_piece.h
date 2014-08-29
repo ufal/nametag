@@ -25,7 +25,7 @@ namespace ufal {
 namespace nametag {
 
 // This must be in sync with morphodita::string_piece.
-struct EXPORT_ATTRIBUTES string_piece {
+struct NAMETAG_EXPORT string_piece {
   const char* str;
   size_t len;
 
