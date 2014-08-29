@@ -29,8 +29,11 @@ Download
 
 NameTag releases are available on GitHub (http://github.com/ufal/nametag),
 either as a pre-compiled binary package, or source code only. The binary package
-contains Linux and Windows binaries and C++ library, all language bindings
-(Java, Python, Perl) and source code (needed to compile the language bindings).
+contains Linux, Windows and OS X binaries, C++ library binary, Java bindings
+binary, and source code of all language bindings (Java, Python, Perl) and
+NameTag. While the binary packages do not contain compiled Python or Perl
+bindings, packages for those languages are available in standard package
+repositories, i.e. on PyPI and CPAN.
 
 - Latest release (http://github.com/ufal/nametag/releases/latest)
 - All releases (http://github.com/ufal/nametag/releases), Changelog
@@ -69,10 +72,10 @@ al. 2014 (http://www.aclweb.org/anthology/P/P14/P14-5003).
 Platforms and Requirements
 --------------------------
 
-NameTag is available as a standalone tool and as a library for Linux/Windows. It
-does not require any additional libraries. As any supervised machine learning
-tool, it needs trained linguistic models to perform named entity recognition.
-The models for the Czech language are available with the tool.
+NameTag is available as a standalone tool and as a library for Linux/Windows/OS
+X. It does not require any additional libraries. As any supervised machine
+learning tool, it needs trained linguistic models to perform named entity
+recognition. The models for the Czech language are available with the tool.
 
 
 NameTag Installation
@@ -80,11 +83,11 @@ NameTag Installation
 
 NameTag releases are available on GitHub (http://github.com/ufal/nametag),
 either as a pre-compiled binary package, or source code only. The binary package
-contains Linux and Windows binaries, C++ library binary, Java bindings binary,
-and source code of all language bindings (Java, Python, Perl) and NameTag. While
-the binary packages do not contain compiled Python or Perl bindings, packages
-for those languages are available in standard package repositories, i.e. on PyPI
-and CPAN.
+contains Linux, Windows and OS X binaries, C++ library binary, Java bindings
+binary, and source code of all language bindings (Java, Python, Perl) and
+NameTag. While the binary packages do not contain compiled Python or Perl
+bindings, packages for those languages are available in standard package
+repositories, i.e. on PyPI and CPAN.
 
 To use NameTag, a language model is needed. Here is a list of available language
 models (http://ufal.mff.cuni.cz/nametag#language_models).
@@ -919,9 +922,9 @@ not have native Java interface, see cz.cuni.mff.ufal.nametag.Forms class for
 reference. Also, class members are accessible and modifiable using using
 getField and setField wrappers.
 
-The bindings require native C++ library nametag_java (called libnametag_java on
-Linux). If the library is found in the current directory, it is used, otherwise
-standard library search process is used.
+The bindings require native C++ library libnametag_java (called nametag_java on
+Windows). If the library is found in the current directory, it is used,
+otherwise standard library search process is used.
 
 
 Perl Bindings

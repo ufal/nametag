@@ -13,9 +13,11 @@ Version 1.0.1
 == Download ==
 
 NameTag releases are available on [GitHub http://github.com/ufal/nametag], either as
-a pre-compiled binary package, or source code only. The binary package contains Linux
-and Windows binaries and ``C++`` library, all language bindings (Java, Python, Perl)
-and source code (needed to compile the language bindings).
+a pre-compiled binary package, or source code only. The binary package contains Linux,
+Windows and OS X binaries, ``C++`` library binary, Java bindings binary, and source code of
+all language bindings (Java, Python, Perl) and NameTag. While the binary
+packages do not contain compiled Python or Perl bindings, packages for those
+languages are available in standard package repositories, i.e. on PyPI and CPAN.
 
 - [Latest release http://github.com/ufal/nametag/releases/latest]
 - [All releases http://github.com/ufal/nametag/releases], [Changelog https://github.com/ufal/nametag/blob/master/CHANGES]
@@ -47,7 +49,7 @@ referencing [NameTag website http://ufal.mff.cuni.cz/nametag] and
 
 == Platforms and Requirements ==
 
-NameTag is available as a standalone tool and as a library for Linux/Windows.
+NameTag is available as a standalone tool and as a library for Linux/Windows/OS X.
 It does not require any additional libraries. As any supervised machine
 learning tool, it needs trained linguistic models to perform named entity
 recognition. The models for the Czech language are available with the tool.

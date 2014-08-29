@@ -1,7 +1,8 @@
 Version 1.0.1 [not yet released]
 --------------------------------
-- Update MorphoDiTa to 1.3.0.
+- Add support for OS X 10.7 and later.
 - Use embedded version of MorphoDiTa instead of using GIT submodule.
+- Update MorphoDiTa to 1.3.0.
 - Use UniLib from MorphoDiTa instead of NameTag specific utf8 class.
 - Use PyTypeObject in Python bindings instead of proxy classes.
 
