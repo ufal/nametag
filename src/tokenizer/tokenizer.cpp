@@ -18,13 +18,13 @@
 
 #include "tokenizer.h"
 
-#include "morphodita.h"
+#include "morphodita/morphodita.h"
 
 namespace ufal {
 namespace nametag {
 
 tokenizer* tokenizer::new_vertical_tokenizer() {
-    return (tokenizer*) ufal::morphodita::tokenizer::new_vertical_tokenizer();
+    return (tokenizer*) morphodita::tokenizer::new_vertical_tokenizer();
 }
 
 } // namespace nametag

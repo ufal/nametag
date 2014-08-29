@@ -21,10 +21,10 @@
 #include <memory>
 
 #include "common.h"
+#include "morphodita/morphodita.h"
 #include "tagger.h"
 #include "utils/threadsafe_stack.h"
 
-#include "morphodita.h"
 
 namespace ufal {
 namespace nametag {
@@ -38,11 +38,11 @@ class morphodita_tagger : public tagger {
   virtual bool create_and_encode(const string& params, FILE* f) override;
 
  private:
-  unique_ptr<ufal::morphodita::tagger> tagger;
-  const ufal::morphodita::morpho* morpho;
+  unique_ptr<morphodita::tagger> tagger;
+  const morphodita::morpho* morpho;
 
   struct cache {
-    vector<ufal::morphodita::tagged_lemma> tags;
+    vector<morphodita::tagged_lemma> tags;
   };
   mutable threadsafe_stack<cache> caches;
 };

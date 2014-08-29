@@ -4,15 +4,9 @@ $(call lib,../../src/libnametag): force
 $(call lib,../../src/libnametag.dyn): force
 	$(MAKE) -C $(dir $@) $(notdir $@)
 
-$(call lib,../../morphodita/src/libmorphodita): force
-	$(MAKE) -C $(dir $@) $(notdir $@)
-
-$(call lib,../../morphodita/src/libmorphodita.dyn): force
-	$(MAKE) -C $(dir $@) $(notdir $@)
-
 .PHONY: force
 force:
 
 .PHONY: veryclean
 veryclean: clean
-	$(MAKE) -C ../../src veryclean
+	$(MAKE) -C ../../src clean

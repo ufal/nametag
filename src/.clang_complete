@@ -1,1 +1,1 @@
--std=c++11 -I. -I../morphodita/src/include
+-std=c++11 -I.

@@ -23,7 +23,7 @@ namespace ufal {
 namespace nametag {
 
 bool morphodita_tagger::load(FILE* f) {
-  tagger.reset(ufal::morphodita::tagger::load(f));
+  tagger.reset(morphodita::tagger::load(f));
   morpho = tagger ? tagger->get_morpho() : nullptr;
   return tagger && morpho;
 }
@@ -55,7 +55,7 @@ void morphodita_tagger::tag(const vector<string_piece>& forms, ner_sentence& sen
   if (!c) c = new cache();
 
   // Tag
-  auto morphodita_forms = (const vector<ufal::morphodita::string_piece>&) forms;
+  auto morphodita_forms = (const vector<morphodita::string_piece>&) forms;
   tagger->tag(morphodita_forms, c->tags);
 
   // Fill sentence

@@ -24,7 +24,7 @@
 namespace ufal {
 namespace nametag {
 
-// This must be in sync with ufal::morphodita::string_piece.
+// This must be in sync with morphodita::string_piece.
 struct string_piece {
   const char* str;
   size_t len;

@@ -25,7 +25,7 @@ namespace ufal {
 namespace nametag {
 
 // Range of a token, measured in Unicode characters, not UTF8 bytes.
-// It must be in sync with ufal::morphodita::token_range.
+// It must be in sync with morphodita::token_range.
 struct token_range {
   size_t start;
   size_t length;
@@ -34,7 +34,7 @@ struct token_range {
   token_range(size_t start, size_t length) : start(start), length(length) {}
 };
 
-// This must be in sync with ufal::morphodita::tokenizer.
+// This must be in sync with morphodita::tokenizer.
 class EXPORT_ATTRIBUTES tokenizer {
  public:
   virtual ~tokenizer() {}

@@ -18,13 +18,13 @@
 
 #include "english_ner.h"
 
-#include "morphodita.h"
+#include "morphodita/morphodita.h"
 
 namespace ufal {
 namespace nametag {
 
 tokenizer* english_ner::new_tokenizer() const {
-  return (tokenizer*) ufal::morphodita::tokenizer::new_english_tokenizer();
+  return (tokenizer*) morphodita::tokenizer::new_english_tokenizer();
 }
 
 } // namespace nametag
