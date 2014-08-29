@@ -6,6 +6,7 @@ ifdef WIN
 else
   PYTHON_NAMETAG_LIB=$(call lib,../../src/libnametag.dyn)
 endif
+PYTHON_C_FLAGS+=-w
 
 TARGETS = $(call dynlib,ufal_nametag)
 
@@ -20,7 +21,7 @@ $(call dynlib,ufal_nametag): nametag_python.cpp $(PYTHON_NAMETAG_LIB)
 nametag_python.cpp: nametag_python.i ../common/nametag.i
 	@$(call mkdir,ufal)
 	@$(call touch,ufal/__init__.py)
-	swig $(SWIG_FLAGS) -python -outdir ufal -o $@ -interface ufal_nametag $<
+	swig $(SWIG_FLAGS) -python -outdir ufal -o $@ -interface ufal_nametag -builtin $<
 
 .PHONY: clean
 clean:
