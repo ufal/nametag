@@ -479,10 +479,10 @@ The training data must be encoded in UTF-8 encoding. The lines correspond to
 individual words and an empty line denotes an end of sentence. Each non-empty
 line contains exactly two tab-separated columns, the first is the word form and
 the second is the annotation. The format of the annotation is taken from
-CoNLL-2003: the annotation I-type or B-type denotes named entity of specified
-type, any other annotation is ignored. The I-type and B-type annotations are
-equivalent except for one case - if the previous word is also a named entity of
-same type, then
+CoNLL-2003: the annotation O (or _) denotes no named entity, annotations I-type
+and B-type denote named entity of specified type. The I-type and B-type
+annotations are equivalent except for one case - if the previous word is also a
+named entity of same type, then
 
  - if the current word is annotated as I-type, it is part of the same named
    entity as the previous word,
@@ -570,6 +570,37 @@ exhaustive (see the sources in the features directory).
 - URLEmailDetector url_type email_type - detect URLs and emails. If an URL or
   an email is detected, it is immediately marked with specified named entity
   type and not used in further processing.
+
+For inspiration, we present feature file used for Czech NER model. This feature
+file is a simplified version of feature templates described in the paper
+Straková et al. 2013: Straková Jana, Straka Milan, Hajič Jan, A New
+State-of-The-Art Czech Named Entity Recognizer.
+(http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf) In: Lecture Notes in
+Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International
+Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin /
+Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013.
+
+  # Sentence processors
+  Form/2
+  Lemma/2
+  RawLemma/2
+  RawLemmaCapitalization/2
+  Tag/2
+  NumericTimeValue/1
+  
+  CzechLemmaTerm/2
+  
+  BrownClusters/2 clusters/wiki-1000-3
+  
+  Gazetteers/2 gazetteers/cities.txt gazetteers/clubs.txt gazetteers/countries.txt gazetteers/feasts.txt gazetteers/institutions.txt gazetteers/months.txt gazetteers/objects.txt gazetteers/psc.txt gazetteers/streets.txt
+  
+  PreviousStage/5
+  
+  # Detectors
+  URLEmailDetector mi me
+  
+  # Entity processors
+  CzechAddContainers
 
 
 Running train_ner

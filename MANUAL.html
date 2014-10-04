@@ -659,8 +659,9 @@ The training data must be encoded in UTF-8 encoding. The lines correspond to
 individual words and an empty line denotes an end of sentence. Each non-empty
 line contains exactly two tab-separated columns, the first is the word form and the
 second is the annotation. The format of the annotation is taken from CoNLL-2003:
-the annotation <CODE>I-type</CODE> or <CODE>B-type</CODE> denotes named entity of specified type,
-any other annotation is ignored. The <CODE>I-type</CODE> and <CODE>B-type</CODE> annotations are equivalent
+the annotation <CODE>O</CODE> (or <CODE>_</CODE>) denotes no named entity,
+annotations <CODE>I-type</CODE> and <CODE>B-type</CODE> denote named entity of specified type.
+The <CODE>I-type</CODE> and <CODE>B-type</CODE> annotations are equivalent
 except for one case &ndash; if the previous word is also a named entity of same type, then
 </P>
 
@@ -764,6 +765,36 @@ exhaustive (see the sources in the <CODE>features</CODE> directory).
   or an email is detected, it is immediately marked with specified named entity
   type and not used in further processing.
 </UL>
+
+<P>
+For inspiration, we present feature file used for Czech NER model. This feature
+file is a simplified version of feature templates described in the paper
+Straková et al. 2013: Straková Jana, Straka Milan, Hajič Jan, <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer.</A></I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013.
+</P>
+
+<PRE>
+# Sentence processors
+Form/2
+Lemma/2
+RawLemma/2
+RawLemmaCapitalization/2
+Tag/2
+NumericTimeValue/1
+
+CzechLemmaTerm/2
+
+BrownClusters/2 clusters/wiki-1000-3
+
+Gazetteers/2 gazetteers/cities.txt gazetteers/clubs.txt gazetteers/countries.txt gazetteers/feasts.txt gazetteers/institutions.txt gazetteers/months.txt gazetteers/objects.txt gazetteers/psc.txt gazetteers/streets.txt
+
+PreviousStage/5
+
+# Detectors
+URLEmailDetector mi me
+
+# Entity processors
+CzechAddContainers
+</PRE>
 
 <A NAME="toc29"></A>
 <H3>4.4.4. Running train_ner</H3>
