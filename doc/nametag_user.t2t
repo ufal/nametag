@@ -178,7 +178,7 @@ NameTag can utilize several taggers to obtain the tags and lemmas:
   no part of speech tag.
 
 : ``external``
-  Use some external tagger. The input "forms" can contain multiple tab-separated values,
+  Use some external tagger. The input "forms" can contain multiple space-separated values,
   first being the //form//, second the //lemma// and the rest is //part of speech tag//.
   The part of speech tag is optional. The lemma is also optional and if missing, the form
   itself is used as a lemma.

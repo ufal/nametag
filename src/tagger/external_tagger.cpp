@@ -43,19 +43,19 @@ void external_tagger::tag(const vector<string_piece>& forms, ner_sentence& sente
   for (unsigned i = 0; i < forms.size(); i++) {
     string_piece form = forms[i];
 
-    size_t tab = strnchrpos(form.str, '\t', form.len);
-    if (tab < form.len) {
-      sentence.words[i].form.assign(form.str, tab);
-      form.len -= tab + 1;
-      form.str += tab + 1;
+    size_t space = strnchrpos(form.str, ' ', form.len);
+    if (space < form.len) {
+      sentence.words[i].form.assign(form.str, space);
+      form.len -= space + 1;
+      form.str += space + 1;
 
-      tab = strnchrpos(form.str, '\t', form.len);
-      if (tab < form.len) {
-        sentence.words[i].raw_lemma.assign(form.str, tab);
-        form.len -= tab + 1;
-        form.str += tab + 1;
+      space = strnchrpos(form.str, ' ', form.len);
+      if (space < form.len) {
+        sentence.words[i].raw_lemma.assign(form.str, space);
+        form.len -= space + 1;
+        form.str += space + 1;
 
-        sentence.words[i].tag.assign(form.str, strnchrpos(form.str, '\t', form.len));
+        sentence.words[i].tag.assign(form.str, strnchrpos(form.str, ' ', form.len));
       } else {
         sentence.words[i].raw_lemma.assign(form.str, form.len);
         sentence.words[i].tag.clear();
