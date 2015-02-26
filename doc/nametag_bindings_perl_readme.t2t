@@ -3,13 +3,13 @@ Perl NameTag Bindings
 
 %!encoding: utf-8
 
-== Installation ==
+== Installation ==[perl_installation]
 %!include: nametag_bindings_perl_install.t2t
 
 
-== Perl Bindings API ==
+== Perl Bindings API ==[perl_bindings_api]
 %!include: nametag_bindings_perl_api.t2t
 
 
-== C++ Bindings API ==
+== C++ Bindings API ==[cpp_bindings_api]
 %!include: nametag_bindings_api.t2t

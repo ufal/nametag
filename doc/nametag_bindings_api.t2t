@@ -4,7 +4,7 @@ NameTag API Bindings
 %!encoding: utf-8
 
 
-=== Helper Structures ===
+=== Helper Structures ===[bindings_helper_structures]
 
 ```
 typedef vector<string> Forms;
@@ -26,7 +26,7 @@ struct NamedEntity {
 typedef vector<NamedEntity> NamedEntities;
 ```
 
-=== Main Classes ===
+=== Main Classes ===[bindings_main_classes]
 
 ```
 class Version {

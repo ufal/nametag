@@ -44,7 +44,7 @@ Options: --input=untokenized|vertical
 ```
 
 
-=== Input Formats ===
+=== Input Formats ===[run_ner_input_formats]
 
 The input format is specified using the ``--input`` option. Currently supported
 input formats are:
@@ -54,7 +54,7 @@ input formats are:
   a word, with empty line denoting end of sentence.
 
 
-=== Output Formats ===
+=== Output Formats ===[run_ner_output_formats]
 
 The output format is specified using the ``--output`` option. Currently
 supported output formats are:
@@ -109,7 +109,7 @@ run_tokenizer [options] recognizer_model [file[:output_file]]...
 Options: --output=vertical|xml
 ```
 
-=== Output Formats ===
+=== Output Formats ===[run_tokenizer_output_formats]
 
 The output format is specified using the ``--output`` option. Currently
 supported output formats are:
@@ -143,7 +143,7 @@ těší
 ```
 
 
-== Training of Custom Models ==
+== Training of Custom Models ==[custom_models]
 
 Training of custom models is possible using the ``train_ner`` binary.
 
@@ -191,7 +191,7 @@ NameTag can utilize several taggers to obtain the tags and lemmas:
   significantly.
 
 
-==== Lemma Structure ====
+==== Lemma Structure ====[tagger_lemma_structure]
 
 The lemmas used by the recognizer can be structured and consist of three parts:
 - //raw lemma// is the textual form of the lemma, possibly ambiguous
@@ -274,7 +274,7 @@ CzechAddContainers
 ```
 
 
-=== Running train_ner ===
+=== Running train_ner ===[train_ner]
 
 The ``train_ner`` binary has the following arguments (which has to be specified
 in this order):

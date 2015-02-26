@@ -15,56 +15,56 @@
 <DIV CLASS="toc">
 
   <OL>
-  <LI><A HREF="#toc1">Introduction</A>
-  <LI><A HREF="#toc2">Release</A>
+  <LI><A HREF="#introduction">Introduction</A>
+  <LI><A HREF="#release">Release</A>
     <UL>
-    <LI><A HREF="#toc3">2.1. Download</A>
+    <LI><A HREF="#download">2.1. Download</A>
       <UL>
       <LI><A HREF="#language_models">2.1.1. Language Models</A>
       </UL>
-    <LI><A HREF="#toc5">2.2. License</A>
-    <LI><A HREF="#toc6">2.3. Platforms and Requirements</A>
+    <LI><A HREF="#license">2.2. License</A>
+    <LI><A HREF="#platforms_and_requirements">2.3. Platforms and Requirements</A>
     </UL>
-  <LI><A HREF="#toc7">NameTag Installation</A>
+  <LI><A HREF="#installation">NameTag Installation</A>
     <UL>
-    <LI><A HREF="#toc8">3.1. Requirements</A>
-    <LI><A HREF="#toc9">3.2. Compilation</A>
+    <LI><A HREF="#requirements">3.1. Requirements</A>
+    <LI><A HREF="#compilation">3.2. Compilation</A>
       <UL>
-      <LI><A HREF="#toc10">3.2.1. Windows</A>
+      <LI><A HREF="#compilation_windows">3.2.1. Windows</A>
       </UL>
-    <LI><A HREF="#toc11">3.3. Other language bindings</A>
+    <LI><A HREF="#other_language_bindings">3.3. Other language bindings</A>
       <UL>
-      <LI><A HREF="#toc12">3.3.1. Java</A>
-      <LI><A HREF="#toc13">3.3.2. Perl</A>
-      <LI><A HREF="#toc14">3.3.3. Python</A>
+      <LI><A HREF="#java_installation">3.3.1. Java</A>
+      <LI><A HREF="#perl_installation">3.3.2. Perl</A>
+      <LI><A HREF="#python_installation">3.3.3. Python</A>
       </UL>
     </UL>
-  <LI><A HREF="#toc15">NameTag User's Manual</A>
+  <LI><A HREF="#users_manual">NameTag User's Manual</A>
     <UL>
     <LI><A HREF="#czech-cnec">4.1. Czech NameTag Models</A>
       <UL>
       <LI><A HREF="#czech-cnec_acknowledgements">4.1.1. Acknowledgements</A>
-      <LI><A HREF="#toc18">4.1.2. Czech Named Entity Corpus 2.0 Model</A>
-      <LI><A HREF="#toc19">4.1.3. Czech Named Entity Corpus 1.1 Model</A>
+      <LI><A HREF="#czech-cnec20_model">4.1.2. Czech Named Entity Corpus 2.0 Model</A>
+      <LI><A HREF="#czech-cnec11_model">4.1.3. Czech Named Entity Corpus 1.1 Model</A>
       </UL>
     <LI><A HREF="#run_ner">4.2. Running the Recognizer</A>
       <UL>
-      <LI><A HREF="#toc21">4.2.1. Input Formats</A>
-      <LI><A HREF="#toc22">4.2.2. Output Formats</A>
+      <LI><A HREF="#run_ner_input_formats">4.2.1. Input Formats</A>
+      <LI><A HREF="#run_ner_output_formats">4.2.2. Output Formats</A>
       </UL>
     <LI><A HREF="#run_tokenizer">4.3. Running the Tokenizer</A>
       <UL>
-      <LI><A HREF="#toc24">4.3.1. Output Formats</A>
+      <LI><A HREF="#run_tokenizer_output_formats">4.3.1. Output Formats</A>
       </UL>
-    <LI><A HREF="#toc25">4.4. Training of Custom Models</A>
+    <LI><A HREF="#custom_models">4.4. Training of Custom Models</A>
       <UL>
       <LI><A HREF="#training_data">4.4.1. Training data</A>
       <LI><A HREF="#tagger">4.4.2. Tagger</A>
       <LI><A HREF="#feature_templates">4.4.3. Feature Templates</A>
-      <LI><A HREF="#toc29">4.4.4. Running train_ner</A>
+      <LI><A HREF="#train_ner">4.4.4. Running train_ner</A>
       </UL>
     </UL>
-  <LI><A HREF="#toc30">NameTag API Reference</A>
+  <LI><A HREF="#api_reference">NameTag API Reference</A>
     <UL>
     <LI><A HREF="#versioning">5.1. NameTag Versioning</A>
     <LI><A HREF="#string_piece">5.2. Struct string_piece</A>
@@ -88,27 +88,28 @@
       <LI><A HREF="#ner_tokenize_and_recognize">5.7.4. ner::tokenize_and_recognize</A>
       <LI><A HREF="#ner_new_tokenizer">5.7.5. ner::new_tokenizer</A>
       </UL>
-    <LI><A HREF="#toc47">5.8. C++ Bindings API</A>
+    <LI><A HREF="#cpp_bindings_api">5.8. C++ Bindings API</A>
       <UL>
-      <LI><A HREF="#toc48">5.8.1. Helper Structures</A>
-      <LI><A HREF="#toc49">5.8.2. Main Classes</A>
+      <LI><A HREF="#bindings_helper_structures">5.8.1. Helper Structures</A>
+      <LI><A HREF="#bindings_main_classes">5.8.2. Main Classes</A>
       </UL>
-    <LI><A HREF="#toc50">5.9. Java Bindings</A>
-    <LI><A HREF="#toc51">5.10. Perl Bindings</A>
-    <LI><A HREF="#toc52">5.11. Python Bindings</A>
+    <LI><A HREF="#java_bindings">5.9. Java Bindings</A>
+    <LI><A HREF="#perl_bindings">5.10. Perl Bindings</A>
+    <LI><A HREF="#python_bindings">5.11. Python Bindings</A>
     </UL>
-  <LI><A HREF="#toc53">Contact</A>
+  <LI><A HREF="#contact">Contact</A>
   <LI><A HREF="#nametag_acknowledgements">Acknowledgements</A>
     <UL>
-    <LI><A HREF="#toc55">7.1. Publications</A>
-    <LI><A HREF="#toc56">7.2. Bibtex for referencing</A>
+    <LI><A HREF="#publications">7.1. Publications</A>
+    <LI><A HREF="#bibtex_for_referencing">7.2. Bibtex for referencing</A>
+    <LI><A HREF="#permanent_identifier">7.3. Permanent Identifier</A>
     </UL>
   </OL>
 
 </DIV>
 <DIV CLASS="body" ID="body">
 
-<A NAME="toc1"></A>
+<A NAME="introduction"></A>
 <H1>1. Introduction</H1>
 
 <P>
@@ -129,10 +130,10 @@ Copyright 2014 by Institute of Formal and Applied Linguistics, Faculty of
 Mathematics and Physics, Charles University in Prague, Czech Republic.
 </P>
 
-<A NAME="toc2"></A>
+<A NAME="release"></A>
 <H1>2. Release</H1>
 
-<A NAME="toc3"></A>
+<A NAME="download"></A>
 <H2>2.1. Download</H2>
 
 <P>
@@ -155,7 +156,8 @@ languages are available in standard package repositories, i.e. on PyPI and CPAN.
 <P>
 To use NameTag, a language model is needed. The language models are available
 from <A HREF="http://www.lindat.cz">LINDAT/CLARIN</A> infrastructure and described further
-in the User's Manual. Currently the following language models are available:
+in the
+Currently the following language models are available:
 </P>
 
 <UL>
@@ -163,7 +165,7 @@ in the User's Manual. Currently the following language models are available:
 <LI>English: in development
 </UL>
 
-<A NAME="toc5"></A>
+<A NAME="license"></A>
 <H2>2.2. License</H2>
 
 <P>
@@ -177,10 +179,10 @@ licensing conditions.
 <P>
 If you use this tool for scientific work, please give credit to us by
 referencing <A HREF="http://ufal.mff.cuni.cz/nametag">NameTag website</A> and
-<A HREF="http://www.aclweb.org/anthology/P/P14/P14-5003">Straková et al. 2014</A>.
+<A HREF="http://www.aclweb.org/anthology/P/P14/P14-5003.pdf">Straková et al. 2014</A>.
 </P>
 
-<A NAME="toc6"></A>
+<A NAME="platforms_and_requirements"></A>
 <H2>2.3. Platforms and Requirements</H2>
 
 <P>
@@ -190,7 +192,7 @@ learning tool, it needs trained linguistic models to perform named entity
 recognition. The models for the Czech language are available with the tool.
 </P>
 
-<A NAME="toc7"></A>
+<A NAME="installation"></A>
 <H1>3. NameTag Installation</H1>
 
 <P>
@@ -212,7 +214,7 @@ If you want to compile NameTag manually, sources are available on on
 and in the repository itself.
 </P>
 
-<A NAME="toc8"></A>
+<A NAME="requirements"></A>
 <H2>3.1. Requirements</H2>
 
 <UL>
@@ -221,7 +223,7 @@ and in the repository itself.
 <LI><CODE>SWIG 2.0.5</CODE> or newer for language bindings other than <CODE>C++</CODE>
 </UL>
 
-<A NAME="toc9"></A>
+<A NAME="compilation"></A>
 <H2>3.2. Compilation</H2>
 
 <P>
@@ -240,7 +242,7 @@ Make targets and options:
 <LI><CODE>DEBUG=1</CODE>: compile with debug informations and C++ library debugging
 </UL>
 
-<A NAME="toc10"></A>
+<A NAME="compilation_windows"></A>
 <H3>3.2.1. Windows</H3>
 
 <P>
@@ -262,10 +264,10 @@ make WINCMD=1
 Note that <CODE>make</CODE> in MinGW is usually distributed as <CODE>mingw32-make</CODE>.
 </P>
 
-<A NAME="toc11"></A>
+<A NAME="other_language_bindings"></A>
 <H2>3.3. Other language bindings</H2>
 
-<A NAME="toc12"></A>
+<A NAME="java_installation"></A>
 <H3>3.3.1. Java</H3>
 
 <P>
@@ -286,7 +288,7 @@ specified using
 make JAVA_HOME=path_to_Java_installation
 </PRE>
 
-<A NAME="toc13"></A>
+<A NAME="perl_installation"></A>
 <H3>3.3.2. Perl</H3>
 
 <P>
@@ -306,7 +308,7 @@ in the <CODE>PERL_INCLUDE</CODE> variable using
 make PERL_INCLUDE=path_to_Perl_includes
 </PRE>
 
-<A NAME="toc14"></A>
+<A NAME="python_installation"></A>
 <H3>3.3.3. Python</H3>
 
 <P>
@@ -326,7 +328,7 @@ in the <CODE>PYTHON_INCLUDE</CODE> variable using
 make PYTHON_INCLUDE=path_to_Python_includes
 </PRE>
 
-<A NAME="toc15"></A>
+<A NAME="users_manual"></A>
 <H1>4. NameTag User's Manual</H1>
 
 <P>
@@ -391,6 +393,7 @@ and
 apply.
 </P>
 
+<A NAME="czech-cnec_publications"></A>
 <H4>4.1.1.1. Publications</H4>
 
 <UL>
@@ -400,10 +403,10 @@ apply.
 <P></P>
 <LI>Straková Jana, Straka Milan, Hajič Jan: <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</A>.</I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
 <P></P>
-<LI>Straková Jana, Straka Milan and Hajič Jan. <I><A HREF="http://www.aclweb.org/anthology/P/P14/P14-5003">Open-Source Tools for Morphology, Lemmatization, POS Tagging and Named Entity Recognition.</A></I> In Proceedings of 52nd Annual Meeting of the Association for Computational Linguistics: System Demonstrations, pages 13-18, Baltimore, Maryland, June 2014. Association for Computational Linguistics.
+<LI>Straková Jana, Straka Milan and Hajič Jan. <I><A HREF="http://www.aclweb.org/anthology/P/P14/P14-5003.pdf">Open-Source Tools for Morphology, Lemmatization, POS Tagging and Named Entity Recognition.</A></I> In Proceedings of 52nd Annual Meeting of the Association for Computational Linguistics: System Demonstrations, pages 13-18, Baltimore, Maryland, June 2014. Association for Computational Linguistics.
 </UL>
 
-<A NAME="toc18"></A>
+<A NAME="czech-cnec20_model"></A>
 <H3>4.1.2. Czech Named Entity Corpus 2.0 Model</H3>
 
 <P>
@@ -437,7 +440,7 @@ This hierarchy is an updated version of CNEC
   model size: ~8MB.
 </DL>
 
-<A NAME="toc19"></A>
+<A NAME="czech-cnec11_model"></A>
 <H3>4.1.3. Czech Named Entity Corpus 1.1 Model</H3>
 
 <P>
@@ -504,7 +507,7 @@ Options: --input=untokenized|vertical
          --output=vertical|xml
 </PRE>
 
-<A NAME="toc21"></A>
+<A NAME="run_ner_input_formats"></A>
 <H3>4.2.1. Input Formats</H3>
 
 <P>
@@ -519,7 +522,7 @@ input formats are:
   a word, with empty line denoting end of sentence.
 </UL>
 
-<A NAME="toc22"></A>
+<A NAME="run_ner_output_formats"></A>
 <H3>4.2.2. Output Formats</H3>
 
 <P>
@@ -596,7 +599,7 @@ run_tokenizer [options] recognizer_model [file[:output_file]]...
 Options: --output=vertical|xml
 </PRE>
 
-<A NAME="toc24"></A>
+<A NAME="run_tokenizer_output_formats"></A>
 <H3>4.3.1. Output Formats</H3>
 
 <P>
@@ -639,7 +642,7 @@ těší
 
 </UL>
 
-<A NAME="toc25"></A>
+<A NAME="custom_models"></A>
 <H2>4.4. Training of Custom Models</H2>
 
 <P>
@@ -699,6 +702,7 @@ NameTag can utilize several taggers to obtain the tags and lemmas:
   significantly.
 </DL>
 
+<A NAME="tagger_lemma_structure"></A>
 <H4>4.4.2.1. Lemma Structure</H4>
 
 <P>
@@ -796,7 +800,7 @@ URLEmailDetector mi me
 CzechAddContainers
 </PRE>
 
-<A NAME="toc29"></A>
+<A NAME="train_ner"></A>
 <H3>4.4.4. Running train_ner</H3>
 
 <P>
@@ -860,7 +864,7 @@ input and the trained model is written to the standard output if the training
 is successful.
 </P>
 
-<A NAME="toc30"></A>
+<A NAME="api_reference"></A>
 <H1>5. NameTag API Reference</H1>
 
 <P>
@@ -1139,7 +1143,7 @@ Returns a new instance of a suitable tokenizer or <CODE>NULL</CODE> if no such t
 exists. The user should delete it after use.
 </P>
 
-<A NAME="toc47"></A>
+<A NAME="cpp_bindings_api"></A>
 <H2>5.8. C++ Bindings API</H2>
 
 <P>
@@ -1150,7 +1154,7 @@ strings and removal of methods using <CODE>FILE</CODE>. Here is the C++ bindings
 declaration:
 </P>
 
-<A NAME="toc48"></A>
+<A NAME="bindings_helper_structures"></A>
 <H3>5.8.1. Helper Structures</H3>
 
 <PRE>
@@ -1173,7 +1177,7 @@ struct NamedEntity {
 typedef vector&lt;NamedEntity&gt; NamedEntities;
 </PRE>
 
-<A NAME="toc49"></A>
+<A NAME="bindings_main_classes"></A>
 <H3>5.8.2. Main Classes</H3>
 
 <PRE>
@@ -1203,7 +1207,7 @@ class Ner {
 };
 </PRE>
 
-<A NAME="toc50"></A>
+<A NAME="java_bindings"></A>
 <H2>5.9. Java Bindings</H2>
 
 <P>
@@ -1223,7 +1227,7 @@ The bindings require native C++ library <CODE>libnametag_java</CODE> (called
 directory, it is used, otherwise standard library search process is used.
 </P>
 
-<A NAME="toc51"></A>
+<A NAME="perl_bindings"></A>
 <H2>5.10. Perl Bindings</H2>
 
 <P>
@@ -1239,7 +1243,7 @@ reference. Static methods and enumerations are available only through the
 module, not through object instance.
 </P>
 
-<A NAME="toc52"></A>
+<A NAME="python_bindings"></A>
 <H2>5.11. Python Bindings</H2>
 
 <P>
@@ -1252,7 +1256,7 @@ In Python 2, strings can be both <CODE>unicode</CODE> and UTF-8 encoded <CODE>st
 library always produces <CODE>unicode</CODE>. In Python 3, strings must be only <CODE>str</CODE>.
 </P>
 
-<A NAME="toc53"></A>
+<A NAME="contact"></A>
 <H1>6. Contact</H1>
 
 <P>
@@ -1278,19 +1282,19 @@ Authors:
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT/CLARIN project of the Ministry of Education of the Czech Republic (project LM2010013).
 </P>
 <P>
-Acknowledgements for individual language models are listed in MorphoDiTa User's Manual.
+Acknowledgements for individual language models are listed in <A HREF="#users_manual">NameTag User's Manual</A>.
 </P>
 
-<A NAME="toc55"></A>
+<A NAME="publications"></A>
 <H2>7.1. Publications</H2>
 
 <UL>
-<LI>(Straková et al. 2014) Straková Jana, Straka Milan and Hajič Jan. <I><A HREF="http://www.aclweb.org/anthology/P/P14/P14-5003">Open-Source Tools for Morphology, Lemmatization, POS Tagging and Named Entity Recognition.</A></I> In Proceedings of 52nd Annual Meeting of the Association for Computational Linguistics: System Demonstrations, pages 13-18, Baltimore, Maryland, June 2014. Association for Computational Linguistics.
+<LI>(Straková et al. 2014) Straková Jana, Straka Milan and Hajič Jan. <I><A HREF="http://www.aclweb.org/anthology/P/P14/P14-5003.pdf">Open-Source Tools for Morphology, Lemmatization, POS Tagging and Named Entity Recognition.</A></I> In Proceedings of 52nd Annual Meeting of the Association for Computational Linguistics: System Demonstrations, pages 13-18, Baltimore, Maryland, June 2014. Association for Computational Linguistics.
 <P></P>
 <LI>(Straková et al. 2013) Straková Jana, Straka Milan, Hajič Jan: <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</A>.</I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
 </UL>
 
-<A NAME="toc56"></A>
+<A NAME="bibtex_for_referencing"></A>
 <H2>7.2. Bibtex for referencing</H2>
 
 <PRE>
@@ -1303,11 +1307,19 @@ Acknowledgements for individual language models are listed in MorphoDiTa User's 
   address   = {Baltimore, Maryland},
   publisher = {Association for Computational Linguistics},
   pages     = {13--18},
-  url       = {http://www.aclweb.org/anthology/P/P14/P14-5003}
+  url       = {http://www.aclweb.org/anthology/P/P14/P14-5003.pdf}
 }
 </PRE>
 
+<A NAME="permanent_identifier"></A>
+<H2>7.3. Permanent Identifier</H2>
+
+<P>
+If you prefer to reference NameTag by a permanent identifier (PID),
+you can use <CODE>http://hdl.handle.net/11858/00-097C-0000-0023-43CE-E</CODE>.
+</P>
 </DIV>
+
 <!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
 <!-- cmdline: txt2tags -t html -C not_web.conf nametag.t2t -->
 </BODY></HTML>

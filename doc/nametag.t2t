@@ -3,14 +3,14 @@ Version 1.0.1
 
 %!encoding: utf-8
 
-= Introduction =
+= Introduction =[introduction]
 
 %!include: nametag_about.t2t
 
 
-= Release =
+= Release =[release]
 
-== Download ==
+== Download ==[download]
 
 NameTag releases are available on [GitHub http://github.com/ufal/nametag], either as
 a pre-compiled binary package, or source code only. The binary package contains Linux,
@@ -27,13 +27,16 @@ languages are available in standard package repositories, i.e. on PyPI and CPAN.
 
 To use NameTag, a language model is needed. The language models are available
 from [LINDAT/CLARIN http://www.lindat.cz] infrastructure and described further
-in the User's Manual. Currently the following language models are available:
+in the
+%web% [NameTag User's Manual /nametag/users-manual].
+%manual% [NameTag User's Manual #users_manual].
+Currently the following language models are available:
 
 - Czech: [czech-cnec-140304 http://hdl.handle.net/11858/00-097C-0000-0023-7D42-8] ([documentation http://ufal.mff.cuni.cz/nametag/users-manual#czech-cnec])
 - English: in development
 
 
-== License ==
+== License ==[license]
 
 NameTag is an open-source project and is freely available for non-commercial
 purposes. The source code is distributed under [LGPL http://www.gnu.org/licenses/lgpl.html]
@@ -47,7 +50,7 @@ referencing [NameTag website http://ufal.mff.cuni.cz/nametag] and
 [Straková et al. 2014 http://www.aclweb.org/anthology/P/P14/P14-5003.pdf].
 
 
-== Platforms and Requirements ==
+== Platforms and Requirements ==[platforms_and_requirements]
 
 NameTag is available as a standalone tool and as a library for Linux/Windows/OS X.
 It does not require any additional libraries. As any supervised machine
@@ -55,25 +58,25 @@ learning tool, it needs trained linguistic models to perform named entity
 recognition. The models for the Czech language are available with the tool.
 
 
-= NameTag Installation =
+= NameTag Installation =[installation]
 
 %web% [NameTag Installation on separate page. /nametag/install]
 %not_web% %!include: nametag_install.t2t
 
 
-= NameTag User's Manual =
+= NameTag User's Manual =[users_manual]
 
 %web% [NameTag User's Manual on separate page. /nametag/users-manual]
 %not_web% %!include: nametag_user.t2t
 
 
-= NameTag API Reference =
+= NameTag API Reference =[api_reference]
 
 %web% [NameTag API Reference on separate page. /nametag/api-reference]
 %not_web% %!include: nametag_api.t2t
 
 
-= Contact =
+= Contact =[contact]
 
 Authors:
 - [Milan Straka http://ufal.mff.cuni.cz/milan-straka], straka@ufal.mff.cuni.cz
@@ -89,18 +92,18 @@ Authors:
 
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT/CLARIN project of the Ministry of Education of the Czech Republic (project LM2010013).
 
-%web% Acknowledgements for individual language models are listed in [MorphoDiTa User's Manual page /morphodita/users-manual].
-%not_web% Acknowledgements for individual language models are listed in MorphoDiTa User's Manual.
+%web% Acknowledgements for individual language models are listed in [Nametag User's Manual page /nametag/users-manual].
+%not_web% Acknowledgements for individual language models are listed in [NameTag User's Manual #users_manual].
 
 
-== Publications ==
+== Publications ==[publications]
 
 - (Straková et al. 2014) Straková Jana, Straka Milan and Hajič Jan. //[Open-Source Tools for Morphology, Lemmatization, POS Tagging and Named Entity Recognition. http://www.aclweb.org/anthology/P/P14/P14-5003.pdf]// In Proceedings of 52nd Annual Meeting of the Association for Computational Linguistics: System Demonstrations, pages 13-18, Baltimore, Maryland, June 2014. Association for Computational Linguistics.
 
 - (Straková et al. 2013) Straková Jana, Straka Milan, Hajič Jan: //[A New State-of-The-Art Czech Named Entity Recognizer http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf].// In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
 
 
-== Bibtex for referencing ==
+== Bibtex for referencing ==[bibtex_for_referencing]
 ```
 @InProceedings{strakova14,
   author    = {Strakov\'{a}, Jana  and  Straka, Milan  and  Haji\v{c}, Jan},
@@ -114,3 +117,8 @@ This work has been using language resources developed and/or stored and/or distr
   url       = {http://www.aclweb.org/anthology/P/P14/P14-5003.pdf}
 }
 ```
+
+== Permanent Identifier ==[permanent_identifier]
+
+If you prefer to reference NameTag by a permanent identifier (PID),
+you can use ``http://hdl.handle.net/11858/00-097C-0000-0023-43CE-E``.

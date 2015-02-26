@@ -40,7 +40,7 @@ and
 apply.
 
 
-==== Publications ====
+==== Publications ====[czech-cnec_publications]
 
 - Ševčíková Magda, Žabokrtský Zdeněk, Krůza Ondřej: //[Named Entities in Czech: Annotating Data and Developing NE Tagger http://ufal.mff.cuni.cz/~zabokrtsky/publications/papers/tsd07-namedent.pdf].// In: Matoušek, V., Mautner, P. (eds.) TSD 2007. LNCS (LNAI), vol. 4629, pp. 188–195. Springer, Heidelberg (2007).
 
@@ -51,7 +51,7 @@ apply.
 - Straková Jana, Straka Milan and Hajič Jan. //[Open-Source Tools for Morphology, Lemmatization, POS Tagging and Named Entity Recognition. http://www.aclweb.org/anthology/P/P14/P14-5003.pdf]// In Proceedings of 52nd Annual Meeting of the Association for Computational Linguistics: System Demonstrations, pages 13-18, Baltimore, Maryland, June 2014. Association for Computational Linguistics.
 
 
-=== Czech Named Entity Corpus 2.0 Model ===
+=== Czech Named Entity Corpus 2.0 Model ===[czech-cnec20_model]
 
 The model is trained on the training portion of the
 [Czech Named Entity Corpus 2.0 http://ufal.mff.cuni.cz/cnec/cnec2.0].
@@ -81,7 +81,7 @@ This hierarchy is an updated version of CNEC
   model size: ~8MB.
 
 
-=== Czech Named Entity Corpus 1.1 Model ===
+=== Czech Named Entity Corpus 1.1 Model ===[czech-cnec11_model]
 
 The model is trained on the training portion of the
 [Czech Named Entity Corpus 1.1 http://ufal.mff.cuni.cz/cnec/cnec1.1].

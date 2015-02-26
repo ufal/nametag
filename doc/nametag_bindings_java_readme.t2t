@@ -3,13 +3,13 @@ Java NameTag Bindings
 
 %!encoding: utf-8
 
-== Installation ==
+== Installation ==[java_installation]
 %!include: nametag_bindings_java_install.t2t
 
 
-== Java Bindings API ==
+== Java Bindings API ==[java_bindings_api]
 %!include: nametag_bindings_java_api.t2t
 
 
-== C++ Bindings API ==
+== C++ Bindings API ==[cpp_bindings_api]
 %!include: nametag_bindings_api.t2t
