@@ -57,19 +57,19 @@ recognition. The models for the Czech language are available with the tool.
 
 = NameTag Installation =
 
-%web% [NameTag Installation on separate page. nametag/install]
+%web% [NameTag Installation on separate page. /nametag/install]
 %not_web% %!include: nametag_install.t2t
 
 
 = NameTag User's Manual =
 
-%web% [NameTag User's Manual on separate page. nametag/users-manual]
+%web% [NameTag User's Manual on separate page. /nametag/users-manual]
 %not_web% %!include: nametag_user.t2t
 
 
 = NameTag API Reference =
 
-%web% [NameTag API Reference on separate page. nametag/api-reference]
+%web% [NameTag API Reference on separate page. /nametag/api-reference]
 %not_web% %!include: nametag_api.t2t
 
 
@@ -89,7 +89,7 @@ Authors:
 
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT/CLARIN project of the Ministry of Education of the Czech Republic (project LM2010013).
 
-%web% Acknowledgements for individual language models are listed in [MorphoDiTa User's Manual page morphodita/users-manual].
+%web% Acknowledgements for individual language models are listed in [MorphoDiTa User's Manual page /morphodita/users-manual].
 %not_web% Acknowledgements for individual language models are listed in MorphoDiTa User's Manual.
 
 
