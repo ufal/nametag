@@ -35,7 +35,7 @@ bool morphodita_tagger::create_and_encode(const string& params, FILE* f) {
   if (!in) return eprintf("Cannot open morphodita tagger file '%s'!\n", params.c_str()), false;
 
   if (!load(in)) {
-    eprintf("Cannot load morphodita tagger fromf ile '%s'!\n", params.c_str());
+    eprintf("Cannot load morphodita tagger from file '%s'!\n", params.c_str());
     return false;
   }
 
