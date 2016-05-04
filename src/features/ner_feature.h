@@ -25,7 +25,7 @@ namespace ufal {
 namespace nametag {
 
 typedef classifier_feature ner_feature;
-enum :ner_feature { ner_feature_unknown = -1U };
+enum :ner_feature { ner_feature_unknown = ~0U };
 typedef classifier_features ner_features;
 
 } // namespace nametag

@@ -27,7 +27,7 @@ namespace ufal {
 namespace nametag {
 
 typedef classifier_outcome entity_type;
-enum :entity_type { entity_type_unknown = -1U };
+enum :entity_type { entity_type_unknown = ~0U };
 
 } // namespace nametag
 } // namespace ufal

@@ -31,7 +31,7 @@ class bilou_entity {
  public:
   typedef entity_type value;
 
-  enum :value { I, L, O, B_first, U_first, unknown = -1U };
+  enum :value { I, L, O, B_first, U_first, unknown = ~0U };
   static constexpr inline value B(entity_type entity) { return entity == entity_type_unknown ? unknown : B_first + 2 * entity; }
   static constexpr inline value U(entity_type entity) { return entity == entity_type_unknown ? unknown : U_first + 2 * entity; }
   static constexpr inline value total(entity_type entities) { return B_first + 2 * entities; }

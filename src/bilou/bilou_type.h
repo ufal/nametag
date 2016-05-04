@@ -27,7 +27,7 @@ namespace ufal {
 namespace nametag {
 
 typedef unsigned bilou_type;
-enum :bilou_type { bilou_type_B, bilou_type_I, bilou_type_L, bilou_type_O, bilou_type_U, bilou_type_total, bilou_type_unknown = -1U };
+enum :bilou_type { bilou_type_B, bilou_type_I, bilou_type_L, bilou_type_O, bilou_type_U, bilou_type_total, bilou_type_unknown = ~0U };
 
 } // namespace nametag
 } // namespace ufal
