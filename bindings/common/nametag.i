@@ -16,13 +16,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
+%include "nametag_stl.i"
+
 %{
 #include "nametag.h"
 using namespace ufal::nametag;
 %}
-
-%include "std_string.i"
-%include "std_vector.i"
 
 %template(Forms) std::vector<std::string>;
 typedef std::vector<std::string> Forms;

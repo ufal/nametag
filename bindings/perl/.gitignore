@@ -1,3 +1,4 @@
-Ufal/
-auto/
+/.build/
+/Ufal/
+/auto/
 nametag_perl.cpp

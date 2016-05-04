@@ -1,5 +1,5 @@
-cz/
-libnametag_java.dylib
+/.build/
+/cz/
 libnametag_java.so
 nametag.jar
 nametag_java.cpp

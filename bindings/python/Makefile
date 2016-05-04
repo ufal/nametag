@@ -1,25 +1,30 @@
+# This file is part of NameTag <http://github.com/ufal/nametag/>.
+#
+# Copyright 2015 Institute of Formal and Applied Linguistics, Faculty of
+# Mathematics and Physics, Charles University in Prague, Czech Republic.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 include ../common/Makefile.common
 
-ifdef OSX
-  BINDING_MODULE=ufal_nametag.so
-else
-  BINDING_MODULE=$(call dynlib,ufal_nametag)
-endif
-BINDING_C_FLAGS+=-w
+BINDING_MODULE=$(if $(filter osx-%,$(PLATFORM)),ufal_nametag.so,$(call dynlib,ufal_nametag))
+BINDING_C_FLAGS+=$(if $(PYTHON_INCLUDE),,$(error PYTHON_INCLUDE must be set to the directory containing Python.h))
+BINDING_C_FLAGS+=$(call include_dir,$(PYTHON_INCLUDE))
+BINDING_C_FLAGS+=$(if $(filter %-gcc %-clang,$(PLATFORM)),-w)
 
 all: $(BINDING_MODULE)
 
-include ../common/Makefile.rules
-
-$(BINDING_MODULE): nametag_python.cpp $(BINDING_NAMETAG_LIB)
-	@$(if $(PYTHON_INCLUDE),,$(error PYTHON_INCLUDE must be set to the directory containing Python.h))
-	$(CXX) -I../../src/include -I$(PYTHON_INCLUDE) $(DYN_C_FLAGS) $(DYN_LD_FLAGS) $(BINDING_C_FLAGS) $(BINDING_LD_FLAGS) $(call version_script,nametag_python.map) $^ -o $@
+$(call dynobj,nametag_python):C_FLAGS+=$(BINDING_C_FLAGS)
+$(BINDING_MODULE): $(call dynobj,nametag_python) $(BINDING_NAMETAG_OBJECTS)
+	$(call link_dynlib,$@,$^ $(BINDING_C_FLAGS), $(BINDING_LD_FLAGS) $(call version_script,nametag_python.map))
 
 nametag_python.cpp: nametag_python.i ../common/nametag.i
 	@$(call mkdir,ufal)
-	@$(call touch,ufal/__init__.py)
+	@$(call echo,>ufal/__init__.py)
 	swig $(SWIG_FLAGS) -python -outdir ufal -o $@ -interface ufal_nametag -builtin $<
 
 .PHONY: clean
 clean:
-	@$(call rmdir,ufal) $(call rm,$(BINDING_MODULE) nametag_python.cpp)
+	@$(call rm,.build ufal $(call all_dynlib,ufal_nametag) nametag_python.cpp)

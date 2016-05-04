@@ -1,3 +1,4 @@
-ufal/
+/.build/
+/ufal/
 nametag_python.cpp
 ufal_nametag.so
