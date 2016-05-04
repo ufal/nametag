@@ -55,4 +55,3 @@ struct ner_sentence {
 
 } // namespace nametag
 } // namespace ufal
-

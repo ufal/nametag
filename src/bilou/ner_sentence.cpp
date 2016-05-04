@@ -72,4 +72,3 @@ void ner_sentence::fill_previous_stage() {
 
 } // namespace nametag
 } // namespace ufal
-

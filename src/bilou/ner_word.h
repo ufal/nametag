@@ -36,4 +36,3 @@ struct ner_word {
 
 } // namespace nametag
 } // namespace ufal
-

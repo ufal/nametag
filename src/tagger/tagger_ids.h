@@ -37,5 +37,5 @@ class tagger_ids {
 
 typedef tagger_ids::tagger_id tagger_id;
 
-} // namespace morphodita
+} // namespace nametag
 } // namespace ufal
