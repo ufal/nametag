@@ -1,0 +1,16 @@
+# This file is part of NameTag <http://github.com/ufal/nametag/>.
+#
+# Copyright 2016 Institute of Formal and Applied Linguistics, Faculty of
+# Mathematics and Physics, Charles University in Prague, Czech Republic.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+NAMETAG_MAKEFILE_INCLUDE_CWD:=$(dir $(lastword $(MAKEFILE_LIST)))
+include $(NAMETAG_MAKEFILE_INCLUDE_CWD)morphodita/Makefile.include
+
+NAMETAG_MORPHODITA_OBJECTS = $(addprefix morphodita/,$(filter-out unilib/% utils/%,$(MORPHODITA_OBJECTS))) $(filter unilib/% utils/%,$(MORPHODITA_OBJECTS))
+
+NAMETAG_OBJECTS = $(NAMETAG_MORPHODITA_OBJECTS)
+NAMETAG_OBJECTS += bilou/bilou_probabilities bilou/ner_sentence classifier/network_classifier features/entity_processor features/entity_processor_instances features/feature_templates features/sentence_processor features/sentence_processor_instances ner/bilou_ner ner/czech_ner ner/english_ner ner/entity_map ner/generic_ner ner/ner tagger/external_tagger tagger/morphodita_tagger tagger/tagger tagger/trivial_tagger tokenizer/tokenizer utils/distribution utils/input utils/url_detector version/version

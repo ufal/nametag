@@ -1,80 +1,20 @@
-// This file is part of NameTag.
+// This file is part of NameTag <http://github.com/ufal/nametag/>.
 //
-// Copyright 2013 by Institute of Formal and Applied Linguistics, Faculty of
+// Copyright 2015 Institute of Formal and Applied Linguistics, Faculty of
 // Mathematics and Physics, Charles University in Prague, Czech Republic.
 //
-// NameTag is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of
-// the License, or (at your option) any later version.
-//
-// NameTag is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #pragma once
 
-// Headers available in all sources
-#include <cassert>
-#include <cstdarg>
-#include <cstdio>
-#include <cstdint>
-#include <cstdlib>
-#include <string>
-#include <vector>
+#include "utils/common.h"
 
-// Assert that int is at least 4B
-static_assert(sizeof(int) >= sizeof(int32_t), "Int must be at least 4B wide!");
-
-// Assert that we are on a little endian system
-static_assert(__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__, "Only little endian systems are supported!");
-
-// Declare ufal::unilib namespace.
-namespace ufal {
-namespace unilib {
-}
-}
-
-// Define namespace ufal::nametag.
 namespace ufal {
 namespace nametag {
 
-using namespace std;
-using namespace ufal::unilib;
-
-// Printf-like logging function.
-inline int eprintf(const char* fmt, ...) {
-  va_list ap;
-  va_start(ap, fmt);
-  int res = vfprintf(stderr, fmt, ap);
-  va_end(ap);
-  return res;
-}
-
-// Printf-like exit function.
-inline void runtime_errorf(const char* fmt, ...) {
-  va_list ap;
-  va_start(ap, fmt);
-  vfprintf(stderr, fmt, ap);
-  va_end(ap);
-  fputc('\n', stderr);
-  exit(1);
-}
-
-// Export attributes
-#ifdef _WIN32
-  #ifdef BUILDING_DLL
-    #define NAMETAG_EXPORT __attribute__ ((dllexport))
-  #else
-    #define NAMETAG_EXPORT
-  #endif
-#else
-  #define NAMETAG_EXPORT __attribute__ ((visibility ("default")))
-#endif
+using namespace utils;
 
 } // namespace nametag
 } // namespace ufal

@@ -24,7 +24,7 @@
 namespace ufal {
 namespace nametag {
 
-struct NAMETAG_EXPORT named_entity {
+struct named_entity {
   size_t start;
   size_t length;
   string type;
@@ -33,12 +33,12 @@ struct NAMETAG_EXPORT named_entity {
   named_entity(size_t start, size_t length, const string& type) : start(start), length(length), type(type) {}
 };
 
-class NAMETAG_EXPORT ner {
+class ner {
  public:
   virtual ~ner() {}
 
   static ner* load(const char* fname);
-  static ner* load(FILE* f);
+  static ner* load(istream& is);
 
   // Perform named entity recognition on a tokenizes sentence and return found
   // named entities in the given vector.

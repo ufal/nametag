@@ -19,14 +19,14 @@
 #pragma once
 
 #include "common.h"
-#include "string_piece.h"
+#include "utils/string_piece.h"
 
 namespace ufal {
 namespace nametag {
 
 // Range of a token, measured in Unicode characters, not UTF8 bytes.
 // It must be in sync with morphodita::token_range.
-struct NAMETAG_EXPORT token_range {
+struct token_range {
   size_t start;
   size_t length;
 
@@ -35,7 +35,7 @@ struct NAMETAG_EXPORT token_range {
 };
 
 // This must be in sync with morphodita::tokenizer.
-class NAMETAG_EXPORT tokenizer {
+class tokenizer {
  public:
   virtual ~tokenizer() {}
 

@@ -17,56 +17,55 @@
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <algorithm>
-#include <memory>
 #include <unordered_map>
 
 #include "bilou_ner.h"
 #include "bilou_ner_trainer.h"
-#include "utils/input.h"
+#include "utils/split.h"
 
 namespace ufal {
 namespace nametag {
 
-void bilou_ner_trainer::train(int stages, const network_parameters& parameters, const tagger& tagger, FILE* in_features, FILE* in_train, FILE* in_heldout, FILE* out_ner) {
-  if (stages <= 0) runtime_errorf("Cannot train NER with <= 0 stages!");
-  if (stages >= 256) runtime_errorf("Cannot train NER with >= 256 stages!");
+void bilou_ner_trainer::train(int stages, const network_parameters& parameters, const tagger& tagger, istream& features, istream& train, istream& heldout, ostream& os) {
+  if (stages <= 0) runtime_failure("Cannot train NER with <= 0 stages!");
+  if (stages >= 256) runtime_failure("Cannot train NER with >= 256 stages!");
 
   // Load training and possibly also heldout data
   entity_map entities;
   vector<labelled_sentence> train_data;
-  eprintf("Loading train data: ");
-  load_data(in_train, tagger, train_data, entities, true);
-  eprintf("done, %d sentences\n", train_data.size());
-  if (!entities.size()) runtime_errorf("No named entities present in the training data!");
+  cerr << "Loading train data: ";
+  load_data(train, tagger, train_data, entities, true);
+  cerr << "done, " << train_data.size() << " sentences" << endl;
+  if (!entities.size()) runtime_failure("No named entities present in the training data!");
 
   vector<labelled_sentence> heldout_data;
-  if (in_heldout) {
-    eprintf("Loading heldout data: ");
-    load_data(in_heldout, tagger, heldout_data, entities, false);
-    eprintf("done, %d sentences\n", heldout_data.size());
+  if (heldout) {
+    cerr << "Loading heldout data: ";
+    load_data(heldout, tagger, heldout_data, entities, false);
+    cerr << "done, " << heldout_data.size() << " sentences" << endl;
   }
 
   // Parse feature templates
   feature_templates templates;
-  eprintf("Parsing feature templates: ");
-  templates.parse(in_features, entities);
-  eprintf("done\n");
+  cerr << "Parsing feature templates: ";
+  templates.parse(features, entities);
+  cerr << "done" << endl;
 
   // Train required number of stages
   vector<network_classifier> networks(stages);
 
   for (auto&& network : networks) {
     // Generate features
-    eprintf("Generating features: ");
+    cerr << "Generating features: ";
     vector<classifier_instance> train_instances, heldout_instances;
     generate_instances(train_data, templates, train_instances, true);
     generate_instances(heldout_data, templates, heldout_instances, false);
-    eprintf("done\n");
+    cerr << "done" << endl;
 
     // Train and encode the recognizer
-    eprintf("Training network classifier.\n");
+    cerr << "Training network classifier." << endl;
     if (!network.train(templates.get_total_features(), bilou_entity::total(entities.size()), train_instances, heldout_instances, parameters, true))
-      runtime_errorf("Cannot train the network classifier!");
+      runtime_failure("Cannot train the network classifier!");
 
     // Use the trained classifier to compute previous_stage
     compute_previous_stage(train_data, templates, network);
@@ -74,15 +73,15 @@ void bilou_ner_trainer::train(int stages, const network_parameters& parameters, 
   }
 
   // Encode the recognizer
-  eprintf("Encoding the recognizer: \n");
-  if (!entities.save(out_ner)) runtime_error("Cannot save entity map!");
-  if (!templates.save(out_ner)) runtime_error("Cannot save feature templates!");
-  if (fputc(stages, out_ner) == EOF) runtime_error("Cannot save number of stages!");
+  cerr << "Encoding the recognizer." << endl;
+  if (!entities.save(os)) runtime_error("Cannot save entity map!");
+  if (!templates.save(os)) runtime_error("Cannot save feature templates!");
+  if (!os.put(stages)) runtime_error("Cannot save number of stages!");
   for (auto&& network : networks)
-    if (!network.save(out_ner)) runtime_error("Cannot save classifier network!");
+    if (!network.save(os)) runtime_error("Cannot save classifier network!");
 }
 
-void bilou_ner_trainer::load_data(FILE* f, const tagger& tagger, vector<labelled_sentence>& data, entity_map& entity_map, bool add_entities) {
+void bilou_ner_trainer::load_data(istream& is, const tagger& tagger, vector<labelled_sentence>& data, entity_map& entity_map, bool add_entities) {
   vector<string> words, entities;
   vector<string_piece> forms;
 
@@ -91,7 +90,7 @@ void bilou_ner_trainer::load_data(FILE* f, const tagger& tagger, vector<labelled
   string line;
   vector<string> tokens;
   for (bool eof; true; ) {
-    eof = !getline(f, line);
+    eof = !getline(is, line);
     if (eof || line.empty()) {
       if (!words.empty()) {
         // Tag the sentence
@@ -113,7 +112,7 @@ void bilou_ner_trainer::load_data(FILE* f, const tagger& tagger, vector<labelled
             sentence.outcomes.emplace_back(!has_prev && !has_next ? bilou_entity::U(entity) : !has_prev && has_next ? bilou_entity::B(entity) : has_prev && has_next ? bilou_entity::I : bilou_entity::L);
           }
           else
-            runtime_errorf("Cannot parse entity type %s!", entities[i].c_str());
+            runtime_failure("Cannot parse entity type " << entities[i] << "!");
 
         // Start a new sentence
         words.clear();
@@ -123,7 +122,7 @@ void bilou_ner_trainer::load_data(FILE* f, const tagger& tagger, vector<labelled
       if (eof) break;
     } else {
       split(line, '\t', tokens);
-      if (tokens.size() != 2) runtime_errorf("The NER data line '%s' does not contain two columns!", line.c_str());
+      if (tokens.size() != 2) runtime_failure("The NER data line '" << line << "' does not contain two columns!");
       words.emplace_back(tokens[0]);
       forms.emplace_back(words.back());
       entities.emplace_back(tokens[1]);

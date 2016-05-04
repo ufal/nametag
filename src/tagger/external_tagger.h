@@ -26,8 +26,8 @@ namespace nametag {
 
 class external_tagger : public tagger {
  public:
-  virtual bool load(FILE* f) override;
-  virtual bool create_and_encode(const string& params, FILE* f) override;
+  virtual bool load(istream& is) override;
+  virtual bool create_and_encode(const string& params, ostream& os) override;
   virtual void tag(const vector<string_piece>& forms, ner_sentence& sentence) const override;
 };
 

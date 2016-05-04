@@ -17,14 +17,13 @@
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <algorithm>
+#include <fstream>
 
 #include "sentence_processor.h"
 #include "unilib/unicode.h"
 #include "unilib/utf8.h"
-#include "utils/encode_utils.h"
-#include "utils/file_ptr.h"
-#include "utils/input.h"
 #include "utils/parse_int.h"
+#include "utils/split.h"
 #include "utils/url_detector.h"
 
 namespace ufal {
@@ -64,17 +63,17 @@ class brown_clusters : public sentence_processor {
  public:
   virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features) override {
     if (!sentence_processor::parse(window, args, entities, total_features)) return false;
-    if (args.size() < 1) return eprintf("BrownCluster requires a cluster file as the first argument!\n"), false;
+    if (args.size() < 1) return cerr << "BrownCluster requires a cluster file as the first argument!" << endl, false;
 
-    file_ptr f = fopen(args[0].c_str(), "r");
-    if (!f) return eprintf("Cannot open Brown clusters file '%s'!\n", args[0].c_str()), false;
+    ifstream in(args[0]);
+    if (!in.is_open()) return cerr << "Cannot open Brown clusters file '" << args[0] << "'!" << endl, false;
 
     vector<size_t> substrings;
     substrings.emplace_back(string::npos);
     for (unsigned i = 1; i < args.size(); i++) {
       int len = parse_int(args[i].c_str(), "BrownCluster_prefix_length");
       if (len <= 0)
-        return eprintf("Wrong prefix length '%d' in BrownCluster specification!\n", len);
+        return cerr << "Wrong prefix length '" << len << "' in BrownCluster specification!" << endl, false;
       else
         substrings.emplace_back(len);
     }
@@ -84,9 +83,9 @@ class brown_clusters : public sentence_processor {
     unordered_map<string, ner_feature> prefixes_map;
     string line;
     vector<string> tokens;
-    while (getline(f, line)) {
+    while (getline(in, line)) {
       split(line, '\t', tokens);
-      if (tokens.size() != 2) return eprintf("Wrong line '%s' in Brown cluster file '%s'!\n", line.c_str(), args[0].c_str());
+      if (tokens.size() != 2) return cerr << "Wrong line '" << line << "' in Brown cluster file '" << args[0] << "'!" << endl, false;
 
       string cluster = tokens[0], form = tokens[1];
       auto it = cluster_map.find(cluster);
@@ -98,7 +97,7 @@ class brown_clusters : public sentence_processor {
             clusters.back().emplace_back(prefixes_map.emplace(cluster.substr(0, substring), *total_features + (2*window + 1) * prefixes_map.size() + window).first->second);
         it = cluster_map.emplace(cluster, id).first;
       }
-      if (!map.emplace(form, it->second).second) return eprintf("Form '%s' is present twice in Brown cluster file '%s'!\n", form.c_str(), args[0].c_str());
+      if (!map.emplace(form, it->second).second) return cerr << "Form '" << form << "' is present twice in Brown cluster file '" << args[0] << "'!" << endl, false;
     }
 
     *total_features += (2*window + 1) * prefixes_map.size();
@@ -180,14 +179,14 @@ class gazetteers : public sentence_processor {
 
     gazetteers.clear();
     for (auto&& arg : args) {
-      file_ptr f = fopen(arg.c_str(), "r");
-      if (!f) return eprintf("Cannot open gazetteers file '%s'!\n", arg.c_str()), false;
+      ifstream in(arg.c_str());
+      if (!in.is_open()) return cerr << "Cannot open gazetteers file '" << arg << "'!" << endl, false;
 
       unsigned longest = 0;
       string gazetteer;
       string line;
       vector<string> tokens;
-      while (getline(f, line)) {
+      while (getline(in, line)) {
         split(line, ' ', tokens);
         for (unsigned i = 0; i < tokens.size(); i++)
           if (!tokens[i][0])
@@ -343,6 +342,16 @@ class previous_stage : public sentence_processor {
         apply_in_range(i, lookup(buffer, total_features), 1, window);
       }
   }
+
+ private:
+  static void append_encoded(string& str, int value) {
+    if (value < 0) {
+      str.push_back('-');
+      value = -value;
+    }
+    for (; value; value >>= 4)
+      str.push_back("0123456789abcdef"[value & 0xF]);
+  }
 };
 
 
@@ -362,6 +371,8 @@ class raw_lemma : public sentence_processor {
 class raw_lemma_capitalization : public sentence_processor {
  public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const override {
+    using namespace unilib;
+
     ner_feature fst_cap = lookup(buffer.assign("f"), total_features);
     ner_feature all_cap = lookup(buffer.assign("a"), total_features);
     ner_feature mixed_cap = lookup(buffer.assign("m"), total_features);
@@ -402,13 +413,13 @@ class url_email_detector : public sentence_processor {
  public:
   virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features) override {
     if (!sentence_processor::parse(window, args, entities, total_features)) return false;
-    if (args.size() != 2) return eprintf("URLEmailDetector requires exactly two arguments -- named entity types for URL and email!\n"), false;
+    if (args.size() != 2) return cerr << "URLEmailDetector requires exactly two arguments -- named entity types for URL and email!" << endl, false;
 
     url = entities.parse(args[0].c_str(), true);
     email = entities.parse(args[1].c_str(), true);
 
     if (url == entity_type_unknown || email == entity_type_unknown)
-      return eprintf("Cannot create entities '%s' and '%s' in URLEmailDetector!\n", args[0].c_str(), args[1].c_str()), false;
+      return cerr << "Cannot create entities '" << args[0] << "' and '" << args[1] << "' in URLEmailDetector!" << endl, false;
     return true;
   }
 

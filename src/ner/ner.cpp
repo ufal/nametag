@@ -16,36 +16,35 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <memory>
+#include <fstream>
 
 #include "czech_ner.h"
 #include "english_ner.h"
 #include "generic_ner.h"
 #include "ner.h"
 #include "ner_ids.h"
-#include "utils/file_ptr.h"
 
 namespace ufal {
 namespace nametag {
 
-ner* ner::load(FILE* f) {
-  switch (fgetc(f)) {
+ner* ner::load(istream& is) {
+  switch (is.get()) {
     case ner_ids::CZECH_NER:
       {
         unique_ptr<czech_ner> res(new czech_ner());
-        if (res->load(f)) return res.release();
+        if (res->load(is)) return res.release();
         break;
       }
     case ner_ids::ENGLISH_NER:
       {
         unique_ptr<english_ner> res(new english_ner());
-        if (res->load(f)) return res.release();
+        if (res->load(is)) return res.release();
         break;
       }
     case ner_ids::GENERIC_NER:
       {
         unique_ptr<generic_ner> res(new generic_ner());
-        if (res->load(f)) return res.release();
+        if (res->load(is)) return res.release();
         break;
       }
   }
@@ -54,10 +53,10 @@ ner* ner::load(FILE* f) {
 }
 
 ner* ner::load(const char* fname) {
-  file_ptr f = fopen(fname, "rb");
-  if (!f) return nullptr;
+  ifstream in(fname, ifstream::in | ifstream::binary);
+  if (!in.is_open()) return nullptr;
 
-  return load(f);
+  return load(in);
 }
 
 } // namespace nametag

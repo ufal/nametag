@@ -24,16 +24,16 @@
 namespace ufal {
 namespace nametag {
 
-bool bilou_ner::load(FILE* f) {
-  if (tagger.reset(tagger::load_instance(f)), !tagger) return false;
-  if (!named_entities.load(f)) return false;
-  if (!templates.load(f)) return false;
+bool bilou_ner::load(istream& is) {
+  if (tagger.reset(tagger::load_instance(is)), !tagger) return false;
+  if (!named_entities.load(is)) return false;
+  if (!templates.load(is)) return false;
 
-  int stages = fgetc(f);
+  int stages = is.get();
   if (stages == EOF) return false;
   networks.resize(stages);
   for (auto&& network : networks)
-    if (!network.load(f)) return false;
+    if (!network.load(is)) return false;
 
   return true;
 }

@@ -36,16 +36,15 @@ const string& entity_map::name(entity_type entity) const {
   return entity < id2str.size() ? id2str[entity] : empty;
 }
 
-bool entity_map::load(FILE* f) {
+bool entity_map::load(istream& is) {
   binary_decoder data;
-  if (!compressor::load(f, data)) return false;
+  if (!compressor::load(is, data)) return false;
 
   try {
     str2id.clear();
     id2str.resize(data.next_4B());
     for (unsigned i = 0; i < id2str.size(); i++) {
-      unsigned len = data.next_1B();
-      id2str[i].assign(data.next<char>(len), len);
+      data.next_str(id2str[i]);
       str2id.emplace(id2str[i], i);
     }
   } catch (binary_decoder_error&) {

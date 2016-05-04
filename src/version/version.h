@@ -23,14 +23,18 @@
 namespace ufal {
 namespace nametag {
 
-class NAMETAG_EXPORT version {
+class version {
  public:
   unsigned major;
   unsigned minor;
   unsigned patch;
+  string prerelease;
 
   // Returns current NameTag version.
   static version current();
+
+  // Returns multi-line formated version and copyright string.
+  static string version_and_copyright(const string& other_libraries = string());
 };
 
 } // namespace nametag

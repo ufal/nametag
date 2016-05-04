@@ -23,16 +23,14 @@
 namespace ufal {
 namespace nametag {
 
-bool entity_map::save(FILE *f) const {
+bool entity_map::save(ostream& os) const {
   binary_encoder enc;
 
   enc.add_4B(id2str.size());
-  for (auto&& entity : id2str) {
-    enc.add_1B(entity.size());
+  for (auto&& entity : id2str)
     enc.add_str(entity);
-  }
 
-  return compressor::save(f, enc);
+  return compressor::save(os, enc);
 }
 
 } // namespace nametag

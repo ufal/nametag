@@ -1,32 +1,26 @@
-// This file is part of NameTag.
+// This file is part of UFAL C++ Utils <http://github.com/ufal/cpp_utils/>.
 //
-// Copyright 2013 by Institute of Formal and Applied Linguistics, Faculty of
+// Copyright 2015 Institute of Formal and Applied Linguistics, Faculty of
 // Mathematics and Physics, Charles University in Prague, Czech Republic.
 //
-// NameTag is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of
-// the License, or (at your option) any later version.
-//
-// NameTag is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #pragma once
 
 #include <atomic>
-#include <memory>
 
 #include "common.h"
 
 namespace ufal {
 namespace nametag {
+namespace utils {
 
+//
 // Declarations
+//
+
 template <class T>
 class threadsafe_stack {
  public:
@@ -38,28 +32,31 @@ class threadsafe_stack {
   atomic_flag lock = ATOMIC_FLAG_INIT;
 };
 
-
+//
 // Definitions
+//
+
 template <class T>
 void threadsafe_stack<T>::push(T* t) {
-  while (lock.test_and_set()) {}
+  while (lock.test_and_set(memory_order_acquire)) {}
   stack.emplace_back(t);
-  lock.clear();
+  lock.clear(memory_order_release);
 }
 
 template <class T>
 T* threadsafe_stack<T>::pop() {
   T* res = nullptr;
 
-  while (lock.test_and_set()) {}
+  while (lock.test_and_set(memory_order_acquire)) {}
   if (!stack.empty()) {
     res = stack.back().release();
     stack.pop_back();
   }
-  lock.clear();
+  lock.clear(memory_order_release);
 
   return res;
 }
 
+} // namespace utils
 } // namespace nametag
 } // namespace ufal

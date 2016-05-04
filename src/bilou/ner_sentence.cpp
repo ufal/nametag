@@ -17,7 +17,6 @@
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <algorithm>
-#include <memory>
 
 #include "ner_sentence.h"
 

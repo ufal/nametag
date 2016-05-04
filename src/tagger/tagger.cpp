@@ -16,8 +16,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <memory>
-
 #include "external_tagger.h"
 #include "morphodita_tagger.h"
 #include "tagger.h"
@@ -27,16 +25,16 @@
 namespace ufal {
 namespace nametag {
 
-tagger* tagger::load_instance(FILE* f) {
-  unique_ptr<tagger> res(create(tagger_id(fgetc(f))));
+tagger* tagger::load_instance(istream& is) {
+  unique_ptr<tagger> res(create(tagger_id(is.get())));
 
   if (!res) return nullptr;
-  if (!res->load(f)) return nullptr;
+  if (!res->load(is)) return nullptr;
 
   return res.release();
 }
 
-tagger* tagger::create_and_encode_instance(const string& tagger_id_and_params, FILE* f) {
+tagger* tagger::create_and_encode_instance(const string& tagger_id_and_params, ostream& os) {
   string tagger_id, params;
 
   // Split the id and params using optional :
@@ -50,15 +48,15 @@ tagger* tagger::create_and_encode_instance(const string& tagger_id_and_params, F
 
   // Parse tagger_id
   tagger_ids::tagger_id id;
-  if (!tagger_ids::parse(tagger_id, id)) return eprintf("Unknown tagger_id '%s'!\n", tagger_id.c_str()), nullptr;
+  if (!tagger_ids::parse(tagger_id, id)) return cerr << "Unknown tagger_id '" << tagger_id << "'!" << endl, nullptr;
 
   // Create instance
   unique_ptr<tagger> res(create(id));
-  if (!res) return eprintf("Cannot create instance for tagger_id '%s'!\n", tagger_id.c_str()), nullptr;
+  if (!res) return cerr << "Cannot create instance for tagger_id '" << tagger_id << "'!" << endl, nullptr;
 
   // Load and encode the tagger
-  fputc(id, f);
-  if (!res->create_and_encode(params, f)) return eprintf("Cannot encode instance of tagger_id '%s'!\n", tagger_id.c_str()), nullptr;
+  os.put(id);
+  if (!res->create_and_encode(params, os)) return cerr << "Cannot encode instance of tagger_id '" << tagger_id << "'!" << endl, nullptr;
 
   return res.release();
 }

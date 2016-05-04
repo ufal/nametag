@@ -32,7 +32,7 @@ namespace nametag {
 
 class bilou_ner : public ner {
  public:
-  bool load(FILE* f);
+  bool load(istream& is);
 
   virtual void recognize(const vector<string_piece>& forms, vector<named_entity>& entities) const override;
 

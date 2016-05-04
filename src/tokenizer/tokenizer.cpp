@@ -18,7 +18,7 @@
 
 #include "tokenizer.h"
 
-#include "morphodita/morphodita.h"
+#include "morphodita/tokenizer/tokenizer.h"
 
 namespace ufal {
 namespace nametag {

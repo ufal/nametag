@@ -29,8 +29,8 @@ namespace nametag {
 
 class network_classifier {
  public:
-  bool load(FILE* f);
-  bool save(FILE* f);
+  bool load(istream& is);
+  bool save(ostream& os);
 
   bool train(unsigned features, unsigned outcomes, const vector<classifier_instance>& train,
              const vector<classifier_instance>& heldout, const network_parameters& parameters, bool verbose);

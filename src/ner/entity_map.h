@@ -31,8 +31,8 @@ class entity_map {
   entity_type parse(const char* str, bool add_entity = false) const;
   const string& name(entity_type entity) const;
 
-  bool load(FILE* f);
-  bool save(FILE* f) const;
+  bool load(istream& is);
+  bool save(ostream& os) const;
 
   entity_type size() const;
  private:

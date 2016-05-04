@@ -18,10 +18,8 @@
 
 #pragma once
 
-#include <memory>
-
 #include "common.h"
-#include "morphodita/morphodita.h"
+#include "morphodita/tagger/tagger.h"
 #include "tagger.h"
 #include "utils/threadsafe_stack.h"
 
@@ -34,8 +32,8 @@ class morphodita_tagger : public tagger {
   virtual void tag(const vector<string_piece>& forms, ner_sentence& sentence) const override;
 
  protected:
-  virtual bool load(FILE* f) override;
-  virtual bool create_and_encode(const string& params, FILE* f) override;
+  virtual bool load(istream& is) override;
+  virtual bool create_and_encode(const string& params, ostream& os) override;
 
  private:
   unique_ptr<morphodita::tagger> tagger;

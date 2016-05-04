@@ -1,20 +1,11 @@
-// This file is part of NameTag.
+// This file is part of UFAL C++ Utils <http://github.com/ufal/cpp_utils/>.
 //
-// Copyright 2013 by Institute of Formal and Applied Linguistics, Faculty of
+// Copyright 2015 Institute of Formal and Applied Linguistics, Faculty of
 // Mathematics and Physics, Charles University in Prague, Czech Republic.
 //
-// NameTag is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of
-// the License, or (at your option) any later version.
-//
-// NameTag is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #pragma once
 
@@ -24,8 +15,12 @@
 
 namespace ufal {
 namespace nametag {
+namespace utils {
 
+//
 // Declarations
+//
+
 class binary_decoder_error : public runtime_error {
  public:
   explicit binary_decoder_error(const char* description) : runtime_error(description) {}
@@ -38,6 +33,7 @@ class binary_decoder {
   inline unsigned next_1B() throw (binary_decoder_error);
   inline unsigned next_2B() throw (binary_decoder_error);
   inline unsigned next_4B() throw (binary_decoder_error);
+  inline void next_str(string& str) throw (binary_decoder_error);
   template <class T> inline const T* next(unsigned elements) throw (binary_decoder_error);
 
   inline bool is_end();
@@ -50,8 +46,10 @@ class binary_decoder {
   const unsigned char* data_end;
 };
 
-
+//
 // Definitions
+//
+
 unsigned char* binary_decoder::fill(unsigned len) {
   buffer.resize(len);
   data = buffer.data();
@@ -79,6 +77,12 @@ unsigned binary_decoder::next_4B() throw (binary_decoder_error) {
   return result;
 }
 
+void binary_decoder::next_str(string& str) throw (binary_decoder_error) {
+  unsigned len = next_1B();
+  if (len == 255) len = next_4B();
+  str.assign(next<char>(len), len);
+}
+
 template <class T> const T* binary_decoder::next(unsigned elements) throw (binary_decoder_error) {
   if (data + sizeof(T) * elements > data_end) throw binary_decoder_error("No more data in binary_decoder");
   const T* result = (const T*) data;
@@ -99,5 +103,6 @@ void binary_decoder::seek(unsigned pos) throw (binary_decoder_error) {
   data = buffer.data() + pos;
 }
 
+} // namespace utils
 } // namespace nametag
 } // namespace ufal

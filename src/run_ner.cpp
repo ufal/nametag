@@ -17,57 +17,64 @@
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <algorithm>
-#include <cstring>
 #include <ctime>
-#include <memory>
 
 #include "ner/ner.h"
-#include "utils/input.h"
-#include "utils/output.h"
-#include "utils/parse_options.h"
+#include "utils/getpara.h"
+#include "utils/iostreams.h"
+#include "utils/options.h"
 #include "utils/process_args.h"
+#include "utils/xml_encoded.h"
+#include "version/version.h"
 
 using namespace ufal::nametag;
 
 static void sort_entities(vector<named_entity>& entities);
-static void recognize_vertical(FILE* in, FILE* out, const ner& recognizer, tokenizer& tokenizer);
-static void recognize_untokenized(FILE* in, FILE* out, const ner& recognizer, tokenizer& tokenizer);
+static void recognize_vertical(istream& is, ostream& os, const ner& recognizer, tokenizer& tokenizer);
+static void recognize_untokenized(istream& is, ostream& os, const ner& recognizer, tokenizer& tokenizer);
 
 int main(int argc, char* argv[]) {
-  show_version_if_requested(argc, argv);
+  iostreams_init();
 
-  options_map options;
-  if (!parse_options({{"input",{"untokenized", "vertical"}},
-                      {"output",{"vertical","xml"}}}, argc, argv, options) ||
-      argc < 2)
-    runtime_errorf("Usage: %s [options] recognizer_model [file[:output_file]]...\n"
-                   "Options: --input=untokenized|vertical\n"
-                   "         --output=vertical|xml", argv[0]);
+  options::map options;
+  if (!options::parse({{"input",options::value{"untokenized", "vertical"}},
+                       {"output",options::value{"vertical","xml"}},
+                       {"version", options::value::none},
+                       {"help", options::value::none}}, argc, argv, options) ||
+      options.count("help") ||
+      (argc < 2 && !options.count("version")))
+    runtime_failure("Usage: " << argv[0] << " [options] recognizer_model [file[:output_file]]...\n"
+                    "Options: --input=untokenized|vertical\n"
+                    "         --output=vertical|xml\n"
+                    "         --version\n"
+                    "         --help");
+  if (options.count("version"))
+    return cout << version::version_and_copyright() << endl, 0;
 
-  eprintf("Loading ner: ");
+  cerr << "Loading ner: ";
   unique_ptr<ner> recognizer(ner::load(argv[1]));
-  if (!recognizer) runtime_errorf("Cannot load ner from file '%s'!", argv[1]);
-  eprintf("done\n");
+  if (!recognizer) runtime_failure("Cannot load ner from file '" << argv[1] << "'!");
+  cerr << "done" << endl;
 
   unique_ptr<tokenizer> tokenizer(options.count("input") && options["input"] == "vertical" ? tokenizer::new_vertical_tokenizer() : recognizer->new_tokenizer());
-  if (!tokenizer) runtime_errorf("No tokenizer is defined for the supplied model!");
+  if (!tokenizer) runtime_failure("No tokenizer is defined for the supplied model!");
 
   clock_t now = clock();
   if (options.count("output") && options["output"] == "vertical")  process_args(2, argc, argv, recognize_vertical, *recognizer, *tokenizer);
   else process_args(2, argc, argv, recognize_untokenized, *recognizer, *tokenizer);
-  eprintf("Recognizing done, in %.3f seconds.\n", (clock() - now) / double(CLOCKS_PER_SEC));
+  cerr << "Recognizing done, in " << fixed << setprecision(3) << (clock() - now) / double(CLOCKS_PER_SEC) << " seconds." << endl;
 
   return 0;
 }
 
-void recognize_vertical(FILE* in, FILE* out, const ner& recognizer, tokenizer& tokenizer) {
+void recognize_vertical(istream& is, ostream& os, const ner& recognizer, tokenizer& tokenizer) {
   string para;
   vector<string_piece> forms;
   vector<named_entity> entities;
   unsigned total_tokens = 0;
   string entity_ids, entity_text;
 
-  while (getpara(in, para)) {
+  while (getpara(is, para)) {
     // Tokenize and tag
     tokenizer.set_text(para);
     while (tokenizer.next_sentence(&forms, nullptr)) {
@@ -85,20 +92,21 @@ void recognize_vertical(FILE* in, FILE* out, const ner& recognizer, tokenizer& t
           entity_ids += to_string(total_tokens + i + 1);
           entity_text.append(forms[i].str, forms[i].len);
         }
-        fprintf(out, "%s\t%s\t%s\n", entity_ids.c_str(), entity.type.c_str(), entity_text.c_str());
+        os << entity_ids << '\t' << entity.type << '\t' << entity_text << '\n';
       }
+      os << flush;
       total_tokens += forms.size() + 1;
     }
   }
 }
 
-void recognize_untokenized(FILE* in, FILE* out, const ner& recognizer, tokenizer& tokenizer) {
+void recognize_untokenized(istream& is, ostream& os, const ner& recognizer, tokenizer& tokenizer) {
   string para;
   vector<string_piece> forms;
   vector<named_entity> entities;
   vector<size_t> entity_ends;
 
-  while (getpara(in, para)) {
+  while (getpara(is, para)) {
     // Tokenize the text and find named entities
     tokenizer.set_text(para);
     const char* unprinted = para.c_str();
@@ -107,31 +115,30 @@ void recognize_untokenized(FILE* in, FILE* out, const ner& recognizer, tokenizer
       sort_entities(entities);
 
       for (unsigned i = 0, e = 0; i < forms.size(); i++) {
-        if (unprinted < forms[i].str) print_xml_content(out, unprinted, forms[i].str - unprinted);
-        if (i == 0) fputs("<sentence>", out);
+        if (unprinted < forms[i].str) os << xml_encoded(string_piece(unprinted, forms[i].str - unprinted));
+        if (i == 0) os << "<sentence>";
 
         // Open entities starting at current token
         for (; e < entities.size() && entities[e].start == i; e++) {
-          fprintf(out, "<ne type=\"%s\">", entities[e].type.c_str());
+          os << "<ne type=\"" << xml_encoded(entities[e].type, true) << "\">";
           entity_ends.push_back(entities[e].start + entities[e].length - 1);
         }
 
         // The token itself
-        fputs("<token>", out);
-        print_xml_content(out, forms[i].str, forms[i].len);
-        fputs("</token>", out);
+        os << "<token>" << xml_encoded(forms[i]) << "</token>";
 
         // Close entities ending after current token
         while (!entity_ends.empty() && entity_ends.back() == i) {
-          fputs("</ne>", out);
+          os << "</ne>";
           entity_ends.pop_back();
         }
-        if (i + 1 == forms.size()) fputs("</sentence>", out);
+        if (i + 1 == forms.size()) os << "</sentence>";
         unprinted = forms[i].str + forms[i].len;
       }
     }
     // Write rest of the text (should be just spaces)
-    if (unprinted < para.c_str() + para.size()) print_xml_content(out, unprinted, para.c_str() + para.size() - unprinted);
+    if (unprinted < para.c_str() + para.size()) os << xml_encoded(string_piece(unprinted, para.c_str() + para.size() - unprinted));
+    os << flush;
   }
 }
 

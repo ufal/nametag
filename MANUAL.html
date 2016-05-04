@@ -84,7 +84,7 @@
     <LI><A HREF="#ner">5.7. Class ner</A>
       <UL>
       <LI><A HREF="#ner_load_cstring">5.7.1. ner::load(const char*)</A>
-      <LI><A HREF="#ner_load_FILE">5.7.2. ner::load(FILE*)</A>
+      <LI><A HREF="#ner_load_istream">5.7.2. ner::load(istream&amp;)</A>
       <LI><A HREF="#ner_recognize">5.7.3. ner::recognize</A>
       <LI><A HREF="#ner_tokenize_and_recognize">5.7.4. ner::tokenize_and_recognize</A>
       <LI><A HREF="#ner_new_tokenizer">5.7.5. ner::new_tokenizer</A>
@@ -124,10 +124,11 @@ NameTag is a free software under <A HREF="http://www.gnu.org/licenses/lgpl.html"
 license and the linguistic models are free for non-commercial use and
 distributed under <A HREF="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</A>
 license, although for some models the original data used to create the model
-may impose additional licensing conditions.
+may impose additional licensing conditions. NameTag is versioned using
+<A HREF="http://semver.org/">Semantic Versioning</A>.
 </P>
 <P>
-Copyright 2014 by Institute of Formal and Applied Linguistics, Faculty of
+Copyright 2016 by Institute of Formal and Applied Linguistics, Faculty of
 Mathematics and Physics, Charles University in Prague, Czech Republic.
 </P>
 
@@ -889,13 +890,14 @@ file paths, whose encoding is system dependent).
 <H2>5.1. NameTag Versioning</H2>
 
 <P>
-NameTag version consists of three numbers <I>major.minor.patch</I> with the
-following semantics:
+NameTag is versioned using <A HREF="http://semver.org/">Semantic Versioning</A>.
+Therefore, a version consists of three numbers <I>major.minor.patch</I>, optionally
+followed by a hyphen and pre-release version info, with the following semantics:
 </P>
 
 <UL>
-<LI>Even patch versions denote stable releases, odd patch versions denote
-  development releases.
+<LI>Stable versions have no pre-release version info, development have non-empty
+  pre-release version info.
 <LI>Two versions with the same <I>major.minor</I> have the same API with the same
   behaviour, apart from bugs. Therefore, if only <I>patch</I> is increased, the
   new version is only a bug-fix release.
@@ -906,6 +908,13 @@ following semantics:
   a newer NameTag version with the same <I>major</I>.
 <LI>If two versions differ in <I>major</I>, their API may differ in any way.
 </UL>
+
+<P>
+Models created by NameTag have the same behaviour in all NameTag
+versions with same <I>major</I>, apart from obvious bugfixes. On the other hand,
+models created from the same data by different <I>major.minor</I> NameTag
+versions may have different behaviour.
+</P>
 
 <A NAME="string_piece"></A>
 <H2>5.2. Struct string_piece</H2>
@@ -1074,7 +1083,7 @@ class ner {
   virtual ~ner() {}
 
   static <A HREF="#ner">ner</A>* <A HREF="#ner_load_cstring">load</A>(const char* fname);
-  static <A HREF="#ner">ner</A>* <A HREF="#ner_load_FILE">load</A>(FILE* f);
+  static <A HREF="#ner">ner</A>* <A HREF="#ner_load_istream">load</A>(istream&amp; is);
 
   virtual void <A HREF="#ner_recognize">recognize</A>(const std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;&amp; forms, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities) const = 0;
 
@@ -1100,15 +1109,15 @@ Returns a pointer to an instance of <A HREF="#ner"><CODE>ner</CODE></A> which th
 after use.
 </P>
 
-<A NAME="ner_load_FILE"></A>
-<H3>5.7.2. ner::load(FILE*)</H3>
+<A NAME="ner_load_istream"></A>
+<H3>5.7.2. ner::load(istream&amp;)</H3>
 
 <PRE>
-static <A HREF="#ner">ner</A>* load(FILE* f);
+static <A HREF="#ner">ner</A>* load(istream&amp; is);
 </PRE>
 
 <P>
-Factory method constructor. Accepts C file pointer of an opened file with the
+Factory method constructor. Accepts an input stream with the
 model. Returns a pointer to an instance of <A HREF="#ner"><CODE>ner</CODE></A> which the user should
 delete after use.
 </P>
@@ -1159,7 +1168,7 @@ exists. The user should delete it after use.
 Bindings for other languages than C++ are created using SWIG from the C++
 bindings API, which is a slightly modified version of the native C++ API.
 Main changes are replacement of <A HREF="#string_piece"><CODE>string_piece</CODE></A> type by native
-strings and removal of methods using <CODE>FILE</CODE>. Here is the C++ bindings API
+strings and removal of methods using <CODE>istream</CODE>. Here is the C++ bindings API
 declaration:
 </P>
 

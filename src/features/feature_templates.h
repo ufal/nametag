@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <memory>
-
 #include "common.h"
 #include "entity_processor.h"
 #include "sentence_processor.h"
@@ -30,10 +28,10 @@ namespace nametag {
 
 class feature_templates {
  public:
-  void parse(FILE* f, entity_map& entities);
+  void parse(istream& is, entity_map& entities);
 
-  bool load(FILE* f);
-  bool save(FILE* f);
+  bool load(istream& is);
+  bool save(ostream& os);
 
   void process_sentence(ner_sentence& sentence, string& buffer, bool add_features = false) const;
   void process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const;

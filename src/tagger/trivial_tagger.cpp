@@ -21,11 +21,11 @@
 namespace ufal {
 namespace nametag {
 
-bool trivial_tagger::load(FILE* /*f*/) {
+bool trivial_tagger::load(istream& /*is*/) {
   return true;
 }
 
-bool trivial_tagger::create_and_encode(const string& /*params*/, FILE* /*f*/) {
+bool trivial_tagger::create_and_encode(const string& /*params*/, ostream& /*os*/) {
   return true;
 }
 

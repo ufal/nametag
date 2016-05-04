@@ -16,34 +16,30 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <fstream>
+
 #include "morphodita_tagger.h"
-#include "utils/file_ptr.h"
 
 namespace ufal {
 namespace nametag {
 
-bool morphodita_tagger::load(FILE* f) {
-  tagger.reset(morphodita::tagger::load(f));
+bool morphodita_tagger::load(istream& is) {
+  tagger.reset(morphodita::tagger::load(is));
   morpho = tagger ? tagger->get_morpho() : nullptr;
   return tagger && morpho;
 }
 
-bool morphodita_tagger::create_and_encode(const string& params, FILE* f) {
-  if (params.empty()) return eprintf("Missing tagger_file argument to morphodita_tagger!\n"), false;
+bool morphodita_tagger::create_and_encode(const string& params, ostream& os) {
+  if (params.empty()) return cerr << "Missing tagger_file argument to morphodita_tagger!" << endl, false;
 
-  file_ptr in = fopen(params.c_str(), "rb");
-  if (!in) return eprintf("Cannot open morphodita tagger file '%s'!\n", params.c_str()), false;
+  ifstream in(params, ifstream::in | ifstream::binary);
+  if (!in.is_open()) return cerr << "Cannot open morphodita tagger file '" << params << "'!" << endl, false;
+  if (!load(in)) return cerr << "Cannot load morphodita tagger from file '" << params << "'!" << endl, false;
 
-  if (!load(in)) {
-    eprintf("Cannot load morphodita tagger fromf ile '%s'!\n", params.c_str());
-    return false;
-  }
+  if (!in.seekg(0, ifstream::beg)) return cerr << "Cannot seek in morphodita tagger file '" << params << "'!" << endl, false;
+  os << in.rdbuf();
 
-  long in_pos = ftell(in);
-  if (fseek(in, 0, SEEK_SET) != 0) return eprintf("Cannot seek in morphodita tagger file '%s'!\n", params.c_str()), false;
-
-  while (in_pos--) fputc(fgetc(in), f);
-  return true;
+  return bool(os);
 }
 
 void morphodita_tagger::tag(const vector<string_piece>& forms, ner_sentence& sentence) const {
@@ -55,14 +51,13 @@ void morphodita_tagger::tag(const vector<string_piece>& forms, ner_sentence& sen
   if (!c) c = new cache();
 
   // Tag
-  auto morphodita_forms = (const vector<morphodita::string_piece>&) forms;
-  tagger->tag(morphodita_forms, c->tags);
+  tagger->tag(forms, c->tags);
 
   // Fill sentence
   if (c->tags.size() >= forms.size()) {
     sentence.resize(forms.size());
     for (unsigned i = 0; i < forms.size(); i++) {
-      sentence.words[i].form.assign(forms[i].str, morpho->raw_form_len(morphodita_forms[i]));
+      sentence.words[i].form.assign(forms[i].str, morpho->raw_form_len(forms[i]));
       const string& lemma = c->tags[i].lemma;
       unsigned raw_lemma_len = morpho->raw_lemma_len(lemma);
       sentence.words[i].raw_lemma = raw_lemma_len == lemma.size() ? lemma : lemma.substr(0, raw_lemma_len);

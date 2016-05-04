@@ -66,6 +66,7 @@ class NAMETAG_IMPORT version {
   unsigned major;
   unsigned minor;
   unsigned patch;
+  std::string prerelease;
 
   // Returns current NameTag version.
   static version current();

@@ -16,43 +16,52 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <memory>
+#include <fstream>
 
 #include "ner/bilou_ner_trainer.h"
 #include "ner/ner_ids.h"
 #include "tagger/tagger.h"
-#include "utils/file_ptr.h"
+#include "utils/iostreams.h"
+#include "utils/options.h"
 #include "utils/parse_double.h"
 #include "utils/parse_int.h"
-#include "utils/parse_options.h"
-#include "utils/set_binary_stdout.h"
+#include "version/version.h"
 
 using namespace ufal::nametag;
 
 int main(int argc, char* argv[]) {
-  show_version_if_requested(argc, argv);
+  iostreams_init();
 
-  if (argc < 2) runtime_errorf("Usage: %s ner_identifier [options]", argv[0]);
+  options::map options;
+  if (!options::parse({{"version", options::value::none},
+                       {"help", options::value::none}}, argc, argv, options) ||
+      options.count("help") ||
+      (argc < 2 && !options.count("version")))
+    runtime_failure("Usage: " << argv[0] << " [options] ner_identifier [ner_identifier_specific_options]\n"
+                    "Options: --version\n"
+                    "         --help");
+  if (options.count("version"))
+    return cout << version::version_and_copyright() << endl, 0;
 
   ner_id id;
-  if (!ner_ids::parse(argv[1], id)) runtime_errorf("Cannot parse ner_identifier '%s'!\n", argv[1]);
+  if (!ner_ids::parse(argv[1], id)) runtime_failure("Cannot parse ner_identifier '" << argv[1] << "'!\n");
 
-  // Switch stdout to binary mode. Needed on Windows only.
-  set_binary_stdout();
+  // Switch stdout to binary mode.
+  iostreams_init_binary_output();
 
   switch (id) {
     case ner_ids::CZECH_NER:
     case ner_ids::ENGLISH_NER:
     case ner_ids::GENERIC_NER:
       {
-        if (argc < 10) runtime_errorf("Usage: %s %s tagger_id[:tagger_options] features stages iterations missing_weight initial_learning_rate final_learning_rate gaussian hidden_layer [heldout_data]", argv[0], argv[1]);
+        if (argc < 10) runtime_failure("Usage: " << argv[0] << ' ' << argv[1] << " tagger_id[:tagger_options] features stages iterations missing_weight initial_learning_rate final_learning_rate gaussian hidden_layer [heldout_data]");
 
         // Encode the ner_id
-        fputc(id, stdout);
+        cout.put(id);
 
         // Create and encode the tagger
-        unique_ptr<tagger> tagger(tagger::create_and_encode_instance(argv[2], stdout));
-        if (!tagger) runtime_errorf("Cannot load and encode tagger!");
+        unique_ptr<tagger> tagger(tagger::create_and_encode_instance(argv[2], cout));
+        if (!tagger) runtime_failure("Cannot load and encode tagger!");
 
         // Parse options
         network_parameters parameters;
@@ -67,23 +76,25 @@ int main(int argc, char* argv[]) {
         const char* heldout_file = argc == 11 ? nullptr : argv[11];
 
         // Open needed files
-        file_ptr features = fopen(features_file, "r");
-        if (!features) runtime_errorf("Cannot open features file '%s'!", features_file);
+        ifstream features(features_file);
+        if (!features.is_open()) runtime_failure("Cannot open features file '" << features_file << "'!");
 
-        file_ptr heldout;
+        ifstream heldout;
         if (heldout_file) {
-          heldout = fopen(heldout_file, "r");
-          if (!heldout) runtime_errorf("Cannot open heldout file '%s'!", heldout_file);
+          heldout.open(heldout_file);
+          if (!heldout.is_open()) runtime_failure("Cannot open heldout file '" << heldout_file << "'!");
+        } else {
+          heldout.setstate(ios::failbit);
         }
 
         // Encode the ner itself
-        bilou_ner_trainer::train(stages, parameters, *tagger, features, stdin, heldout, stdout);
+        bilou_ner_trainer::train(stages, parameters, *tagger, features, cin, heldout, cout);
 
-        eprintf("Recognizer saved.\n");
+        cerr << "Recognizer saved." << endl;
         break;
       }
     default:
-      runtime_errorf("Unimplemented ner_identifier '%s'!\n", argv[1]);
+      runtime_failure("Unimplemented ner_identifier '" << argv[1] << "'!\n");
   }
 
   return 0;

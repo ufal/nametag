@@ -22,7 +22,7 @@
 namespace ufal {
 namespace nametag {
 
-bool network_classifier::save(FILE* f) {
+bool network_classifier::save(ostream& os) {
   binary_encoder enc;
 
   // Direct connections
@@ -40,7 +40,7 @@ bool network_classifier::save(FILE* f) {
   // Output layer
   enc.add_2B(output_layer.size());
 
-  return compressor::save(f, enc);
+  return compressor::save(os, enc);
 }
 
 template <class T>
@@ -48,7 +48,7 @@ void network_classifier::save_matrix(binary_encoder& enc, const vector<vector<T>
   enc.add_4B(m.size());
   for (auto&& row : m) {
     enc.add_2B(row.size());
-    enc.add_data((const unsigned char*) row.data(), ((const unsigned char*) row.data()) + row.size() * sizeof(T));
+    enc.add_data(row.data(), row.size());
   }
 }
 

@@ -30,11 +30,11 @@ inline static size_t strnchrpos(const char* str, char c, size_t len) {
   return pos;
 }
 
-bool external_tagger::load(FILE* /*f*/) {
+bool external_tagger::load(istream& /*is*/) {
   return true;
 }
 
-bool external_tagger::create_and_encode(const string& /*params*/, FILE* /*f*/) {
+bool external_tagger::create_and_encode(const string& /*params*/, ostream& /*os*/) {
   return true;
 }
 

@@ -17,7 +17,6 @@
 // along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <algorithm>
-#include <memory>
 
 #include "sentence_processor.h"
 
@@ -45,8 +44,8 @@ void sentence_processor::load(binary_decoder& data) {
   map.clear();
   map.rehash(data.next_4B());
   for (unsigned i = data.next_4B(); i > 0; i--) {
-    unsigned len = data.next_1B();
-    string key(data.next<char>(len), len);
+    string key;
+    data.next_str(key);
     map.emplace(key, data.next_4B());
   }
 }
@@ -60,7 +59,6 @@ void sentence_processor::save(binary_encoder& enc) {
   vector<pair<string, ner_feature>> map_elements(map.begin(), map.end());
   sort(map_elements.begin(), map_elements.end());
   for (auto&& element : map_elements) {
-    enc.add_1B(element.first.size());
     enc.add_str(element.first);
     enc.add_4B(element.second);
   }

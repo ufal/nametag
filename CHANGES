@@ -6,6 +6,10 @@ Version 1.0.1 [not yet released]
 - Fix problem in external tagger, which was unusable.
 - Use UniLib from MorphoDiTa instead of NameTag specific utf8 class.
 - Use PyTypeObject in Python bindings instead of proxy classes.
+- Use upstream version of C++ Utils http://github.com/ufal/cpp_utils.
+- Use upstream version of Unilib http://github.com/ufal/unilib.
+- Use C++ iostreams instead of C stdio.
+- Start using Semantic Versioning http://semver.org/.
 
 
 Version 1.0.0 [11 Apr 14]

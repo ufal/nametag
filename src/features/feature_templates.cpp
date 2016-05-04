@@ -23,9 +23,9 @@
 namespace ufal {
 namespace nametag {
 
-bool feature_templates::load(FILE* f) {
+bool feature_templates::load(istream& is) {
   binary_decoder data;
-  if (!compressor::load(f, data)) return false;
+  if (!compressor::load(is, data)) return false;
 
   try {
     total_features = data.next_4B();
@@ -33,8 +33,8 @@ bool feature_templates::load(FILE* f) {
     sentence_processors.clear();
     entity_processors.clear();
     for (unsigned processors = data.next_4B(); processors; processors--) {
-      unsigned name_len = data.next_1B();
-      string name(data.next<char>(name_len), name_len);
+      string name;
+      data.next_str(name);
 
       // Try sentence processor
       auto* maybe_sentence_processor = sentence_processor::create(name);

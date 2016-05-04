@@ -1,29 +1,25 @@
-// This file is part of NameTag.
+// This file is part of UFAL C++ Utils <http://github.com/ufal/cpp_utils/>.
 //
-// Copyright 2013 by Institute of Formal and Applied Linguistics, Faculty of
+// Copyright 2015 Institute of Formal and Applied Linguistics, Faculty of
 // Mathematics and Physics, Charles University in Prague, Czech Republic.
 //
-// NameTag is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of
-// the License, or (at your option) any later version.
-//
-// NameTag is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with NameTag.  If not, see <http://www.gnu.org/licenses/>.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #pragma once
 
 #include "common.h"
+#include "string_piece.h"
 
 namespace ufal {
 namespace nametag {
+namespace utils {
 
-// Declaration
+//
+// Declarations
+//
+
 class binary_encoder {
  public:
   inline binary_encoder();
@@ -31,59 +27,67 @@ class binary_encoder {
   inline void add_1B(unsigned val);
   inline void add_2B(unsigned val);
   inline void add_4B(unsigned val);
+  inline void add_float(double val);
   inline void add_double(double val);
-  inline void add_str(const char* str);
-  inline void add_str(const string& str);
-  inline void add_data(const vector<unsigned char>& str);
-  inline void add_data(const unsigned char* begin, const unsigned char* end);
+  inline void add_str(string_piece str);
+  inline void add_data(string_piece data);
+  template <class T> inline void add_data(const vector<T>& data);
+  template <class T> inline void add_data(const T* data, size_t elements);
 
   vector<unsigned char> data;
 };
 
+//
+// Definitions
+//
 
-// Definition
 binary_encoder::binary_encoder() {
   data.reserve(16);
 }
 
 void binary_encoder::add_1B(unsigned val) {
-  if (uint8_t(val) != val) runtime_errorf("Should encode value %u in one byte!", val);
+  if (uint8_t(val) != val) runtime_failure("Should encode value " << val << " in one byte!");
   data.push_back(val);
 }
 
 void binary_encoder::add_2B(unsigned val) {
-  if (uint16_t(val) != val) runtime_errorf("Should encode value %u in one byte!", val);
+  if (uint16_t(val) != val) runtime_failure("Should encode value " << val << " in one byte!");
   data.insert(data.end(), (unsigned char*) &val, ((unsigned char*) &val) + sizeof(uint16_t));
 }
 
 void binary_encoder::add_4B(unsigned val) {
-  if (uint32_t(val) != val) runtime_errorf("Should encode value %u in one byte!", val);
+  if (uint32_t(val) != val) runtime_failure("Should encode value " << val << " in one byte!");
   data.insert(data.end(), (unsigned char*) &val, ((unsigned char*) &val) + sizeof(uint32_t));
+}
+
+void binary_encoder::add_float(double val) {
+  data.insert(data.end(), (unsigned char*) &val, ((unsigned char*) &val) + sizeof(float));
 }
 
 void binary_encoder::add_double(double val) {
   data.insert(data.end(), (unsigned char*) &val, ((unsigned char*) &val) + sizeof(double));
 }
 
-
-void binary_encoder::add_str(const char* str) {
-  while (*str)
-    data.push_back(*str++);
+void binary_encoder::add_str(string_piece str) {
+  add_1B(str.len < 255 ? str.len : 255);
+  if (!(str.len < 255)) add_4B(str.len);
+  add_data(str);
 }
 
-void binary_encoder::add_str(const string& str) {
-  for (auto&& chr : str)
-    data.push_back(chr);
+void binary_encoder::add_data(string_piece data) {
+  this->data.insert(this->data.end(), (const unsigned char*) data.str, (const unsigned char*) (data.str + data.len));
 }
 
-void binary_encoder::add_data(const vector<unsigned char>& str) {
-  for (auto&& chr : str)
-    data.push_back(chr);
+template <class T>
+void binary_encoder::add_data(const vector<T>& data) {
+  this->data.insert(this->data.end(), (const unsigned char*) data.data(), (const unsigned char*) (data.data() + data.size()));
 }
 
-void binary_encoder::add_data(const unsigned char* begin, const unsigned char* end) {
-  data.insert(data.end(), begin, end);
+template <class T>
+void binary_encoder::add_data(const T* data, size_t elements) {
+  this->data.insert(this->data.end(), (const unsigned char*) data, (const unsigned char*) (data + elements));
 }
 
+} // namespace utils
 } // namespace nametag
 } // namespace ufal

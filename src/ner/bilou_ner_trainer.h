@@ -30,7 +30,7 @@ namespace nametag {
 
 class bilou_ner_trainer {
  public:
-  static void train(int stages, const network_parameters& parameters, const tagger& tagger, FILE* in_features, FILE* in_train, FILE* in_heldout, FILE* out_ner);
+  static void train(int stages, const network_parameters& parameters, const tagger& tagger, istream& features, istream& train, istream& heldout, ostream& os);
 
  private:
   struct labelled_sentence {
@@ -38,7 +38,7 @@ class bilou_ner_trainer {
     vector<bilou_entity::value> outcomes;
   };
 
-  static void load_data(FILE* f, const tagger& tagger, vector<labelled_sentence>& data, entity_map& entity_map, bool add_entities);
+  static void load_data(istream& is, const tagger& tagger, vector<labelled_sentence>& data, entity_map& entity_map, bool add_entities);
   static void generate_instances(vector<labelled_sentence>& data, const feature_templates& templates, vector<classifier_instance>& instances, bool add_features);
   static void compute_previous_stage(vector<labelled_sentence>& data, const feature_templates& templates, const network_classifier& network);
 };
