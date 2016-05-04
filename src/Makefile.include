@@ -13,4 +13,9 @@ include $(NAMETAG_MAKEFILE_INCLUDE_CWD)morphodita/Makefile.include
 NAMETAG_MORPHODITA_OBJECTS = $(addprefix morphodita/,$(filter-out unilib/% utils/%,$(MORPHODITA_OBJECTS))) $(filter unilib/% utils/%,$(MORPHODITA_OBJECTS))
 
 NAMETAG_OBJECTS = $(NAMETAG_MORPHODITA_OBJECTS)
-NAMETAG_OBJECTS += bilou/bilou_probabilities bilou/ner_sentence classifier/network_classifier features/entity_processor features/entity_processor_instances features/feature_templates features/sentence_processor features/sentence_processor_instances ner/bilou_ner ner/czech_ner ner/english_ner ner/entity_map ner/generic_ner ner/ner tagger/external_tagger tagger/morphodita_tagger tagger/tagger tagger/trivial_tagger tokenizer/tokenizer utils/distribution utils/input utils/url_detector version/version
+NAMETAG_OBJECTS += bilou/bilou_probabilities bilou/ner_sentence classifier/network_classifier
+NAMETAG_OBJECTS += features/entity_processor features/entity_processor_instances
+NAMETAG_OBJECTS += features/feature_templates features/sentence_processor features/sentence_processor_instances
+NAMETAG_OBJECTS += ner/bilou_ner ner/czech_ner ner/english_ner ner/entity_map ner/generic_ner ner/ner
+NAMETAG_OBJECTS += tagger/external_tagger tagger/morphodita_tagger tagger/tagger tagger/trivial_tagger
+NAMETAG_OBJECTS += tokenizer/tokenizer utils/url_detector version/version

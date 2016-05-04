@@ -30,7 +30,8 @@
     <LI><A HREF="#requirements">3.1. Requirements</A>
     <LI><A HREF="#compilation">3.2. Compilation</A>
       <UL>
-      <LI><A HREF="#compilation_windows">3.2.1. Windows</A>
+      <LI><A HREF="#compilation_platforms">3.2.1. Platforms</A>
+      <LI><A HREF="#compilation_further_details">3.2.2. Further Details</A>
       </UL>
     <LI><A HREF="#other_language_bindings">3.3. Other language bindings</A>
       <UL>
@@ -200,8 +201,8 @@ recognition. The models for the Czech language are available with the tool.
 <P>
 NameTag releases are available on <A HREF="http://github.com/ufal/nametag">GitHub</A>, either as
 a pre-compiled binary package, or source code only. The binary package contains Linux,
-Windows and OS X binaries, <CODE>C++</CODE> library binary, Java bindings binary, and source code of
-all language bindings (Java, Python, Perl) and NameTag. While the binary
+Windows and OS X binaries, Java bindings binary, and source code of
+NameTag and all language bindings. While the binary
 packages do not contain compiled Python or Perl bindings, packages for those
 languages are available in standard package repositories, i.e. on PyPI and CPAN.
 </P>
@@ -222,14 +223,14 @@ and in the repository itself.
 <UL>
 <LI><CODE>G++ 4.7</CODE> or newer, alternatively <CODE>clang 3.2</CODE> or newer
 <LI><CODE>make</CODE>
-<LI><CODE>SWIG 2.0.5</CODE> or newer for language bindings other than <CODE>C++</CODE>
+<LI><CODE>SWIG</CODE> for language bindings other than <CODE>C++</CODE>
 </UL>
 
 <A NAME="compilation"></A>
 <H2>3.2. Compilation</H2>
 
 <P>
-To compile NameTag on Unix-like systems, run <CODE>make</CODE> in the <CODE>src</CODE> directory.
+To compile NameTag, run <CODE>make</CODE> in the <CODE>src</CODE> directory.
 </P>
 <P>
 Make targets and options:
@@ -237,33 +238,41 @@ Make targets and options:
 
 <UL>
 <LI><CODE>exe</CODE>: compile the binaries (default)
-<LI><CODE>lib</CODE>: compile the shared (dynamically loaded) library
+<LI><CODE>server</CODE>: compile the REST server
+<LI><CODE>lib</CODE>: compile NameTag library (decoding only)
 <LI><CODE>BITS=32</CODE> or <CODE>BITS=64</CODE>: compile for specified 32-bit or 64-bit architecture instead of the default one
-<LI><CODE>RELEASE=1</CODE>: turn off assertions and use LTO
-<LI><CODE>PROFILE=1</CODE>: turn on profiling
-<LI><CODE>DEBUG=1</CODE>: compile with debug informations and C++ library debugging
+<LI><CODE>mode=RELEASE</CODE>: create release build which statically links the C++ runtime and uses LTO
+<LI><CODE>mode=DEBUG</CODE>: create debug build
+<LI><CODE>mode=PROFILE</CODE>: create profile build
 </UL>
 
-<A NAME="compilation_windows"></A>
-<H3>3.2.1. Windows</H3>
+<A NAME="compilation_platforms"></A>
+<H3>3.2.1. Platforms</H3>
 
 <P>
-Currently only G++ is supported under Windows. We use
-<A HREF="http://tdm-gcc.tdragon.net/">TDM-GCC</A> for producing Windows builds,
-but MinGW and Cygwin are also known to work. If you are interested in adding
-support for other compilers (most notably, Visual Studio), let us know.
-</P>
-<P>
-By default, Unix-like shell is required (i.e., Cygwin or MSYS). If you use
-standard Windows Cmd.exe (i.e., TDM-GCC or plain MinGW), use
+Platform can be selected using one of the following options:
 </P>
 
-<PRE>
-make WINCMD=1
-</PRE>
+<UL>
+<LI><CODE>PLATFORM=linux</CODE>, <CODE>PLATFORM=linux-gcc</CODE>: gcc compiler on Linux operating system, default on Linux
+<LI><CODE>PLATFORM=linux-clang</CODE>: clang compiler on Linux, must be selected manually
+<LI><CODE>PLATFORM=osx</CODE>, <CODE>PLATFORM=osx-clang</CODE>: clang compiler on OS X, default on OS X; <CODE>BITS=32+64</CODE> enables multiarch build
+<LI><CODE>PLATFORM=win</CODE>, <CODE>PLATFORM=win-gcc</CODE>: gcc compiler on Windows (TDM-GCC is well tested), default on Windows
+<LI><CODE>PLATFORM=win-vs</CODE>: Visual C++ 2015 compiler on Windows, must be selected manually; note that the
+  <CODE>cl.exe</CODE> compiler must be already present in <CODE>PATH</CODE> and corresponding <CODE>BITS=32</CODE> or <CODE>BITS=64</CODE>
+  must be specified
+</UL>
 
 <P>
-Note that <CODE>make</CODE> in MinGW is usually distributed as <CODE>mingw32-make</CODE>.
+Either POSIX shell or Windows CMD can be used as shell, it is detected automatically.
+</P>
+
+<A NAME="compilation_further_details"></A>
+<H3>3.2.2. Further Details</H3>
+
+<P>
+MorphoDiTa uses <A HREF="http://github.com/ufal/cpp_builtem">C++ BuilTem system</A>,
+please refer to its manual if interested in all supported options.
 </P>
 
 <A NAME="other_language_bindings"></A>

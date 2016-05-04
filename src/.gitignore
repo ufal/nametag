@@ -1,8 +1,5 @@
-.objs/
+/.build/
 run_ner
 run_tokenizer
 train_ner
 libnametag.a
-libnametag.dylib
-libnametag.dyn.a
-libnametag.so

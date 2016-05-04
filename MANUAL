@@ -84,11 +84,10 @@ NameTag Installation
 
 NameTag releases are available on GitHub (http://github.com/ufal/nametag),
 either as a pre-compiled binary package, or source code only. The binary package
-contains Linux, Windows and OS X binaries, C++ library binary, Java bindings
-binary, and source code of all language bindings (Java, Python, Perl) and
-NameTag. While the binary packages do not contain compiled Python or Perl
-bindings, packages for those languages are available in standard package
-repositories, i.e. on PyPI and CPAN.
+contains Linux, Windows and OS X binaries, Java bindings binary, and source code
+of NameTag and all language bindings. While the binary packages do not contain
+compiled Python or Perl bindings, packages for those languages are available in
+standard package repositories, i.e. on PyPI and CPAN.
 
 To use NameTag, a language model is needed. Here is a list of available language
 models (http://ufal.mff.cuni.cz/nametag#language_models).
@@ -103,39 +102,52 @@ Requirements
 
 - G++ 4.7 or newer, alternatively clang 3.2 or newer
 - make
-- SWIG 2.0.5 or newer for language bindings other than C++
+- SWIG for language bindings other than C++
 
 
 Compilation
 -----------
 
-To compile NameTag on Unix-like systems, run make in the src directory.
+To compile NameTag, run make in the src directory.
 
 Make targets and options:
 
 - exe: compile the binaries (default)
-- lib: compile the shared (dynamically loaded) library
+- server: compile the REST server
+- lib: compile NameTag library (decoding only)
 - BITS=32 or BITS=64: compile for specified 32-bit or 64-bit architecture
   instead of the default one
-- RELEASE=1: turn off assertions and use LTO
-- PROFILE=1: turn on profiling
-- DEBUG=1: compile with debug informations and C++ library debugging
+- mode=RELEASE: create release build which statically links the C++ runtime and
+  uses LTO
+- mode=DEBUG: create debug build
+- mode=PROFILE: create profile build
 
 
-Windows
--------
+Platforms
+---------
 
-Currently only G++ is supported under Windows. We use TDM-GCC
-(http://tdm-gcc.tdragon.net/) for producing Windows builds, but MinGW and Cygwin
-are also known to work. If you are interested in adding support for other
-compilers (most notably, Visual Studio), let us know.
+Platform can be selected using one of the following options:
 
-By default, Unix-like shell is required (i.e., Cygwin or MSYS). If you use
-standard Windows Cmd.exe (i.e., TDM-GCC or plain MinGW), use
+- PLATFORM=linux, PLATFORM=linux-gcc: gcc compiler on Linux operating system,
+  default on Linux
+- PLATFORM=linux-clang: clang compiler on Linux, must be selected manually
+- PLATFORM=osx, PLATFORM=osx-clang: clang compiler on OS X, default on OS X;
+  BITS=32+64 enables multiarch build
+- PLATFORM=win, PLATFORM=win-gcc: gcc compiler on Windows (TDM-GCC is well
+  tested), default on Windows
+- PLATFORM=win-vs: Visual C++ 2015 compiler on Windows, must be selected
+  manually; note that the cl.exe compiler must be already present in PATH and
+  corresponding BITS=32 or BITS=64 must be specified
 
-  make WINCMD=1
+Either POSIX shell or Windows CMD can be used as shell, it is detected
+automatically.
 
-Note that make in MinGW is usually distributed as mingw32-make.
+
+Further Details
+---------------
+
+MorphoDiTa uses C++ BuilTem system (http://github.com/ufal/cpp_builtem), please
+refer to its manual if interested in all supported options.
 
 
 Other language bindings
