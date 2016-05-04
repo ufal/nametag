@@ -49,11 +49,10 @@ Download
 
 NameTag releases are available on GitHub (http://github.com/ufal/nametag),
 either as a pre-compiled binary package, or source code only. The binary package
-contains Linux, Windows and OS X binaries, C++ library binary, Java bindings
-binary, and source code of all language bindings (Java, Python, Perl) and
-NameTag. While the binary packages do not contain compiled Python or Perl
-bindings, packages for those languages are available in standard package
-repositories, i.e. on PyPI and CPAN.
+contains Linux, Windows and OS X binaries, Java bindings binary, C# bindings
+binary and source code of NameTag and all language bindings. While the binary
+packages do not contain compiled Python or Perl bindings, packages for those
+languages are available in standard package repositories, i.e. on PyPI and CPAN.
 
 - Latest release (http://github.com/ufal/nametag/releases/latest)
 - All releases (http://github.com/ufal/nametag/releases), Changelog
@@ -104,10 +103,10 @@ NameTag Installation
 
 NameTag releases are available on GitHub (http://github.com/ufal/nametag),
 either as a pre-compiled binary package, or source code only. The binary package
-contains Linux, Windows and OS X binaries, Java bindings binary, and source code
-of NameTag and all language bindings. While the binary packages do not contain
-compiled Python or Perl bindings, packages for those languages are available in
-standard package repositories, i.e. on PyPI and CPAN.
+contains Linux, Windows and OS X binaries, Java bindings binary, C# bindings
+binary and source code of NameTag and all language bindings. While the binary
+packages do not contain compiled Python or Perl bindings, packages for those
+languages are available in standard package repositories, i.e. on PyPI and CPAN.
 
 To use NameTag, a language model is needed. Here is a list of available language
 models (http://ufal.mff.cuni.cz/nametag#language_models).
@@ -170,6 +169,15 @@ refer to its manual if interested in all supported options.
 
 Other language bindings
 -----------------------
+
+
+C#
+--
+
+Binary C# bindings are available in NameTag binary packages.
+
+To compile C# bindings manually, run make in the bindings/csharp directory,
+optionally with the options descriged in NameTag Installation.
 
 
 Java
@@ -952,6 +960,7 @@ Main Classes
     unsigned major;
     unsigned minor;
     unsigned patch;
+    string prerelease;
 
     static Version current();
   };
@@ -971,6 +980,16 @@ Main Classes
 
     virtual Tokenizer* newTokenizer() const;
   };
+
+
+C# Bindings
+-----------
+
+NameTag library bindings is available in the Ufal.NameTag namespace.
+
+The bindings is a straightforward conversion of the C++ bindings API. The
+bindings requires native C++ library libnametag_csharp (called nametag_csharp on
+Windows).
 
 
 Java Bindings

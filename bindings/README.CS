@@ -1,29 +1,23 @@
-Python NameTag Bindings
-========================
+C# NameTag Bindings
+======================
 
 Installation
 ============
 
-The Python bindings are available as ufal.nametag package on PyPI.
+Binary C# bindings are available in NameTag binary packages.
 
-To compile Python bindings manually, run make in the bindings/python directory,
-optionally with options descriged in NameTag Installation. Both Python 2.6+ and
-Python 3+ are supported.
-
-Path to the include headers of the required Python version must be specified in
-the PYTHON_INCLUDE variable using
-  make PYTHON_INCLUDE=path_to_Python_includes
+To compile C# bindings manually, run make in the bindings/csharp directory,
+optionally with the options descriged in NameTag Installation.
 
 
-Python Bindings API
-===================
+C# Bindings API
+===============
 
-NameTag library bindings is available in the ufal.nametag
-(http://pypi.python.org/pypi/ufal.nametag) module.
+NameTag library bindings is available in the Ufal.NameTag namespace.
 
-The bindings is a straightforward conversion of the C++ bindings API. In Python
-2, strings can be both unicode and UTF-8 encoded str, and the library always
-produces unicode. In Python 3, strings must be only str.
+The bindings is a straightforward conversion of the C++ bindings API. The
+bindings requires native C++ library libnametag_csharp (called nametag_csharp on
+Windows).
 
 
 C++ Bindings API

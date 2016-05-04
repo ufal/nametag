@@ -52,12 +52,14 @@
       </ul>
     </li>
     <li><a href="#other_language_bindings">4.3. Other language bindings</a>
+    </li>
+    <li><a href="#csharp_installation">4.4. C#</a>
       <ul>
-      <li><a href="#java_installation">4.3.1. Java</a>
+      <li><a href="#java_installation">4.4.1. Java</a>
       </li>
-      <li><a href="#perl_installation">4.3.2. Perl</a>
+      <li><a href="#perl_installation">4.4.2. Perl</a>
       </li>
-      <li><a href="#python_installation">4.3.3. Python</a>
+      <li><a href="#python_installation">4.4.3. Python</a>
       </li>
       </ul>
     </li>
@@ -153,11 +155,13 @@
       </li>
       </ul>
     </li>
-    <li><a href="#java_bindings">6.9. Java Bindings</a>
+    <li><a href="#csharp_bindings">6.9. C# Bindings</a>
     </li>
-    <li><a href="#perl_bindings">6.10. Perl Bindings</a>
+    <li><a href="#java_bindings">6.10. Java Bindings</a>
     </li>
-    <li><a href="#python_bindings">6.11. Python Bindings</a>
+    <li><a href="#perl_bindings">6.11. Perl Bindings</a>
+    </li>
+    <li><a href="#python_bindings">6.12. Python Bindings</a>
     </li>
     </ul>
   </li>
@@ -228,8 +232,8 @@ available as one of <a href="http://lindat.mff.cuni.cz/services/">LINDAT/CLARIN 
 <p>
 NameTag releases are available on <a href="http://github.com/ufal/nametag">GitHub</a>, either as
 a pre-compiled binary package, or source code only. The binary package contains Linux,
-Windows and OS X binaries, <code>C++</code> library binary, Java bindings binary, and source code of
-all language bindings (Java, Python, Perl) and NameTag. While the binary
+Windows and OS X binaries, Java bindings binary, C# bindings binary and source code of
+NameTag and all language bindings. While the binary
 packages do not contain compiled Python or Perl bindings, packages for those
 languages are available in standard package repositories, i.e. on PyPI and CPAN.
 </p>
@@ -292,7 +296,7 @@ recognition. The models for the Czech language are available with the tool.
 <p>
 NameTag releases are available on <a href="http://github.com/ufal/nametag">GitHub</a>, either as
 a pre-compiled binary package, or source code only. The binary package contains Linux,
-Windows and OS X binaries, Java bindings binary, and source code of
+Windows and OS X binaries, Java bindings binary, C# bindings binary and source code of
 NameTag and all language bindings. While the binary
 packages do not contain compiled Python or Perl bindings, packages for those
 languages are available in standard package repositories, i.e. on PyPI and CPAN.
@@ -382,8 +386,19 @@ please refer to its manual if interested in all supported options.
 <a id="other_language_bindings" name="other_language_bindings"></a>
 <h2>4.3. Other language bindings</h2>
 
+<a id="csharp_installation" name="csharp_installation"></a>
+<h2>4.4. C#</h2>
+
+<p>
+Binary C# bindings are available in NameTag binary packages.
+</p>
+<p>
+To compile C# bindings manually, run <code>make</code> in the <code>bindings/csharp</code>
+directory, optionally with the options descriged in NameTag Installation.
+</p>
+
 <a id="java_installation" name="java_installation"></a>
-<h3>4.3.1. Java</h3>
+<h3>4.4.1. Java</h3>
 
 <p>
 Binary Java bindings are available in NameTag binary packages.
@@ -403,7 +418,7 @@ make JAVA_HOME=path_to_Java_installation
 </pre>
 
 <a id="perl_installation" name="perl_installation"></a>
-<h3>4.3.2. Perl</h3>
+<h3>4.4.2. Perl</h3>
 
 <p>
 The Perl bindings are available as <code>Ufal-NameTag</code> package on CPAN.
@@ -422,7 +437,7 @@ make PERL_INCLUDE=path_to_Perl_includes
 </pre>
 
 <a id="python_installation" name="python_installation"></a>
-<h3>4.3.3. Python</h3>
+<h3>4.4.3. Python</h3>
 
 <p>
 The Python bindings are available as <code>ufal.nametag</code> package on PyPI.
@@ -1355,6 +1370,7 @@ class Version {
   unsigned major;
   unsigned minor;
   unsigned patch;
+  string prerelease;
 
   static Version current();
 };
@@ -1376,8 +1392,20 @@ class Ner {
 };
 </pre>
 
+<a id="csharp_bindings" name="csharp_bindings"></a>
+<h2>6.9. C# Bindings</h2>
+
+<p>
+NameTag library bindings is available in the <code>Ufal.NameTag</code> namespace.
+</p>
+<p>
+The bindings is a straightforward conversion of the <code>C++</code> bindings API.
+The bindings requires native C++ library <code>libnametag_csharp</code> (called
+<code>nametag_csharp</code> on Windows).
+</p>
+
 <a id="java_bindings" name="java_bindings"></a>
-<h2>6.9. Java Bindings</h2>
+<h2>6.10. Java Bindings</h2>
 
 <p>
 NameTag library bindings is available in the <code>cz.cuni.mff.ufal.nametag</code>
@@ -1397,7 +1425,7 @@ directory, it is used, otherwise standard library search process is used.
 </p>
 
 <a id="perl_bindings" name="perl_bindings"></a>
-<h2>6.10. Perl Bindings</h2>
+<h2>6.11. Perl Bindings</h2>
 
 <p>
 NameTag library bindings is available in the
@@ -1413,7 +1441,7 @@ module, not through object instance.
 </p>
 
 <a id="python_bindings" name="python_bindings"></a>
-<h2>6.11. Python Bindings</h2>
+<h2>6.12. Python Bindings</h2>
 
 <p>
 NameTag library bindings is available in the

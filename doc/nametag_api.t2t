@@ -218,13 +218,21 @@ declaration:
 
 %!include: nametag_bindings_api.t2t
 
+
+== C# Bindings ==[csharp_bindings]
+
+%!include: nametag_bindings_csharp_api.t2t
+
+
 == Java Bindings ==[java_bindings]
 
 %!include: nametag_bindings_java_api.t2t
 
+
 == Perl Bindings ==[perl_bindings]
 
 %!include: nametag_bindings_perl_api.t2t
+
 
 == Python Bindings ==[python_bindings]
 

@@ -13,6 +13,7 @@ Version 1.0.1 [not yet released]
 - Remove support for shared library build.
 - Support compilation on Visual Studio 2015.
 - Use t2t_docsys http://github.com/ufal/t2t_docsys as documentation system.
+- Add C# bindings.
 
 
 Version 1.0.0 [11 Apr 14]

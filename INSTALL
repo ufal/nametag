@@ -3,10 +3,10 @@ NameTag Installation
 
 NameTag releases are available on GitHub (http://github.com/ufal/nametag),
 either as a pre-compiled binary package, or source code only. The binary package
-contains Linux, Windows and OS X binaries, Java bindings binary, and source code
-of NameTag and all language bindings. While the binary packages do not contain
-compiled Python or Perl bindings, packages for those languages are available in
-standard package repositories, i.e. on PyPI and CPAN.
+contains Linux, Windows and OS X binaries, Java bindings binary, C# bindings
+binary and source code of NameTag and all language bindings. While the binary
+packages do not contain compiled Python or Perl bindings, packages for those
+languages are available in standard package repositories, i.e. on PyPI and CPAN.
 
 To use NameTag, a language model is needed. Here is a list of available language
 models (http://ufal.mff.cuni.cz/nametag#language_models).
@@ -69,6 +69,15 @@ refer to its manual if interested in all supported options.
 
 Other language bindings
 =======================
+
+
+C#
+==
+
+Binary C# bindings are available in NameTag binary packages.
+
+To compile C# bindings manually, run make in the bindings/csharp directory,
+optionally with the options descriged in NameTag Installation.
 
 
 Java
