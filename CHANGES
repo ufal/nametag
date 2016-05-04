@@ -11,6 +11,7 @@ Version 1.0.1 [not yet released]
 - Start using Semantic Versioning http://semver.org/.
 - Use C++ Builtem http://github.com/ufal/cpp_builtem as build system.
 - Remove support for shared library build.
+- Support compilation on Visual Studio 2015.
 
 
 Version 1.0.0 [11 Apr 14]

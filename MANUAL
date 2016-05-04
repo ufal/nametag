@@ -100,7 +100,7 @@ releases (http://github.com/ufal/nametag/releases) and in the repository itself.
 Requirements
 ------------
 
-- G++ 4.7 or newer, alternatively clang 3.2 or newer
+- G++ 4.7 or newer, clang 3.2 or newer, Visual C++ 2015 or newer
 - make
 - SWIG for language bindings other than C++
 
