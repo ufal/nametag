@@ -7,7 +7,7 @@ such as names of persons, locations, organizations, etc. NameTag is distributed
 as a standalone tool or a library, along with trained linguistic models. In the
 Czech language, NameTag achieves state-of-the-art performance
 ([Straková et al. 2013 http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf]).
-NameTag is a free software under [LGPL http://www.gnu.org/licenses/lgpl.html]
+NameTag is a free software under [Mozilla Public License 2.0 http://www.mozilla.org/MPL/2.0/]
 license and the linguistic models are free for non-commercial use and
 distributed under [CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/]
 license, although for some models the original data used to create the model
