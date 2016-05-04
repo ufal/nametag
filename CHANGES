@@ -12,6 +12,7 @@ Version 1.0.1 [not yet released]
 - Use C++ Builtem http://github.com/ufal/cpp_builtem as build system.
 - Remove support for shared library build.
 - Support compilation on Visual Studio 2015.
+- Use t2t_docsys http://github.com/ufal/t2t_docsys as documentation system.
 
 
 Version 1.0.0 [11 Apr 14]

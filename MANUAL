@@ -1,5 +1,5 @@
 NameTag: Name Entity Recognizer
-Version 1.0.1
+Version 1.0.1-devel
 
 Introduction
 ============
@@ -19,6 +19,25 @@ licensing conditions. NameTag is versioned using Semantic Versioning
 
 Copyright 2016 by Institute of Formal and Applied Linguistics, Faculty of
 Mathematics and Physics, Charles University in Prague, Czech Republic.
+
+
+Online
+======
+
+
+Online Demo
+-----------
+
+Online demo (http://lindat.mff.cuni.cz/services/nametag/) is available as one of
+LINDAT/CLARIN services (http://lindat.mff.cuni.cz/services/).
+
+
+Web Service
+-----------
+
+Web service (http://lindat.mff.cuni.cz/services/nametag/api-reference.php) is
+also available as one of LINDAT/CLARIN services
+(http://lindat.mff.cuni.cz/services/).
 
 
 Release
@@ -46,7 +65,8 @@ Language Models
 
 To use NameTag, a language model is needed. The language models are available
 from LINDAT/CLARIN (http://www.lindat.cz) infrastructure and described further
-in the Currently the following language models are available:
+in the NameTag User's Manual. Currently the following language models are
+available:
 
 - Czech: czech-cnec-140304
   (http://hdl.handle.net/11858/00-097C-0000-0023-7D42-8) (documentation
@@ -111,7 +131,6 @@ Compilation
 To compile NameTag, run make in the src directory.
 
 Make targets and options:
-
 - exe: compile the binaries (default)
 - server: compile the REST server
 - lib: compile NameTag library (decoding only)
@@ -127,7 +146,6 @@ Platforms
 ---------
 
 Platform can be selected using one of the following options:
-
 - PLATFORM=linux, PLATFORM=linux-gcc: gcc compiler on Linux operating system,
   default on Linux
 - PLATFORM=linux-clang: clang compiler on Linux, must be selected manually
@@ -165,7 +183,6 @@ is supported.
 
 The Java installation specified in the environment variable JAVA_HOME is used.
 If the environment variable does not exist, the JAVA_HOME can be specified using
-
   make JAVA_HOME=path_to_Java_installation
 
 
@@ -180,7 +197,6 @@ later is supported.
 
 Path to the include headers of the required Perl version must be specified in
 the PERL_INCLUDE variable using
-
   make PERL_INCLUDE=path_to_Perl_includes
 
 
@@ -195,7 +211,6 @@ Python 3+ are supported.
 
 Path to the include headers of the required Python version must be specified in
 the PYTHON_INCLUDE variable using
-
   make PYTHON_INCLUDE=path_to_Python_includes
 
 
@@ -270,20 +285,20 @@ Publications
   (http://ufal.mff.cuni.cz/~zabokrtsky/publications/papers/tsd07-namedent.pdf).
   In: Matoušek, V., Mautner, P. (eds.) TSD 2007. LNCS (LNAI), vol. 4629, pp.
   188–195. Springer, Heidelberg (2007).
-  
+
 - Kravalová Jana, Žabokrtský Zdeněk: Czech Named Entity Corpus and
   SVM-based Recognizer (http://aclweb.org/anthology//W/W09/W09-3538.pdf). In:
   Proceedings of the 2009 Named Entities Workshop: Shared Task on
   Transliteration. NEWS 2009, pp. 194–201. Association for Computational
   Linguistics (2009).
-  
+
 - Straková Jana, Straka Milan, Hajič Jan: A New State-of-The-Art Czech Named
   Entity Recognizer (http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf).
   In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue:
   16th International Conference, TSD 2013. Proceedings, Copyright © Springer
   Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp.
   68-75, 2013
-  
+
 - Straková Jana, Straka Milan and Hajič Jan. Open-Source Tools for
   Morphology, Lemmatization, POS Tagging and Named Entity Recognition.
   (http://www.aclweb.org/anthology/P/P14/P14-5003.pdf) In Proceedings of 52nd
@@ -307,17 +322,17 @@ recognition.
 czech-cnec2.0-<version>.ner
   Czech named entity recognizer trained on training portion of CNEC 2.0
   (http://ufal.mff.cuni.cz/cnec/cnec2.0).
-  
+
   The latest version czech-cnec2.0-140304.ner reaches 75.38% F1-measure on
   two-level hierarchy and 79.16% F1-measure on top-level hierarchy of CNEC 2.0
   (http://ufal.mff.cuni.cz/cnec/cnec2.0) etest data.  Model speed: ~40k words/s,
   model size: ~8MB.
-  
+
 czech-cnec2.0-<version>-no_numbers.ner
   Czech named entity recognizer trained on training portion of CNEC 2.0
   (http://ufal.mff.cuni.cz/cnec/cnec2.0), except for the supertype n (Number
   expressions), which is not included.
-  
+
   The latest version czech-cnec2.0-140304-no_numbers.ner reaches 77.35%
   F1-measure on two-level hierarchy and 80.59% F1-measure on top-level hierarchy
   of CNEC 2.0 (http://ufal.mff.cuni.cz/cnec/cnec2.0) etest data without n
@@ -337,18 +352,18 @@ Corpus 1.1 (http://ufal.mff.cuni.cz/cnec/cnec1.1).
 czech-cnec1.1-<version>.ner
   Czech named entity recognizer trained on training portion of CNEC 1.1
   (http://ufal.mff.cuni.cz/cnec/cnec1.1).
-  
+
   The latest version czech-cnec1.1-140304.ner reaches 75.47% F1-measure on
   two-level hierarchy and 78.51% F1-measure on top-level hierarchy of CNEC 1.1
   (http://ufal.mff.cuni.cz/cnec/cnec1.1) etest data.  Model speed: ~35k words/s,
   model size: ~7MB.
-  
+
 czech-cnec1.1-<version>-no_numbers.ner
   Czech named entity recognizer trained on training portion of CNEC 1.1
   (http://ufal.mff.cuni.cz/cnec/cnec1.1), except for the supertypes c
   (Bibliographic items), n (Number expressions) and q (Quantitative
   expressions), which are not included.
-  
+
   The latest version czech-cnec1.1-140304-no_numbers.ner reaches 77.48%
   F1-measure on two-level hierarchy and 80.72% F1-measure on top-level hierarchy
   of CNEC 1.1 (http://ufal.mff.cuni.cz/cnec/cnec1.1) etest data without c
@@ -360,7 +375,6 @@ Running the Recognizer
 ----------------------
 
 The NameTag Recognizer can be executed using the following command:
-
   run_ner recognizer_model
 
 The input is assumed to be in UTF-8 encoding and can be either already tokenized
@@ -374,7 +388,6 @@ standard output. If no argument is given, input is read from standard input and
 written to standard output.
 
 The full command syntax of run_ner is
-
   Usage: run_ner [options] recognizer_model [file[:output_file]]...
   Options: --input=untokenized|vertical
            --output=vertical|xml
@@ -385,7 +398,6 @@ Input Formats
 
 The input format is specified using the --input option. Currently supported
 input formats are:
-
 - untokenized (default): the input is tokenized and segmented using a tokenizer
   defined by the model,
 - vertical: the input is in vertical format, every line is considered a word,
@@ -397,15 +409,14 @@ Output Formats
 
 The output format is specified using the --output option. Currently supported
 output formats are:
-
 - xml (default): Simple XML format without a root element, using <sentence>
   element to mark sentences and <token> element to mark tokens. The recognized
   named entities are encoded using <ne type="..."> element.
-  
+
   Example input:
   Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
 
-  
+
   A NameTag identifies a first name (pf), a surname (ps) and a person name
   container (P) in the input (line breaks added):
     <sentence><ne type="P"><ne type="pf"><token>Václav</token></ne> <ne type="ps"><token>Havel</token></ne></ne>
@@ -413,7 +424,7 @@ output formats are:
     <token>kritik</token> <token>komunistického</token> <token>režimu</token> <token>a</token> <token>později</token>
     <token>politik</token><token>.</token></sentence>
 
-  
+
 - vertical: Every found named entity is on a separate line. Each line contains
   three tab-separated fields: entity_range, entity_type and entity_text. The
   entity_range is composed of token identifiers (counting from 1 and including
@@ -421,11 +432,11 @@ output formats are:
   exactly to line numbers) of tokens forming the named entity and entity_type
   represents its type. The entity_text is not strictly necessary and contains
   space separated words of this named entity.
-  
+
   Example input:
   Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
 
-  
+
   Example output:
   1,2	P	Václav Havel
   1	pf	Václav
@@ -443,7 +454,6 @@ The input is a UTF-8 encoded plain text and the input files are specified same
 as with the run_ner command.
 
 The full command syntax of run_tokenizer is
-
   run_tokenizer [options] recognizer_model [file[:output_file]]...
   Options: --output=vertical|xml
 
@@ -453,32 +463,31 @@ Output Formats
 
 The output format is specified using the --output option. Currently supported
 output formats are:
-
 - xml (default): Simple XML format without a root element, using <sentence>
   element to mark sentences and <token> element to mark tokens.
-  
+
   Example output for input Děti pojedou k babičce. Už se těší. (line
   breaks added):
   <sentence><token>Děti</token> <token>pojedou</token> <token>k</token>
   <token>babičce</token><token>.</token></sentence> <sentence><token>Už</token>
   <token>se</token> <token>těší</token><token>.</token></sentence>
 
-  
+
 - vertical: Each token is on a separate line, every sentence is ended by a
   blank line.
-  
+
   Example output for input Děti pojedou k babičce. Už se těší.:
   Děti
   pojedou
   k
   babičce
   .
-  
+
   Už
   se
   těší
   .
-  
+
 
 
 
@@ -503,7 +512,6 @@ CoNLL-2003: the annotation O (or _) denotes no named entity, annotations I-type
 and B-type denote named entity of specified type. The I-type and B-type
 annotations are equivalent except for one case - if the previous word is also a
 named entity of same type, then
-
  - if the current word is annotated as I-type, it is part of the same named
    entity as the previous word,
  - if the current word is annotated as B-type, it is in a different name entity
@@ -519,13 +527,13 @@ NameTag can utilize several taggers to obtain the tags and lemmas:
 trivial
   Do not use any tagger. The lemma is the same as the given form and there is no
   part of speech tag.
-  
+
 external
   Use some external tagger. The input "forms" can contain multiple
   space-separated values, first being the form, second the lemma and the rest is
   part of speech tag. The part of speech tag is optional. The lemma is also
   optional and if missing, the form itself is used as a lemma.
-  
+
 morphodita:model
   Use MorphoDiTa (http://ufal.mff.cuni.cz/morphodita) as a tagger with the
   specified model. This tagger model is embedded in resulting named entity
@@ -538,7 +546,6 @@ Lemma Structure
 ---------------
 
 The lemmas used by the recognizer can be structured and consist of three parts:
-
 - raw lemma is the textual form of the lemma, possibly ambiguous
 - lemma id is the unique lemma identification (for example a raw lemma plus a
   numeric identifier)
@@ -566,7 +573,6 @@ default value of 0 denoting only the word in question.
 
 List of commonly used feature templates follows. Note that it is probably not
 exhaustive (see the sources in the features directory).
-
 - BrownClusters file [prefix_lengths] - use Brown clusters found in the
   specified file. An optional list of lengths of cluster prefixes to be used in
   addition to the full Brown cluster can be specified. Each line of the Brown
@@ -599,7 +605,6 @@ State-of-The-Art Czech Named Entity Recognizer.
 Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International
 Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin /
 Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013.
-
   # Sentence processors
   Form/2
   Lemma/2
@@ -607,18 +612,18 @@ Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013.
   RawLemmaCapitalization/2
   Tag/2
   NumericTimeValue/1
-  
+
   CzechLemmaTerm/2
-  
+
   BrownClusters/2 clusters/wiki-1000-3
-  
+
   Gazetteers/2 gazetteers/cities.txt gazetteers/clubs.txt gazetteers/countries.txt gazetteers/feasts.txt gazetteers/institutions.txt gazetteers/months.txt gazetteers/objects.txt gazetteers/psc.txt gazetteers/streets.txt
-  
+
   PreviousStage/5
-  
+
   # Detectors
   URLEmailDetector mi me
-  
+
   # Entity processors
   CzechAddContainers
 
@@ -635,41 +640,41 @@ this order):
    - czech
    - english
    - generic
-     
+
 2. tagger - the tagger identifier as described in the Tagger section
-   
+
 3. feature_templates_file - file with feature templates as described in the
    Feature Templates section.
-   
+
 4. stages - the number of stages performed during recognition. Common values
    are either 1 or 2. With more stages, the model is larger and recognition is
    slower, but more accurate.
-   
+
 5. iterations - the number of iterations performed when training each stage of
    the recognizer. With more iterations, training take longer (the recognition
    time is unaffected), but the model gets over-trained when too many iterations
    are used. Values from 10 to 30 or 50 are commonly used.
-   
+
 6. missing_weight - default value of missing weights in the log-linear model.
    Common values are small negative real numbers like -0.2.
-   
+
 7. initial_learning_rage - learning rate used in the first iteration of SGD
    training method of the log-linear model. Common value is 0.1.
-   
+
 8. final_learning_rage - learning rate used in the last iteration of SGD
    training method of the log-linear model. Common values are in range from 0.1
    to 0.001, with 0.01 working reasonably well.
-   
+
 9. gaussian - the value of Gaussian prior imposed on the weights. In other
    words, value of L2-norm regularizer. Common value is either 0 for no
    regularization, or small real number like 0.5.
-   
+
 10. hidden_layer - experimental support for hidden layer in the artificial
     neural network classifier. To not use the hidden layer (recommended), use 0.
     Otherwise, specify the number of neurons in the hidden layer. Please note
     that non-zero values will create enormous models, slower recognition and are
     not guaranteed to create models with better accuracy.
-    
+
 11. heldout_data - optional parameter with heldout data in the described
     format. If the heldout data is present, the accuracy of the heldout data
     classification is printed during training. The heldout data is not used in
@@ -721,7 +726,7 @@ Struct string_piece
   struct string_piece {
     const char* str;
     size_t len;
-  
+
     string_piece();
     string_piece(const char* str);
     string_piece(const char* str, size_t len);
@@ -753,7 +758,7 @@ Struct named_entity
     size_t start;
     size_t length;
     std::string type;
-  
+
     named_entity();
     named_entity(size_t start, size_t length, const std::string& type);
   };
@@ -771,7 +776,7 @@ Class version
     unsigned major;
     unsigned minor;
     unsigned patch;
-  
+
     static version current();
   };
 
@@ -793,10 +798,10 @@ Class tokenizer
   class tokenizer {
    public:
     virtual ~tokenizer() {}
-  
+
     virtual void set_text(string_piece text, bool make_copy = false) = 0;
     virtual bool next_sentence(std::vector<string_piece>* forms, std::vector<token_range>* tokens) = 0;
-  
+
     static tokenizer* new_vertical_tokenizer();
   };
 
@@ -847,12 +852,12 @@ Class ner
   class ner {
    public:
     virtual ~ner() {}
-  
+
     static ner* load(const char* fname);
     static ner* load(istream& is);
-  
+
     virtual void recognize(const std::vector<string_piece>& forms, std::vector<named_entity>& entities) const = 0;
-  
+
     virtual tokenizer* new_tokenizer() const = 0;
   };
 
@@ -921,18 +926,18 @@ Helper Structures
 -----------------
 
   typedef vector<string> Forms;
-  
+
   struct TokenRange {
     size_t start;
     size_t length;
   };
   typedef vector<TokenRange> TokenRanges;
-  
+
   struct NamedEntity {
     size_t start;
     size_t length;
     string type;
-  
+
     NamedEntity();
     NamedEntity(size_t start, size_t length, const string& type);
   };
@@ -947,23 +952,23 @@ Main Classes
     unsigned major;
     unsigned minor;
     unsigned patch;
-  
+
     static Version current();
   };
-  
+
   class Tokenizer {
    public:
     virtual void setText(const char* text);
     virtual bool nextSentence(Forms* forms, TokenRanges* tokens);
-  
+
     static Tokenizer* newVerticalTokenizer();
   };
-  
+
   class Ner {
     static ner* load(const char* fname);
-  
+
     virtual void recognize(Forms& forms, NamedEntities& entities) const;
-  
+
     virtual Tokenizer* newTokenizer() const;
   };
 
@@ -1011,7 +1016,6 @@ Contact
 =======
 
 Authors:
-
 - Milan Straka (http://ufal.mff.cuni.cz/milan-straka), straka@ufal.mff.cuni.cz
 - Jana Straková (http://ufal.mff.cuni.cz/jana-strakova),
   strakova@ufal.mff.cuni.cz
@@ -1042,7 +1046,7 @@ Publications
   Proceedings of 52nd Annual Meeting of the Association for Computational
   Linguistics: System Demonstrations, pages 13-18, Baltimore, Maryland, June
   2014. Association for Computational Linguistics.
-  
+
 - (Straková et al. 2013) Straková Jana, Straka Milan, Hajič Jan: A New
   State-of-The-Art Czech Named Entity Recognizer
   (http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf). In: Lecture Notes

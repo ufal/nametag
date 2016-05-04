@@ -1,11 +1,14 @@
 NameTag: Name Entity Recognizer
-Version 1.0.1
-
-%!encoding: utf-8
+Version 1.0.1-devel
 
 = Introduction =[introduction]
 
 %!include: nametag_about.t2t
+
+
+= Online =[online]
+
+%!include: nametag_online.t2t
 
 
 = Release =[release]
@@ -61,19 +64,19 @@ recognition. The models for the Czech language are available with the tool.
 = NameTag Installation =[installation]
 
 %web% [NameTag Installation on separate page. nametag/install]
-%not_web% %!include: nametag_install.t2t
+%manual% %!include: nametag_install.t2t
 
 
 = NameTag User's Manual =[users_manual]
 
 %web% [NameTag User's Manual on separate page. nametag/users-manual]
-%not_web% %!include: nametag_user.t2t
+%manual% %!include: nametag_user.t2t
 
 
 = NameTag API Reference =[api_reference]
 
 %web% [NameTag API Reference on separate page. nametag/api-reference]
-%not_web% %!include: nametag_api.t2t
+%manual% %!include: nametag_api.t2t
 
 
 = Contact =[contact]
@@ -93,7 +96,7 @@ Authors:
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT/CLARIN project of the Ministry of Education of the Czech Republic (project LM2010013).
 
 %web% Acknowledgements for individual language models are listed in [Nametag User's Manual page nametag/users-manual].
-%not_web% Acknowledgements for individual language models are listed in [NameTag User's Manual #users_manual].
+%manual% Acknowledgements for individual language models are listed in [NameTag User's Manual #users_manual].
 
 
 == Publications ==[publications]

@@ -30,7 +30,6 @@ Compilation
 To compile NameTag, run make in the src directory.
 
 Make targets and options:
-
 - exe: compile the binaries (default)
 - server: compile the REST server
 - lib: compile NameTag library (decoding only)
@@ -46,7 +45,6 @@ Platforms
 ---------
 
 Platform can be selected using one of the following options:
-
 - PLATFORM=linux, PLATFORM=linux-gcc: gcc compiler on Linux operating system,
   default on Linux
 - PLATFORM=linux-clang: clang compiler on Linux, must be selected manually
@@ -84,7 +82,6 @@ is supported.
 
 The Java installation specified in the environment variable JAVA_HOME is used.
 If the environment variable does not exist, the JAVA_HOME can be specified using
-
   make JAVA_HOME=path_to_Java_installation
 
 
@@ -99,7 +96,6 @@ later is supported.
 
 Path to the include headers of the required Perl version must be specified in
 the PERL_INCLUDE variable using
-
   make PERL_INCLUDE=path_to_Perl_includes
 
 
@@ -114,5 +110,4 @@ Python 3+ are supported.
 
 Path to the include headers of the required Python version must be specified in
 the PYTHON_INCLUDE variable using
-
   make PYTHON_INCLUDE=path_to_Python_includes

@@ -1,8 +1,6 @@
 Java NameTag Bindings
 ========================
 
-%!encoding: utf-8
-
 == Installation ==[java_installation]
 %!include: nametag_bindings_java_install.t2t
 

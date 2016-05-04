@@ -1,8 +1,6 @@
 Python NameTag Bindings
 ========================
 
-%!encoding: utf-8
-
 == Installation ==[python_installation]
 %!include: nametag_bindings_python_install.t2t
 

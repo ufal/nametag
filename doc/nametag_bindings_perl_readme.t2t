@@ -1,8 +1,6 @@
 Perl NameTag Bindings
 ========================
 
-%!encoding: utf-8
-
 == Installation ==[perl_installation]
 %!include: nametag_bindings_perl_install.t2t
 

@@ -1,8 +1,6 @@
 Python NameTag Bindings
 ==========================
 
-%!encoding: utf-8
-
 The Python bindings are available as ``ufal.nametag`` package on PyPI.
 
 To compile Python bindings manually, run ``make`` in the ``bindings/python``

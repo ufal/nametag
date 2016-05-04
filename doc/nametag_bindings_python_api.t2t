@@ -1,8 +1,6 @@
 Python NameTag Bindings
 ==========================
 
-%!encoding: utf-8
-
 NameTag library bindings is available in the
 [``ufal.nametag`` http://pypi.python.org/pypi/ufal.nametag] module.
 

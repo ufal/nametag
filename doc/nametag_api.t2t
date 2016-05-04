@@ -1,8 +1,6 @@
 NameTag API Reference
 =====================
 
-%!encoding: utf-8
-
 The NameTag API is defined in header ``nametag.h`` and resides in
 ``ufal::nametag`` namespace.
 

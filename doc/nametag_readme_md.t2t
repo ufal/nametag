@@ -1,0 +1,4 @@
+NameTag
+[![Build Status](https://travis-ci.org/ufal/nametag.svg?branch=master)](https://travis-ci.org/ufal/nametag)
+
+%!include: nametag_readme.t2t

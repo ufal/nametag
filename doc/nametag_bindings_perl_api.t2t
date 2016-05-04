@@ -1,8 +1,6 @@
 Perl NameTag Bindings
 ========================
 
-%!encoding: utf-8
-
 NameTag library bindings is available in the
 [``Ufal::NameTag`` http://search.cpan.org/~straka/Ufal-NameTag/] package.
 The classes can be imported into the current namespace using the ``:all``

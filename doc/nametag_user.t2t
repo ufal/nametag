@@ -1,8 +1,6 @@
 NameTag User's Manual
 =====================
 
-%!encoding: utf-8
-
 In a natural language text, the task of named entity recognition (NER) is to
 identify proper names such as names of persons, organizations and locations.
 NameTag recognizes named entities in an unprocessed text using

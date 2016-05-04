@@ -1,8 +1,6 @@
 Perl NameTag Bindings
 ========================
 
-%!encoding: utf-8
-
 The Perl bindings are available as ``Ufal-NameTag`` package on CPAN.
 
 To compile Perl bindings manually, run ``make`` in the ``bindings/perl``

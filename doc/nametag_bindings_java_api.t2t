@@ -1,8 +1,6 @@
 Java NameTag Bindings
 ========================
 
-%!encoding: utf-8
-
 NameTag library bindings is available in the ``cz.cuni.mff.ufal.nametag``
 package.
 

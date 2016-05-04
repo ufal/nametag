@@ -1,8 +1,6 @@
 NameTag Installation
 ====================
 
-%!encoding: utf-8
-
 NameTag releases are available on [GitHub http://github.com/ufal/nametag], either as
 a pre-compiled binary package, or source code only. The binary package contains Linux,
 Windows and OS X binaries, Java bindings binary, and source code of

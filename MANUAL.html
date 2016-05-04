@@ -1,651 +1,759 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-<META NAME="generator" CONTENT="http://txt2tags.org">
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>NameTag: Name Entity Recognizer</TITLE>
-</HEAD>
-<BODY>
+<html>
+<head>
+<meta name="generator" content="http://txt2tags.org">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>NameTag: Name Entity Recognizer</title>
+</head>
+<body>
 
-<DIV CLASS="header" ID="header">
-<H1>NameTag: Name Entity Recognizer</H1>
-<H2>Version 1.0.1</H2>
-</DIV>
+<div class="header" id="header">
+<h1>NameTag: Name Entity Recognizer</h1>
+<h2>Version 1.0.1-devel</h2>
+</div>
 
-<DIV CLASS="toc">
+<div class="toc">
 
-  <OL>
-  <LI><A HREF="#introduction">Introduction</A>
-  <LI><A HREF="#release">Release</A>
-    <UL>
-    <LI><A HREF="#download">2.1. Download</A>
-      <UL>
-      <LI><A HREF="#language_models">2.1.1. Language Models</A>
-      </UL>
-    <LI><A HREF="#license">2.2. License</A>
-    <LI><A HREF="#platforms_and_requirements">2.3. Platforms and Requirements</A>
-    </UL>
-  <LI><A HREF="#installation">NameTag Installation</A>
-    <UL>
-    <LI><A HREF="#requirements">3.1. Requirements</A>
-    <LI><A HREF="#compilation">3.2. Compilation</A>
-      <UL>
-      <LI><A HREF="#compilation_platforms">3.2.1. Platforms</A>
-      <LI><A HREF="#compilation_further_details">3.2.2. Further Details</A>
-      </UL>
-    <LI><A HREF="#other_language_bindings">3.3. Other language bindings</A>
-      <UL>
-      <LI><A HREF="#java_installation">3.3.1. Java</A>
-      <LI><A HREF="#perl_installation">3.3.2. Perl</A>
-      <LI><A HREF="#python_installation">3.3.3. Python</A>
-      </UL>
-    </UL>
-  <LI><A HREF="#users_manual">NameTag User's Manual</A>
-    <UL>
-    <LI><A HREF="#czech-cnec">4.1. Czech NameTag Models</A>
-      <UL>
-      <LI><A HREF="#czech-cnec_download">4.1.1. Download</A>
-      <LI><A HREF="#czech-cnec_acknowledgements">4.1.2. Acknowledgements</A>
-      <LI><A HREF="#czech-cnec20_model">4.1.3. Czech Named Entity Corpus 2.0 Model</A>
-      <LI><A HREF="#czech-cnec11_model">4.1.4. Czech Named Entity Corpus 1.1 Model</A>
-      </UL>
-    <LI><A HREF="#run_ner">4.2. Running the Recognizer</A>
-      <UL>
-      <LI><A HREF="#run_ner_input_formats">4.2.1. Input Formats</A>
-      <LI><A HREF="#run_ner_output_formats">4.2.2. Output Formats</A>
-      </UL>
-    <LI><A HREF="#run_tokenizer">4.3. Running the Tokenizer</A>
-      <UL>
-      <LI><A HREF="#run_tokenizer_output_formats">4.3.1. Output Formats</A>
-      </UL>
-    <LI><A HREF="#custom_models">4.4. Training of Custom Models</A>
-      <UL>
-      <LI><A HREF="#training_data">4.4.1. Training data</A>
-      <LI><A HREF="#tagger">4.4.2. Tagger</A>
-      <LI><A HREF="#feature_templates">4.4.3. Feature Templates</A>
-      <LI><A HREF="#train_ner">4.4.4. Running train_ner</A>
-      </UL>
-    </UL>
-  <LI><A HREF="#api_reference">NameTag API Reference</A>
-    <UL>
-    <LI><A HREF="#versioning">5.1. NameTag Versioning</A>
-    <LI><A HREF="#string_piece">5.2. Struct string_piece</A>
-    <LI><A HREF="#token_range">5.3. Struct token_range</A>
-    <LI><A HREF="#named_entity">5.4. Struct named_entity</A>
-    <LI><A HREF="#version">5.5. Class version</A>
-      <UL>
-      <LI><A HREF="#version_current">5.5.1. version::current</A>
-      </UL>
-    <LI><A HREF="#tokenizer">5.6. Class tokenizer</A>
-      <UL>
-      <LI><A HREF="#tokenizer_set_text">5.6.1. tokenizer::set_text</A>
-      <LI><A HREF="#tokenizer_next_sentence">5.6.2. tokenizer::next_sentence</A>
-      <LI><A HREF="#tokenizer_new_vertical_tokenizer">5.6.3. tokenizer::new_vertical_tokenizer</A>
-      </UL>
-    <LI><A HREF="#ner">5.7. Class ner</A>
-      <UL>
-      <LI><A HREF="#ner_load_cstring">5.7.1. ner::load(const char*)</A>
-      <LI><A HREF="#ner_load_istream">5.7.2. ner::load(istream&amp;)</A>
-      <LI><A HREF="#ner_recognize">5.7.3. ner::recognize</A>
-      <LI><A HREF="#ner_tokenize_and_recognize">5.7.4. ner::tokenize_and_recognize</A>
-      <LI><A HREF="#ner_new_tokenizer">5.7.5. ner::new_tokenizer</A>
-      </UL>
-    <LI><A HREF="#cpp_bindings_api">5.8. C++ Bindings API</A>
-      <UL>
-      <LI><A HREF="#bindings_helper_structures">5.8.1. Helper Structures</A>
-      <LI><A HREF="#bindings_main_classes">5.8.2. Main Classes</A>
-      </UL>
-    <LI><A HREF="#java_bindings">5.9. Java Bindings</A>
-    <LI><A HREF="#perl_bindings">5.10. Perl Bindings</A>
-    <LI><A HREF="#python_bindings">5.11. Python Bindings</A>
-    </UL>
-  <LI><A HREF="#contact">Contact</A>
-  <LI><A HREF="#nametag_acknowledgements">Acknowledgements</A>
-    <UL>
-    <LI><A HREF="#publications">7.1. Publications</A>
-    <LI><A HREF="#bibtex_for_referencing">7.2. Bibtex for referencing</A>
-    <LI><A HREF="#permanent_identifier">7.3. Permanent Identifier</A>
-    </UL>
-  </OL>
+  <ol>
+  <li><a href="#introduction">Introduction</a>
+  </li>
+  <li><a href="#online">Online</a>
+    <ul>
+    <li><a href="#online_demo">2.1. Online Demo</a>
+    </li>
+    <li><a href="#web_service">2.2. Web Service</a>
+    </li>
+    </ul>
+  </li>
+  <li><a href="#release">Release</a>
+    <ul>
+    <li><a href="#download">3.1. Download</a>
+      <ul>
+      <li><a href="#language_models">3.1.1. Language Models</a>
+      </li>
+      </ul>
+    </li>
+    <li><a href="#license">3.2. License</a>
+    </li>
+    <li><a href="#platforms_and_requirements">3.3. Platforms and Requirements</a>
+    </li>
+    </ul>
+  </li>
+  <li><a href="#installation">NameTag Installation</a>
+    <ul>
+    <li><a href="#requirements">4.1. Requirements</a>
+    </li>
+    <li><a href="#compilation">4.2. Compilation</a>
+      <ul>
+      <li><a href="#compilation_platforms">4.2.1. Platforms</a>
+      </li>
+      <li><a href="#compilation_further_details">4.2.2. Further Details</a>
+      </li>
+      </ul>
+    </li>
+    <li><a href="#other_language_bindings">4.3. Other language bindings</a>
+      <ul>
+      <li><a href="#java_installation">4.3.1. Java</a>
+      </li>
+      <li><a href="#perl_installation">4.3.2. Perl</a>
+      </li>
+      <li><a href="#python_installation">4.3.3. Python</a>
+      </li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li><a href="#users_manual">NameTag User's Manual</a>
+    <ul>
+    <li><a href="#czech-cnec">5.1. Czech NameTag Models</a>
+      <ul>
+      <li><a href="#czech-cnec_download">5.1.1. Download</a>
+      </li>
+      <li><a href="#czech-cnec_acknowledgements">5.1.2. Acknowledgements</a>
+      </li>
+      <li><a href="#czech-cnec20_model">5.1.3. Czech Named Entity Corpus 2.0 Model</a>
+      </li>
+      <li><a href="#czech-cnec11_model">5.1.4. Czech Named Entity Corpus 1.1 Model</a>
+      </li>
+      </ul>
+    </li>
+    <li><a href="#run_ner">5.2. Running the Recognizer</a>
+      <ul>
+      <li><a href="#run_ner_input_formats">5.2.1. Input Formats</a>
+      </li>
+      <li><a href="#run_ner_output_formats">5.2.2. Output Formats</a>
+      </li>
+      </ul>
+    </li>
+    <li><a href="#run_tokenizer">5.3. Running the Tokenizer</a>
+      <ul>
+      <li><a href="#run_tokenizer_output_formats">5.3.1. Output Formats</a>
+      </li>
+      </ul>
+    </li>
+    <li><a href="#custom_models">5.4. Training of Custom Models</a>
+      <ul>
+      <li><a href="#training_data">5.4.1. Training data</a>
+      </li>
+      <li><a href="#tagger">5.4.2. Tagger</a>
+      </li>
+      <li><a href="#feature_templates">5.4.3. Feature Templates</a>
+      </li>
+      <li><a href="#train_ner">5.4.4. Running train_ner</a>
+      </li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li><a href="#api_reference">NameTag API Reference</a>
+    <ul>
+    <li><a href="#versioning">6.1. NameTag Versioning</a>
+    </li>
+    <li><a href="#string_piece">6.2. Struct string_piece</a>
+    </li>
+    <li><a href="#token_range">6.3. Struct token_range</a>
+    </li>
+    <li><a href="#named_entity">6.4. Struct named_entity</a>
+    </li>
+    <li><a href="#version">6.5. Class version</a>
+      <ul>
+      <li><a href="#version_current">6.5.1. version::current</a>
+      </li>
+      </ul>
+    </li>
+    <li><a href="#tokenizer">6.6. Class tokenizer</a>
+      <ul>
+      <li><a href="#tokenizer_set_text">6.6.1. tokenizer::set_text</a>
+      </li>
+      <li><a href="#tokenizer_next_sentence">6.6.2. tokenizer::next_sentence</a>
+      </li>
+      <li><a href="#tokenizer_new_vertical_tokenizer">6.6.3. tokenizer::new_vertical_tokenizer</a>
+      </li>
+      </ul>
+    </li>
+    <li><a href="#ner">6.7. Class ner</a>
+      <ul>
+      <li><a href="#ner_load_cstring">6.7.1. ner::load(const char*)</a>
+      </li>
+      <li><a href="#ner_load_istream">6.7.2. ner::load(istream&amp;)</a>
+      </li>
+      <li><a href="#ner_recognize">6.7.3. ner::recognize</a>
+      </li>
+      <li><a href="#ner_tokenize_and_recognize">6.7.4. ner::tokenize_and_recognize</a>
+      </li>
+      <li><a href="#ner_new_tokenizer">6.7.5. ner::new_tokenizer</a>
+      </li>
+      </ul>
+    </li>
+    <li><a href="#cpp_bindings_api">6.8. C++ Bindings API</a>
+      <ul>
+      <li><a href="#bindings_helper_structures">6.8.1. Helper Structures</a>
+      </li>
+      <li><a href="#bindings_main_classes">6.8.2. Main Classes</a>
+      </li>
+      </ul>
+    </li>
+    <li><a href="#java_bindings">6.9. Java Bindings</a>
+    </li>
+    <li><a href="#perl_bindings">6.10. Perl Bindings</a>
+    </li>
+    <li><a href="#python_bindings">6.11. Python Bindings</a>
+    </li>
+    </ul>
+  </li>
+  <li><a href="#contact">Contact</a>
+  </li>
+  <li><a href="#nametag_acknowledgements">Acknowledgements</a>
+    <ul>
+    <li><a href="#publications">8.1. Publications</a>
+    </li>
+    <li><a href="#bibtex_for_referencing">8.2. Bibtex for referencing</a>
+    </li>
+    <li><a href="#permanent_identifier">8.3. Permanent Identifier</a>
+    </li>
+    </ul>
+  </li>
+  </ol>
 
-</DIV>
-<DIV CLASS="body" ID="body">
+</div>
+<div class="body" ID="body">
 
-<A NAME="introduction"></A>
-<H1>1. Introduction</H1>
+<a id="introduction" name="introduction"></a>
+<h1>1. Introduction</h1>
 
-<P>
+<p>
 NameTag is an open-source tool for named entity recognition (NER). NameTag
 identifies proper names in text and classifies them into predefined categories,
 such as names of persons, locations, organizations, etc. NameTag is distributed
 as a standalone tool or a library, along with trained linguistic models. In the
 Czech language, NameTag achieves state-of-the-art performance
-(<A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">Straková et al. 2013</A>).
-NameTag is a free software under <A HREF="http://www.gnu.org/licenses/lgpl.html">LGPL</A>
+(<a href="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">Straková et al. 2013</a>).
+NameTag is a free software under <a href="http://www.gnu.org/licenses/lgpl.html">LGPL</a>
 license and the linguistic models are free for non-commercial use and
-distributed under <A HREF="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</A>
+distributed under <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</a>
 license, although for some models the original data used to create the model
 may impose additional licensing conditions. NameTag is versioned using
-<A HREF="http://semver.org/">Semantic Versioning</A>.
-</P>
-<P>
+<a href="http://semver.org/">Semantic Versioning</a>.
+</p>
+<p>
 Copyright 2016 by Institute of Formal and Applied Linguistics, Faculty of
 Mathematics and Physics, Charles University in Prague, Czech Republic.
-</P>
+</p>
 
-<A NAME="release"></A>
-<H1>2. Release</H1>
+<a id="online" name="online"></a>
+<h1>2. Online</h1>
 
-<A NAME="download"></A>
-<H2>2.1. Download</H2>
+<a id="online_demo" name="online_demo"></a>
+<h2>2.1. Online Demo</h2>
 
-<P>
-NameTag releases are available on <A HREF="http://github.com/ufal/nametag">GitHub</A>, either as
+<p>
+<a href="http://lindat.mff.cuni.cz/services/nametag/">Online demo</a> is available as
+one of <a href="http://lindat.mff.cuni.cz/services/">LINDAT/CLARIN services</a>.
+</p>
+
+<a id="web_service" name="web_service"></a>
+<h2>2.2. Web Service</h2>
+
+<p>
+<a href="http://lindat.mff.cuni.cz/services/nametag/api-reference.php">Web service</a> is also
+available as one of <a href="http://lindat.mff.cuni.cz/services/">LINDAT/CLARIN services</a>.
+</p>
+
+<a id="release" name="release"></a>
+<h1>3. Release</h1>
+
+<a id="download" name="download"></a>
+<h2>3.1. Download</h2>
+
+<p>
+NameTag releases are available on <a href="http://github.com/ufal/nametag">GitHub</a>, either as
 a pre-compiled binary package, or source code only. The binary package contains Linux,
-Windows and OS X binaries, <CODE>C++</CODE> library binary, Java bindings binary, and source code of
+Windows and OS X binaries, <code>C++</code> library binary, Java bindings binary, and source code of
 all language bindings (Java, Python, Perl) and NameTag. While the binary
 packages do not contain compiled Python or Perl bindings, packages for those
 languages are available in standard package repositories, i.e. on PyPI and CPAN.
-</P>
+</p>
 
-<UL>
-<LI><A HREF="http://github.com/ufal/nametag/releases/latest">Latest release</A>
-<LI><A HREF="http://github.com/ufal/nametag/releases">All releases</A>, <A HREF="https://github.com/ufal/nametag/blob/master/CHANGES">Changelog</A>
-</UL>
+<ul>
+<li><a href="http://github.com/ufal/nametag/releases/latest">Latest release</a>
+</li>
+<li><a href="http://github.com/ufal/nametag/releases">All releases</a>, <a href="https://github.com/ufal/nametag/blob/master/CHANGES">Changelog</a>
+</li>
+</ul>
 
-<A NAME="language_models"></A>
-<H3>2.1.1. Language Models</H3>
+<a id="language_models" name="language_models"></a>
+<h3>3.1.1. Language Models</h3>
 
-<P>
+<p>
 To use NameTag, a language model is needed. The language models are available
-from <A HREF="http://www.lindat.cz">LINDAT/CLARIN</A> infrastructure and described further
+from <a href="http://www.lindat.cz">LINDAT/CLARIN</a> infrastructure and described further
 in the
+<a href="#users_manual">NameTag User's Manual</a>.
 Currently the following language models are available:
-</P>
+</p>
 
-<UL>
-<LI>Czech: <A HREF="http://hdl.handle.net/11858/00-097C-0000-0023-7D42-8">czech-cnec-140304</A> (<A HREF="http://ufal.mff.cuni.cz/nametag/users-manual#czech-cnec">documentation</A>)
-<LI>English: in development
-</UL>
+<ul>
+<li>Czech: <a href="http://hdl.handle.net/11858/00-097C-0000-0023-7D42-8">czech-cnec-140304</a> (<a href="http://ufal.mff.cuni.cz/nametag/users-manual#czech-cnec">documentation</a>)
+</li>
+<li>English: in development
+</li>
+</ul>
 
-<A NAME="license"></A>
-<H2>2.2. License</H2>
+<a id="license" name="license"></a>
+<h2>3.2. License</h2>
 
-<P>
+<p>
 NameTag is an open-source project and is freely available for non-commercial
-purposes. The source code is distributed under <A HREF="http://www.gnu.org/licenses/lgpl.html">LGPL</A>
+purposes. The source code is distributed under <a href="http://www.gnu.org/licenses/lgpl.html">LGPL</a>
 and the pre-compiled binaries and the associated models and data under
-<A HREF="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</A>, although for
+<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</a>, although for
 some models the original data used to create the model may impose additional
 licensing conditions.
-</P>
-<P>
+</p>
+<p>
 If you use this tool for scientific work, please give credit to us by
-referencing <A HREF="http://ufal.mff.cuni.cz/nametag">NameTag website</A> and
-<A HREF="http://www.aclweb.org/anthology/P/P14/P14-5003.pdf">Straková et al. 2014</A>.
-</P>
+referencing <a href="http://ufal.mff.cuni.cz/nametag">NameTag website</a> and
+<a href="http://www.aclweb.org/anthology/P/P14/P14-5003.pdf">Straková et al. 2014</a>.
+</p>
 
-<A NAME="platforms_and_requirements"></A>
-<H2>2.3. Platforms and Requirements</H2>
+<a id="platforms_and_requirements" name="platforms_and_requirements"></a>
+<h2>3.3. Platforms and Requirements</h2>
 
-<P>
+<p>
 NameTag is available as a standalone tool and as a library for Linux/Windows/OS X.
 It does not require any additional libraries. As any supervised machine
 learning tool, it needs trained linguistic models to perform named entity
 recognition. The models for the Czech language are available with the tool.
-</P>
+</p>
 
-<A NAME="installation"></A>
-<H1>3. NameTag Installation</H1>
+<a id="installation" name="installation"></a>
+<h1>4. NameTag Installation</h1>
 
-<P>
-NameTag releases are available on <A HREF="http://github.com/ufal/nametag">GitHub</A>, either as
+<p>
+NameTag releases are available on <a href="http://github.com/ufal/nametag">GitHub</a>, either as
 a pre-compiled binary package, or source code only. The binary package contains Linux,
 Windows and OS X binaries, Java bindings binary, and source code of
 NameTag and all language bindings. While the binary
 packages do not contain compiled Python or Perl bindings, packages for those
 languages are available in standard package repositories, i.e. on PyPI and CPAN.
-</P>
-<P>
+</p>
+<p>
 To use NameTag, a language model is needed.
-<A HREF="http://ufal.mff.cuni.cz/nametag#language_models">Here is a list of available language models</A>.
-</P>
-<P>
+<a href="http://ufal.mff.cuni.cz/nametag#language_models">Here is a list of available language models</a>.
+</p>
+<p>
 If you want to compile NameTag manually, sources are available on on
-<A HREF="http://github.com/ufal/nametag">GitHub</A>, both in the
-<A HREF="http://github.com/ufal/nametag/releases">pre-compiled binary package releases</A>
+<a href="http://github.com/ufal/nametag">GitHub</a>, both in the
+<a href="http://github.com/ufal/nametag/releases">pre-compiled binary package releases</a>
 and in the repository itself.
-</P>
+</p>
 
-<A NAME="requirements"></A>
-<H2>3.1. Requirements</H2>
+<a id="requirements" name="requirements"></a>
+<h2>4.1. Requirements</h2>
 
-<UL>
-<LI><CODE>G++ 4.7</CODE> or newer, <CODE>clang 3.2</CODE> or newer, Visual C++ 2015 or newer
-<LI><CODE>make</CODE>
-<LI><CODE>SWIG</CODE> for language bindings other than <CODE>C++</CODE>
-</UL>
+<ul>
+<li><code>G++ 4.7</code> or newer, <code>clang 3.2</code> or newer, Visual C++ 2015 or newer
+</li>
+<li><code>make</code>
+</li>
+<li><code>SWIG</code> for language bindings other than <code>C++</code>
+</li>
+</ul>
 
-<A NAME="compilation"></A>
-<H2>3.2. Compilation</H2>
+<a id="compilation" name="compilation"></a>
+<h2>4.2. Compilation</h2>
 
-<P>
-To compile NameTag, run <CODE>make</CODE> in the <CODE>src</CODE> directory.
-</P>
-<P>
+<p>
+To compile NameTag, run <code>make</code> in the <code>src</code> directory.
+</p>
+<p style="margin-bottom:0">
 Make targets and options:
-</P>
+</p>
+<ul style="margin-top:0">
+<li><code>exe</code>: compile the binaries (default)
+</li>
+<li><code>server</code>: compile the REST server
+</li>
+<li><code>lib</code>: compile NameTag library (decoding only)
+</li>
+<li><code>BITS=32</code> or <code>BITS=64</code>: compile for specified 32-bit or 64-bit architecture instead of the default one
+</li>
+<li><code>mode=RELEASE</code>: create release build which statically links the C++ runtime and uses LTO
+</li>
+<li><code>mode=DEBUG</code>: create debug build
+</li>
+<li><code>mode=PROFILE</code>: create profile build
+</li>
+</ul>
 
-<UL>
-<LI><CODE>exe</CODE>: compile the binaries (default)
-<LI><CODE>server</CODE>: compile the REST server
-<LI><CODE>lib</CODE>: compile NameTag library (decoding only)
-<LI><CODE>BITS=32</CODE> or <CODE>BITS=64</CODE>: compile for specified 32-bit or 64-bit architecture instead of the default one
-<LI><CODE>mode=RELEASE</CODE>: create release build which statically links the C++ runtime and uses LTO
-<LI><CODE>mode=DEBUG</CODE>: create debug build
-<LI><CODE>mode=PROFILE</CODE>: create profile build
-</UL>
+<a id="compilation_platforms" name="compilation_platforms"></a>
+<h3>4.2.1. Platforms</h3>
 
-<A NAME="compilation_platforms"></A>
-<H3>3.2.1. Platforms</H3>
-
-<P>
+<p style="margin-bottom:0">
 Platform can be selected using one of the following options:
-</P>
-
-<UL>
-<LI><CODE>PLATFORM=linux</CODE>, <CODE>PLATFORM=linux-gcc</CODE>: gcc compiler on Linux operating system, default on Linux
-<LI><CODE>PLATFORM=linux-clang</CODE>: clang compiler on Linux, must be selected manually
-<LI><CODE>PLATFORM=osx</CODE>, <CODE>PLATFORM=osx-clang</CODE>: clang compiler on OS X, default on OS X; <CODE>BITS=32+64</CODE> enables multiarch build
-<LI><CODE>PLATFORM=win</CODE>, <CODE>PLATFORM=win-gcc</CODE>: gcc compiler on Windows (TDM-GCC is well tested), default on Windows
-<LI><CODE>PLATFORM=win-vs</CODE>: Visual C++ 2015 compiler on Windows, must be selected manually; note that the
-  <CODE>cl.exe</CODE> compiler must be already present in <CODE>PATH</CODE> and corresponding <CODE>BITS=32</CODE> or <CODE>BITS=64</CODE>
+</p>
+<ul style="margin-top:0">
+<li><code>PLATFORM=linux</code>, <code>PLATFORM=linux-gcc</code>: gcc compiler on Linux operating system, default on Linux
+</li>
+<li><code>PLATFORM=linux-clang</code>: clang compiler on Linux, must be selected manually
+</li>
+<li><code>PLATFORM=osx</code>, <code>PLATFORM=osx-clang</code>: clang compiler on OS X, default on OS X; <code>BITS=32+64</code> enables multiarch build
+</li>
+<li><code>PLATFORM=win</code>, <code>PLATFORM=win-gcc</code>: gcc compiler on Windows (TDM-GCC is well tested), default on Windows
+</li>
+<li><code>PLATFORM=win-vs</code>: Visual C++ 2015 compiler on Windows, must be selected manually; note that the
+  <code>cl.exe</code> compiler must be already present in <code>PATH</code> and corresponding <code>BITS=32</code> or <code>BITS=64</code>
   must be specified
-</UL>
+</li>
+</ul>
 
-<P>
+<p>
 Either POSIX shell or Windows CMD can be used as shell, it is detected automatically.
-</P>
+</p>
 
-<A NAME="compilation_further_details"></A>
-<H3>3.2.2. Further Details</H3>
+<a id="compilation_further_details" name="compilation_further_details"></a>
+<h3>4.2.2. Further Details</h3>
 
-<P>
-MorphoDiTa uses <A HREF="http://github.com/ufal/cpp_builtem">C++ BuilTem system</A>,
+<p>
+MorphoDiTa uses <a href="http://github.com/ufal/cpp_builtem">C++ BuilTem system</a>,
 please refer to its manual if interested in all supported options.
-</P>
+</p>
 
-<A NAME="other_language_bindings"></A>
-<H2>3.3. Other language bindings</H2>
+<a id="other_language_bindings" name="other_language_bindings"></a>
+<h2>4.3. Other language bindings</h2>
 
-<A NAME="java_installation"></A>
-<H3>3.3.1. Java</H3>
+<a id="java_installation" name="java_installation"></a>
+<h3>4.3.1. Java</h3>
 
-<P>
+<p>
 Binary Java bindings are available in NameTag binary packages.
-</P>
-<P>
-To compile Java bindings manually, run <CODE>make</CODE> in the <CODE>bindings/java</CODE>
+</p>
+<p>
+To compile Java bindings manually, run <code>make</code> in the <code>bindings/java</code>
 directory, optionally with the options descriged in NameTag Installation.
 Java 6 and newer is supported.
-</P>
-<P>
-The Java installation specified in the environment variable <CODE>JAVA_HOME</CODE> is
-used.  If the environment variable does not exist, the <CODE>JAVA_HOME</CODE> can be
+</p>
+<p style="margin-bottom:0">
+The Java installation specified in the environment variable <code>JAVA_HOME</code> is
+used.  If the environment variable does not exist, the <code>JAVA_HOME</code> can be
 specified using
-</P>
-
-<PRE>
+</p>
+<pre style="margin-top:0">
 make JAVA_HOME=path_to_Java_installation
-</PRE>
+</pre>
 
-<A NAME="perl_installation"></A>
-<H3>3.3.2. Perl</H3>
+<a id="perl_installation" name="perl_installation"></a>
+<h3>4.3.2. Perl</h3>
 
-<P>
-The Perl bindings are available as <CODE>Ufal-NameTag</CODE> package on CPAN.
-</P>
-<P>
-To compile Perl bindings manually, run <CODE>make</CODE> in the <CODE>bindings/perl</CODE>
+<p>
+The Perl bindings are available as <code>Ufal-NameTag</code> package on CPAN.
+</p>
+<p>
+To compile Perl bindings manually, run <code>make</code> in the <code>bindings/perl</code>
 directory, optionally with the options descriged in NameTag Installation.
 Perl 5.10 and later is supported.
-</P>
-<P>
+</p>
+<p style="margin-bottom:0">
 Path to the include headers of the required Perl version must be specified
-in the <CODE>PERL_INCLUDE</CODE> variable using
-</P>
-
-<PRE>
+in the <code>PERL_INCLUDE</code> variable using
+</p>
+<pre style="margin-top:0">
 make PERL_INCLUDE=path_to_Perl_includes
-</PRE>
+</pre>
 
-<A NAME="python_installation"></A>
-<H3>3.3.3. Python</H3>
+<a id="python_installation" name="python_installation"></a>
+<h3>4.3.3. Python</h3>
 
-<P>
-The Python bindings are available as <CODE>ufal.nametag</CODE> package on PyPI.
-</P>
-<P>
-To compile Python bindings manually, run <CODE>make</CODE> in the <CODE>bindings/python</CODE>
+<p>
+The Python bindings are available as <code>ufal.nametag</code> package on PyPI.
+</p>
+<p>
+To compile Python bindings manually, run <code>make</code> in the <code>bindings/python</code>
 directory, optionally with options descriged in NameTag Installation. Both
 Python 2.6+ and Python 3+ are supported.
-</P>
-<P>
+</p>
+<p style="margin-bottom:0">
 Path to the include headers of the required Python version must be specified
-in the <CODE>PYTHON_INCLUDE</CODE> variable using
-</P>
-
-<PRE>
+in the <code>PYTHON_INCLUDE</code> variable using
+</p>
+<pre style="margin-top:0">
 make PYTHON_INCLUDE=path_to_Python_includes
-</PRE>
+</pre>
 
-<A NAME="users_manual"></A>
-<H1>4. NameTag User's Manual</H1>
+<a id="users_manual" name="users_manual"></a>
+<h1>5. NameTag User's Manual</h1>
 
-<P>
+<p>
 In a natural language text, the task of named entity recognition (NER) is to
 identify proper names such as names of persons, organizations and locations.
 NameTag recognizes named entities in an unprocessed text using
-<A HREF="http://ufal.mff.cuni.cz/morphodita">MorphoDiTa</A>.
+<a href="http://ufal.mff.cuni.cz/morphodita">MorphoDiTa</a>.
 MorphoDiTa library tokenizes the text and performs morphological analysis and tagging
 and NameTag identifies and classifies named entities by an algorithm described in
-<A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">Straková et al. 2013</A>.
+<a href="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">Straková et al. 2013</a>.
 NameTag can also performs NER in custom tokenized and morphologically analyzed and
 tagged texts.
-</P>
-<P>
+</p>
+<p>
 Like any supervised machine learning tool, NameTag needs a trained linguistic
 model.  This section describes the available language models and also the
 commandline tools. The C++ library is described in NameTag API Reference.
-</P>
+</p>
 
-<A NAME="czech-cnec"></A>
-<H2>4.1. Czech NameTag Models</H2>
+<a id="czech-cnec" name="czech-cnec"></a>
+<h2>5.1. Czech NameTag Models</h2>
 
-<P>
+<p>
 Czech models are distributed under the
-<A HREF="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</A> licence.
-They are trained on <A HREF="http://ufal.mff.cuni.cz/cnec/">Czech Named Entity Corpus</A>
-1.1 and 2.0 and internally use <A HREF="http://ufal.mff.cuni.cz/morphodita/">MorphoDiTa</A>
+<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</a> licence.
+They are trained on <a href="http://ufal.mff.cuni.cz/cnec/">Czech Named Entity Corpus</a>
+1.1 and 2.0 and internally use <a href="http://ufal.mff.cuni.cz/morphodita/">MorphoDiTa</a>
 as a tagger and lemmatizer. Czech models work in NameTag version 1.0 or later.
-</P>
-<P>
+</p>
+<p>
 Czech models are versioned according to the date when released, the version
-format is <CODE>YYMMDD</CODE>, where <CODE>YY</CODE>, <CODE>MM</CODE> and <CODE>DD</CODE> are two-digit
+format is <code>YYMMDD</code>, where <code>YY</code>, <code>MM</code> and <code>DD</code> are two-digit
 representation of year, month and day, respectively. The latest version is
 140304.
-</P>
+</p>
 
-<A NAME="czech-cnec_download"></A>
-<H3>4.1.1. Download</H3>
+<a id="czech-cnec_download" name="czech-cnec_download"></a>
+<h3>5.1.1. Download</h3>
 
-<P>
+<p>
 The latest version 140304 of the Czech NameTag models can be downloaded
-from <A HREF="http://hdl.handle.net/11858/00-097C-0000-0023-7D42-8">LINDAT/CLARIN repository</A>.
-</P>
+from <a href="http://hdl.handle.net/11858/00-097C-0000-0023-7D42-8">LINDAT/CLARIN repository</a>.
+</p>
 
-<A NAME="czech-cnec_acknowledgements"></A>
-<H3>4.1.2. Acknowledgements</H3>
+<a id="czech-cnec_acknowledgements" name="czech-cnec_acknowledgements"></a>
+<h3>5.1.2. Acknowledgements</h3>
 
-<P>
+<p>
 This work has been using language resources developed and/or stored and/or
 distributed by the LINDAT/CLARIN project of the Ministry of Education of the
-Czech Republic (project <I>LM2010013</I>).
-</P>
-<P>
+Czech Republic (project <i>LM2010013</i>).
+</p>
+<p>
 Czech models are trained on Czech Named Entity Corpus, which was created by
 Magda Ševčíková, Zdeněk Žabokrtský, Jana Straková and Milan Straka.
-</P>
-<P>
+</p>
+<p>
 The recognizer research was supported by the projects
-<I>MSM0021620838</I> and <I>LC536</I> of Ministry of Education, Youth and Sports of the Czech Republic,
-<I>1ET101120503</I> of Academy of Sciences of the Czech Republic, LINDAT/CLARIN
-project of the Ministry of Education of the Czech Republic (project <I>LM2010013</I>),
+<i>MSM0021620838</i> and <i>LC536</i> of Ministry of Education, Youth and Sports of the Czech Republic,
+<i>1ET101120503</i> of Academy of Sciences of the Czech Republic, LINDAT/CLARIN
+project of the Ministry of Education of the Czech Republic (project <i>LM2010013</i>),
 and partially by SVV project number 267 314.  The research was performed by
 Jana Straková, Zdeněk Žabokrtský and Milan Straka.
-</P>
-<P>
+</p>
+<p>
 Czech models use MorphoDiTa as a tagger and lemmatizer, therefore
-<A HREF="http://ufal.mff.cuni.cz/morphodita#morphodita_acknowledgements">MorphoDiTa Acknowledgements</A>
+<a href="http://ufal.mff.cuni.cz/morphodita#morphodita_acknowledgements">MorphoDiTa Acknowledgements</a>
 and
-<A HREF="http://ufal.mff.cuni.cz/morphodita/users-manual#czech-morfflex-pdt_acknowledgements">Czech MorphoDiTa Model Acknowledgements</A>
+<a href="http://ufal.mff.cuni.cz/morphodita/users-manual#czech-morfflex-pdt_acknowledgements">Czech MorphoDiTa Model Acknowledgements</a>
 apply.
-</P>
+</p>
 
-<A NAME="czech-cnec_publications"></A>
-<H4>4.1.2.1. Publications</H4>
+<a id="czech-cnec_publications" name="czech-cnec_publications"></a>
+<h4>5.1.2.1. Publications</h4>
 
-<UL>
-<LI>Ševčíková Magda, Žabokrtský Zdeněk, Krůza Ondřej: <I><A HREF="http://ufal.mff.cuni.cz/~zabokrtsky/publications/papers/tsd07-namedent.pdf">Named Entities in Czech: Annotating Data and Developing NE Tagger</A>.</I> In: Matoušek, V., Mautner, P. (eds.) TSD 2007. LNCS (LNAI), vol. 4629, pp. 188–195. Springer, Heidelberg (2007).
-<P></P>
-<LI>Kravalová Jana, Žabokrtský Zdeněk: <I><A HREF="http://aclweb.org/anthology//W/W09/W09-3538.pdf">Czech Named Entity Corpus and SVM-based Recognizer</A>.</I> In: Proceedings of the 2009 Named Entities Workshop: Shared Task on Transliteration. NEWS 2009, pp. 194–201. Association for Computational Linguistics (2009).
-<P></P>
-<LI>Straková Jana, Straka Milan, Hajič Jan: <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</A>.</I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
-<P></P>
-<LI>Straková Jana, Straka Milan and Hajič Jan. <I><A HREF="http://www.aclweb.org/anthology/P/P14/P14-5003.pdf">Open-Source Tools for Morphology, Lemmatization, POS Tagging and Named Entity Recognition.</A></I> In Proceedings of 52nd Annual Meeting of the Association for Computational Linguistics: System Demonstrations, pages 13-18, Baltimore, Maryland, June 2014. Association for Computational Linguistics.
-</UL>
+<ul>
+<li>Ševčíková Magda, Žabokrtský Zdeněk, Krůza Ondřej: <i><a href="http://ufal.mff.cuni.cz/~zabokrtsky/publications/papers/tsd07-namedent.pdf">Named Entities in Czech: Annotating Data and Developing NE Tagger</a>.</i> In: Matoušek, V., Mautner, P. (eds.) TSD 2007. LNCS (LNAI), vol. 4629, pp. 188–195. Springer, Heidelberg (2007).
+<p></p>
+</li>
+<li>Kravalová Jana, Žabokrtský Zdeněk: <i><a href="http://aclweb.org/anthology//W/W09/W09-3538.pdf">Czech Named Entity Corpus and SVM-based Recognizer</a>.</i> In: Proceedings of the 2009 Named Entities Workshop: Shared Task on Transliteration. NEWS 2009, pp. 194–201. Association for Computational Linguistics (2009).
+<p></p>
+</li>
+<li>Straková Jana, Straka Milan, Hajič Jan: <i><a href="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</a>.</i> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
+<p></p>
+</li>
+<li>Straková Jana, Straka Milan and Hajič Jan. <i><a href="http://www.aclweb.org/anthology/P/P14/P14-5003.pdf">Open-Source Tools for Morphology, Lemmatization, POS Tagging and Named Entity Recognition.</a></i> In Proceedings of 52nd Annual Meeting of the Association for Computational Linguistics: System Demonstrations, pages 13-18, Baltimore, Maryland, June 2014. Association for Computational Linguistics.
+</li>
+</ul>
 
-<A NAME="czech-cnec20_model"></A>
-<H3>4.1.3. Czech Named Entity Corpus 2.0 Model</H3>
+<a id="czech-cnec20_model" name="czech-cnec20_model"></a>
+<h3>5.1.3. Czech Named Entity Corpus 2.0 Model</h3>
 
-<P>
+<p>
 The model is trained on the training portion of the
-<A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">Czech Named Entity Corpus 2.0</A>.
+<a href="http://ufal.mff.cuni.cz/cnec/cnec2.0">Czech Named Entity Corpus 2.0</a>.
 The corpus uses a
-<A HREF="http://ufal.mff.cuni.cz/~strakova/cnec2.0/ne-type-hierarchy.pdf">detailed two-level named entity hierarchy</A>,
+<a href="http://ufal.mff.cuni.cz/~strakova/cnec2.0/ne-type-hierarchy.pdf">detailed two-level named entity hierarchy</a>,
 whose detailed description is available in the documentation of the
-<A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">Czech Named Entity Corpus 2.0</A>.
+<a href="http://ufal.mff.cuni.cz/cnec/cnec2.0">Czech Named Entity Corpus 2.0</a>.
 This hierarchy is an updated version of CNEC
 1.1 hierarchy and is more suitable for automatic named entity recognition.
-</P>
+</p>
 
-<DL>
-<DT><CODE>czech-cnec2.0-&lt;version&gt;.ner</CODE></DT><DD>
-  Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A>.
-<P></P>
-  The latest version <CODE>czech-cnec2.0-140304.ner</CODE> reaches 75.38% F1-measure
+<dl>
+<dt><code>czech-cnec2.0-&lt;version&gt;.ner</code></dt><dd>
+  Czech named entity recognizer trained on training portion of <a href="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</a>.
+<p></p>
+  The latest version <code>czech-cnec2.0-140304.ner</code> reaches 75.38% F1-measure
   on two-level hierarchy and 79.16% F1-measure on top-level hierarchy of
-  <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A> etest data.  Model speed:
+  <a href="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</a> etest data.  Model speed:
   ~40k words/s, model size: ~8MB.
-<P></P>
-<DT><CODE>czech-cnec2.0-&lt;version&gt;-no_numbers.ner</CODE></DT><DD>
-  Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A>,
-  except for the supertype <CODE>n</CODE> (Number expressions), which is not included.
-<P></P>
-  The latest version <CODE>czech-cnec2.0-140304-no_numbers.ner</CODE> reaches 77.35%
+<p></p>
+</dd>
+<dt><code>czech-cnec2.0-&lt;version&gt;-no_numbers.ner</code></dt><dd>
+  Czech named entity recognizer trained on training portion of <a href="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</a>,
+  except for the supertype <code>n</code> (Number expressions), which is not included.
+<p></p>
+  The latest version <code>czech-cnec2.0-140304-no_numbers.ner</code> reaches 77.35%
   F1-measure on two-level hierarchy and 80.59% F1-measure on top-level
-  hierarchy of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</A> etest data
-  without <CODE>n</CODE> (Number expressions) supertype.  Model speed: ~45k words/s,
+  hierarchy of <a href="http://ufal.mff.cuni.cz/cnec/cnec2.0">CNEC 2.0</a> etest data
+  without <code>n</code> (Number expressions) supertype.  Model speed: ~45k words/s,
   model size: ~8MB.
-</DL>
+</dd>
+</dl>
 
-<A NAME="czech-cnec11_model"></A>
-<H3>4.1.4. Czech Named Entity Corpus 1.1 Model</H3>
+<a id="czech-cnec11_model" name="czech-cnec11_model"></a>
+<h3>5.1.4. Czech Named Entity Corpus 1.1 Model</h3>
 
-<P>
+<p>
 The model is trained on the training portion of the
-<A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">Czech Named Entity Corpus 1.1</A>.
+<a href="http://ufal.mff.cuni.cz/cnec/cnec1.1">Czech Named Entity Corpus 1.1</a>.
 The corpus uses a
-<A HREF="http://ufal.mff.cuni.cz/~strakova/cnec1.0/ne-type-hierarchy.pdf">detailed two-level named entity hierarchy</A>,
+<a href="http://ufal.mff.cuni.cz/~strakova/cnec1.0/ne-type-hierarchy.pdf">detailed two-level named entity hierarchy</a>,
 whose detailed description is available in the documentation of the
-<A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">Czech Named Entity Corpus 1.1</A>.
-</P>
+<a href="http://ufal.mff.cuni.cz/cnec/cnec1.1">Czech Named Entity Corpus 1.1</a>.
+</p>
 
-<DL>
-<DT><CODE>czech-cnec1.1-&lt;version&gt;.ner</CODE></DT><DD>
-  Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A>.
-<P></P>
-  The latest version <CODE>czech-cnec1.1-140304.ner</CODE> reaches 75.47% F1-measure on
+<dl>
+<dt><code>czech-cnec1.1-&lt;version&gt;.ner</code></dt><dd>
+  Czech named entity recognizer trained on training portion of <a href="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</a>.
+<p></p>
+  The latest version <code>czech-cnec1.1-140304.ner</code> reaches 75.47% F1-measure on
   two-level hierarchy and 78.51% F1-measure on top-level hierarchy of
-  <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A> etest data.  Model speed:
+  <a href="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</a> etest data.  Model speed:
   ~35k words/s, model size: ~7MB.
-<P></P>
-<DT><CODE>czech-cnec1.1-&lt;version&gt;-no_numbers.ner</CODE></DT><DD>
-  Czech named entity recognizer trained on training portion of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A>,
-  except for the supertypes <CODE>c</CODE> (Bibliographic items), <CODE>n</CODE> (Number expressions) and
-  <CODE>q</CODE> (Quantitative expressions), which are not included.
-<P></P>
-  The latest version <CODE>czech-cnec1.1-140304-no_numbers.ner</CODE> reaches 77.48%
+<p></p>
+</dd>
+<dt><code>czech-cnec1.1-&lt;version&gt;-no_numbers.ner</code></dt><dd>
+  Czech named entity recognizer trained on training portion of <a href="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</a>,
+  except for the supertypes <code>c</code> (Bibliographic items), <code>n</code> (Number expressions) and
+  <code>q</code> (Quantitative expressions), which are not included.
+<p></p>
+  The latest version <code>czech-cnec1.1-140304-no_numbers.ner</code> reaches 77.48%
   F1-measure on two-level hierarchy and 80.72% F1-measure on top-level
-  hierarchy of <A HREF="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</A> etest data
-  without <CODE>c</CODE> (Bibliographic items), <CODE>n</CODE> (Number expressions) and <CODE>q</CODE>
+  hierarchy of <a href="http://ufal.mff.cuni.cz/cnec/cnec1.1">CNEC 1.1</a> etest data
+  without <code>c</code> (Bibliographic items), <code>n</code> (Number expressions) and <code>q</code>
   (Quantitative expressions) supertypes.  Model speed: ~40k words/s,
   model size: ~7MB.
-</DL>
+</dd>
+</dl>
 
-<A NAME="run_ner"></A>
-<H2>4.2. Running the Recognizer</H2>
+<a id="run_ner" name="run_ner"></a>
+<h2>5.2. Running the Recognizer</h2>
 
-<P>
+<p style="margin-bottom:0">
 The NameTag Recognizer can be executed using the following command:
-</P>
-
-<PRE>
+</p>
+<pre style="margin-top:0">
 run_ner recognizer_model
-</PRE>
+</pre>
 
-<P>
+<p>
 The input is assumed to be in UTF-8 encoding and can be either already
 tokenized and segmented, or it can be a plain text which is tokenized and
 segmented automatically.
-</P>
-<P>
-Any number of files can be specified after the <CODE>recognizer_model</CODE>. If an
-argument <CODE>input_file:output_file</CODE> is used, the given <CODE>input_file</CODE> is
-processed and the result is saved to <CODE>output_file</CODE>. If only <CODE>input_file</CODE> is
+</p>
+<p>
+Any number of files can be specified after the <code>recognizer_model</code>. If an
+argument <code>input_file:output_file</code> is used, the given <code>input_file</code> is
+processed and the result is saved to <code>output_file</code>. If only <code>input_file</code> is
 used, the result is saved to standard output. If no argument is given, input is
 read from standard input and written to standard output.
-</P>
-<P>
-The full command syntax of <CODE>run_ner</CODE> is
-</P>
-
-<PRE>
+</p>
+<p style="margin-bottom:0">
+The full command syntax of <code>run_ner</code> is
+</p>
+<pre style="margin-top:0">
 Usage: run_ner [options] recognizer_model [file[:output_file]]...
 Options: --input=untokenized|vertical
          --output=vertical|xml
-</PRE>
+</pre>
 
-<A NAME="run_ner_input_formats"></A>
-<H3>4.2.1. Input Formats</H3>
+<a id="run_ner_input_formats" name="run_ner_input_formats"></a>
+<h3>5.2.1. Input Formats</h3>
 
-<P>
-The input format is specified using the <CODE>--input</CODE> option. Currently supported
+<p style="margin-bottom:0">
+The input format is specified using the <code>--input</code> option. Currently supported
 input formats are:
-</P>
-
-<UL>
-<LI><CODE>untokenized</CODE> (default): the input is tokenized and segmented using
+</p>
+<ul style="margin-top:0">
+<li><code>untokenized</code> (default): the input is tokenized and segmented using
   a tokenizer defined by the model,
-<LI><CODE>vertical</CODE>: the input is in vertical format, every line is considered
+</li>
+<li><code>vertical</code>: the input is in vertical format, every line is considered
   a word, with empty line denoting end of sentence.
-</UL>
+</li>
+</ul>
 
-<A NAME="run_ner_output_formats"></A>
-<H3>4.2.2. Output Formats</H3>
+<a id="run_ner_output_formats" name="run_ner_output_formats"></a>
+<h3>5.2.2. Output Formats</h3>
 
-<P>
-The output format is specified using the <CODE>--output</CODE> option. Currently
+<p style="margin-bottom:0">
+The output format is specified using the <code>--output</code> option. Currently
 supported output formats are:
-</P>
-
-<UL>
-<LI><CODE>xml</CODE> (default): Simple XML format without a root element, using
-  <CODE>&lt;sentence&gt;</CODE> element to mark sentences and
-  <CODE>&lt;token&gt;</CODE> element to mark tokens. The recognized named entities
-  are encoded using <CODE>&lt;ne type="..."&gt;</CODE> element.
-<P></P>
+</p>
+<ul style="margin-top:0">
+<li><code>xml</code> (default): Simple XML format without a root element, using
+  <code>&lt;sentence&gt;</code> element to mark sentences and
+  <code>&lt;token&gt;</code> element to mark tokens. The recognized named entities
+  are encoded using <code>&lt;ne type="..."&gt;</code> element.
+<p></p>
   Example input:
 
-<PRE>
+<pre>
 Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
-</PRE>
+</pre>
 
-<P></P>
-  A NameTag identifies a first name (<CODE>pf</CODE>), a surname (<CODE>ps</CODE>) and a person name container (<CODE>P</CODE>) in the input (line breaks added):
+<p></p>
+  A NameTag identifies a first name (<code>pf</code>), a surname (<code>ps</code>) and a person name container (<code>P</code>) in the input (line breaks added):
 
-<PRE>
+<pre>
   &lt;sentence&gt;&lt;ne type="P"&gt;&lt;ne type="pf"&gt;&lt;token&gt;Václav&lt;/token&gt;&lt;/ne&gt; &lt;ne type="ps"&gt;&lt;token&gt;Havel&lt;/token&gt;&lt;/ne&gt;&lt;/ne&gt;
   &lt;token&gt;byl&lt;/token&gt; &lt;token&gt;český&lt;/token&gt; &lt;token&gt;dramatik&lt;/token&gt;&lt;token&gt;,&lt;/token&gt; &lt;token&gt;esejista&lt;/token&gt;&lt;token&gt;,&lt;/token&gt;
   &lt;token&gt;kritik&lt;/token&gt; &lt;token&gt;komunistického&lt;/token&gt; &lt;token&gt;režimu&lt;/token&gt; &lt;token&gt;a&lt;/token&gt; &lt;token&gt;později&lt;/token&gt;
   &lt;token&gt;politik&lt;/token&gt;&lt;token&gt;.&lt;/token&gt;&lt;/sentence&gt;
-</PRE>
+</pre>
 
-<P></P>
-<LI><CODE>vertical</CODE>: Every found named entity is on a separate line. Each line
-  contains three tab-separated fields: <I>entity_range</I>, <I>entity_type</I>
-  and <I>entity_text</I>. The <I>entity_range</I> is composed of token identifiers
-  (counting from 1 and including end-of-sentence; if the input is also <CODE>vertical</CODE>,
+<p></p>
+</li>
+<li><code>vertical</code>: Every found named entity is on a separate line. Each line
+  contains three tab-separated fields: <i>entity_range</i>, <i>entity_type</i>
+  and <i>entity_text</i>. The <i>entity_range</i> is composed of token identifiers
+  (counting from 1 and including end-of-sentence; if the input is also <code>vertical</code>,
   token identifiers correspond exactly to line numbers) of tokens forming the
-  named entity and <I>entity_type</I> represents its type. The <I>entity_text</I> is
+  named entity and <i>entity_type</i> represents its type. The <i>entity_text</i> is
   not strictly necessary and contains space separated words of this named
   entity.
-<P></P>
+<p></p>
   Example input:
 
-<PRE>
+<pre>
 Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
-</PRE>
+</pre>
 
-<P></P>
+<p></p>
   Example output:
 
-<PRE>
+<pre>
 1,2	P	Václav Havel
 1	pf	Václav
 2	ps	Havel
-</PRE>
+</pre>
 
-</UL>
+</li>
+</ul>
 
-<A NAME="run_tokenizer"></A>
-<H2>4.3. Running the Tokenizer</H2>
+<a id="run_tokenizer" name="run_tokenizer"></a>
+<h2>5.3. Running the Tokenizer</h2>
 
-<P>
-Using the <CODE>run_tokenizer</CODE> executable it is possible to perform only
+<p>
+Using the <code>run_tokenizer</code> executable it is possible to perform only
 tokenization and segmentation used in a specified model.
-</P>
-<P>
+</p>
+<p>
 The input is a UTF-8 encoded plain text and the input files are specified same
-as with the <A HREF="#run_ner"><CODE>run_ner</CODE></A> command.
-</P>
-<P>
-The full command syntax of <CODE>run_tokenizer</CODE> is
-</P>
-
-<PRE>
+as with the <a href="#run_ner"><code>run_ner</code></a> command.
+</p>
+<p style="margin-bottom:0">
+The full command syntax of <code>run_tokenizer</code> is
+</p>
+<pre style="margin-top:0">
 run_tokenizer [options] recognizer_model [file[:output_file]]...
 Options: --output=vertical|xml
-</PRE>
+</pre>
 
-<A NAME="run_tokenizer_output_formats"></A>
-<H3>4.3.1. Output Formats</H3>
+<a id="run_tokenizer_output_formats" name="run_tokenizer_output_formats"></a>
+<h3>5.3.1. Output Formats</h3>
 
-<P>
-The output format is specified using the <CODE>--output</CODE> option. Currently
+<p style="margin-bottom:0">
+The output format is specified using the <code>--output</code> option. Currently
 supported output formats are:
-</P>
-
-<UL>
-<LI><CODE>xml</CODE> (default): Simple XML format without a root element, using
-  <CODE>&lt;sentence&gt;</CODE> element to mark sentences and <CODE>&lt;token&gt;</CODE> element to mark
+</p>
+<ul style="margin-top:0">
+<li><code>xml</code> (default): Simple XML format without a root element, using
+  <code>&lt;sentence&gt;</code> element to mark sentences and <code>&lt;token&gt;</code> element to mark
   tokens.
-<P></P>
-  Example output for input <CODE>Děti pojedou k babičce. Už se těší.</CODE> (line breaks added):
+<p></p>
+  Example output for input <code>Děti pojedou k babičce. Už se těší.</code> (line breaks added):
 
-<PRE>
+<pre>
 &lt;sentence&gt;&lt;token&gt;Děti&lt;/token&gt; &lt;token&gt;pojedou&lt;/token&gt; &lt;token&gt;k&lt;/token&gt;
 &lt;token&gt;babičce&lt;/token&gt;&lt;token&gt;.&lt;/token&gt;&lt;/sentence&gt; &lt;sentence&gt;&lt;token&gt;Už&lt;/token&gt;
 &lt;token&gt;se&lt;/token&gt; &lt;token&gt;těší&lt;/token&gt;&lt;token&gt;.&lt;/token&gt;&lt;/sentence&gt;
-</PRE>
+</pre>
 
-<P></P>
-<LI><CODE>vertical</CODE>: Each token is on a separate line, every sentence is ended by
+<p></p>
+</li>
+<li><code>vertical</code>: Each token is on a separate line, every sentence is ended by
   a blank line.
-<P></P>
-  Example output for input <CODE>Děti pojedou k babičce. Už se těší.</CODE>:
+<p></p>
+  Example output for input <code>Děti pojedou k babičce. Už se těší.</code>:
 
-<PRE>
+<pre>
 Děti
 pojedou
 k
@@ -657,145 +765,161 @@ se
 těší
 .
 
-</PRE>
+</pre>
 
-</UL>
+</li>
+</ul>
 
-<A NAME="custom_models"></A>
-<H2>4.4. Training of Custom Models</H2>
+<a id="custom_models" name="custom_models"></a>
+<h2>5.4. Training of Custom Models</h2>
 
-<P>
-Training of custom models is possible using the <CODE>train_ner</CODE> binary.
-</P>
+<p>
+Training of custom models is possible using the <code>train_ner</code> binary.
+</p>
 
-<A NAME="training_data"></A>
-<H3>4.4.1. Training data</H3>
+<a id="training_data" name="training_data"></a>
+<h3>5.4.1. Training data</h3>
 
-<P>
+<p>
 To train a named entity recognizer model, training data is needed. The training
 data must be tokenized and contain annotated name entities. The name entities
 are non-overlapping, consist of a sequence of words and have a specified type.
-</P>
-<P>
+</p>
+<p style="margin-bottom:0">
 The training data must be encoded in UTF-8 encoding. The lines correspond to
 individual words and an empty line denotes an end of sentence. Each non-empty
 line contains exactly two tab-separated columns, the first is the word form and the
 second is the annotation. The format of the annotation is taken from CoNLL-2003:
-the annotation <CODE>O</CODE> (or <CODE>_</CODE>) denotes no named entity,
-annotations <CODE>I-type</CODE> and <CODE>B-type</CODE> denote named entity of specified type.
-The <CODE>I-type</CODE> and <CODE>B-type</CODE> annotations are equivalent
+the annotation <code>O</code> (or <code>_</code>) denotes no named entity,
+annotations <code>I-type</code> and <code>B-type</code> denote named entity of specified type.
+The <code>I-type</code> and <code>B-type</code> annotations are equivalent
 except for one case &ndash; if the previous word is also a named entity of same type, then
-</P>
-
- <UL>
- <LI>if the current word is annotated as <CODE>I-type</CODE>, it is part of the same named
+</p>
+ <ul style="margin-top:0">
+ <li>if the current word is annotated as <code>I-type</code>, it is part of the same named
    entity as the previous word,
- <LI>if the current word is annotated as <CODE>B-type</CODE>, it is in a different name entity
+ </li>
+ <li>if the current word is annotated as <code>B-type</code>, it is in a different name entity
    than the previous word (albeit with the same type).
- </UL>
+ </li>
+ </ul>
 
-<A NAME="tagger"></A>
-<H3>4.4.2. Tagger</H3>
+<a id="tagger" name="tagger"></a>
+<h3>5.4.2. Tagger</h3>
 
-<P>
+<p>
 Most named entity recognizer models utilize part of speech tags and lemmas.
 NameTag can utilize several taggers to obtain the tags and lemmas:
-</P>
+</p>
 
-<DL>
-<DT><CODE>trivial</CODE></DT><DD>
+<dl>
+<dt><code>trivial</code></dt><dd>
   Do not use any tagger. The lemma is the same as the given form and there is
   no part of speech tag.
-<P></P>
-<DT><CODE>external</CODE></DT><DD>
+<p></p>
+</dd>
+<dt><code>external</code></dt><dd>
   Use some external tagger. The input "forms" can contain multiple space-separated values,
-  first being the <I>form</I>, second the <I>lemma</I> and the rest is <I>part of speech tag</I>.
+  first being the <i>form</i>, second the <i>lemma</i> and the rest is <i>part of speech tag</i>.
   The part of speech tag is optional. The lemma is also optional and if missing, the form
   itself is used as a lemma.
-<P></P>
-<DT><CODE>morphodita:model</CODE></DT><DD>
-  Use <A HREF="http://ufal.mff.cuni.cz/morphodita">MorphoDiTa</A> as a tagger with the
+<p></p>
+</dd>
+<dt><code>morphodita:model</code></dt><dd>
+  Use <a href="http://ufal.mff.cuni.cz/morphodita">MorphoDiTa</a> as a tagger with the
   specified model. This tagger model is embedded in resulting named entity recognizer model.
-  The <I>lemmatizer</I> model of MorphoDiTa is recommended, because it is very fast, small
+  The <i>lemmatizer</i> model of MorphoDiTa is recommended, because it is very fast, small
   and detailed part of speech tags do not improve the performance of the named entity recognizer
   significantly.
-</DL>
+</dd>
+</dl>
 
-<A NAME="tagger_lemma_structure"></A>
-<H4>4.4.2.1. Lemma Structure</H4>
+<a id="tagger_lemma_structure" name="tagger_lemma_structure"></a>
+<h4>5.4.2.1. Lemma Structure</h4>
 
-<P>
+<p style="margin-bottom:0">
 The lemmas used by the recognizer can be structured and consist of three parts:
-</P>
-
-<UL>
-<LI><I>raw lemma</I> is the textual form of the lemma, possibly ambiguous
-<LI><I>lemma id</I> is the unique lemma identification (for example a raw lemma plus
+</p>
+<ul style="margin-top:0">
+<li><i>raw lemma</i> is the textual form of the lemma, possibly ambiguous
+</li>
+<li><i>lemma id</i> is the unique lemma identification (for example a raw lemma plus
   a numeric identifier)
-<LI><I>lemma comment</I> is additional information about a lemma occurrence, not used
+</li>
+<li><i>lemma comment</i> is additional information about a lemma occurrence, not used
   to identify the lemma. If used, it usually contains information which is not
   possible to encode in part of speech tags.
-</UL>
+</li>
+</ul>
 
-<P>
-Currently, all these parts are filled only when <CODE>morphodita</CODE> tagger is used.
-If <CODE>external</CODE> tagger is used, raw lemma and lemma id are the same and lemma
+<p>
+Currently, all these parts are filled only when <code>morphodita</code> tagger is used.
+If <code>external</code> tagger is used, raw lemma and lemma id are the same and lemma
 comment is empty.
-</P>
+</p>
 
-<A NAME="feature_templates"></A>
-<H3>4.4.3. Feature Templates</H3>
+<a id="feature_templates" name="feature_templates"></a>
+<h3>5.4.3. Feature Templates</h3>
 
-<P>
+<p>
 The recognizer utilizes feature templates to generate features which are used
 as the input to the named entity classifier. The feature templates are
 specified in a file, one feature template on a line. Empty lines and lines
-starting with <CODE>#</CODE> are ignored.
-</P>
-<P>
+starting with <code>#</code> are ignored.
+</p>
+<p>
 The first space-separated column on a line is the name of the feature template,
 optionally followed by a slash and a window size. The window size specifies how
 many adjacent words can observe the feature template value of a given word,
 with default value of 0 denoting only the word in question.
-</P>
-<P>
+</p>
+<p style="margin-bottom:0">
 List of commonly used feature templates follows. Note that it is probably not
-exhaustive (see the sources in the <CODE>features</CODE> directory).
-</P>
-
-<UL>
-<LI><CODE>BrownClusters file [prefix_lengths]</CODE> &ndash; use Brown clusters found in the
+exhaustive (see the sources in the <code>features</code> directory).
+</p>
+<ul style="margin-top:0">
+<li><code>BrownClusters file [prefix_lengths]</code> &ndash; use Brown clusters found in the
   specified file. An optional list of lengths of cluster prefixes to be used
   in addition to the full Brown cluster can be specified. Each line of the Brown
   clusters file must contain two tab-separated columns, the first of which is
   the Brown cluster label and the second is a raw lemma.
-<LI><CODE>CzechLemmaTerm</CODE> &ndash; feature template specific for Czech morphological system
-  by Jan Hajič (<A HREF="http://books.google.cz/books?id=sB63AAAACAAJ">Hajič 2004</A>).
+</li>
+<li><code>CzechLemmaTerm</code> &ndash; feature template specific for Czech morphological system
+  by Jan Hajič (<a href="http://books.google.cz/books?id=sB63AAAACAAJ">Hajič 2004</a>).
   The term information (personal name, geographic name, ...) specified in lemma
   comment are used as features.
-<LI><CODE>Form</CODE> &ndash; use forms as features
-<LI><CODE>Gazetteers [files]</CODE> &ndash; use given files as gazetteers. Each file is one
+</li>
+<li><code>Form</code> &ndash; use forms as features
+</li>
+<li><code>Gazetteers [files]</code> &ndash; use given files as gazetteers. Each file is one
   gazetteers list independent of the others and must contain a set of lemma
   sequences, each on a line, represented as raw lemmas separated by spaces.
-<LI><CODE>Lemma</CODE> &ndash; use lemma ids as a feature
-<LI><CODE>NumericTimeValue</CODE> &ndash; recognize numbers which could represent hours,
+</li>
+<li><code>Lemma</code> &ndash; use lemma ids as a feature
+</li>
+<li><code>NumericTimeValue</code> &ndash; recognize numbers which could represent hours,
   minutes, hour:minute time, days, months or years
-<LI><CODE>PreviousStage</CODE> &ndash; use named entities predicted by previous stage as features
-<LI><CODE>RawLemma</CODE> &ndash; use raw lemmas as features
-<LI><CODE>RawLemmaCapitalization</CODE> &ndash; use capitalization of raw lemma as features
-<LI><CODE>Tag</CODE> &ndash; use tags as features
-<LI><CODE>URLEmailDetector url_type email_type</CODE> &ndash; detect URLs and emails. If an URL
+</li>
+<li><code>PreviousStage</code> &ndash; use named entities predicted by previous stage as features
+</li>
+<li><code>RawLemma</code> &ndash; use raw lemmas as features
+</li>
+<li><code>RawLemmaCapitalization</code> &ndash; use capitalization of raw lemma as features
+</li>
+<li><code>Tag</code> &ndash; use tags as features
+</li>
+<li><code>URLEmailDetector url_type email_type</code> &ndash; detect URLs and emails. If an URL
   or an email is detected, it is immediately marked with specified named entity
   type and not used in further processing.
-</UL>
+</li>
+</ul>
 
-<P>
+<p style="margin-bottom:0">
 For inspiration, we present feature file used for Czech NER model. This feature
 file is a simplified version of feature templates described in the paper
-Straková et al. 2013: Straková Jana, Straka Milan, Hajič Jan, <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer.</A></I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013.
-</P>
-
-<PRE>
+Straková et al. 2013: Straková Jana, Straka Milan, Hajič Jan, <i><a href="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer.</a></i> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013.
+</p>
+<pre style="margin-top:0">
 # Sentence processors
 Form/2
 Lemma/2
@@ -817,118 +941,136 @@ URLEmailDetector mi me
 
 # Entity processors
 CzechAddContainers
-</PRE>
+</pre>
 
-<A NAME="train_ner"></A>
-<H3>4.4.4. Running train_ner</H3>
+<a id="train_ner" name="train_ner"></a>
+<h3>5.4.4. Running train_ner</h3>
 
-<P>
-The <CODE>train_ner</CODE> binary has the following arguments (which has to be specified
+<p>
+The <code>train_ner</code> binary has the following arguments (which has to be specified
 in this order):
-</P>
+</p>
 
-<OL>
-<LI><I>ner_identifier</I> &ndash; identifier of the named entity recognizer type. This affects
+<ol>
+<li><i>ner_identifier</i> &ndash; identifier of the named entity recognizer type. This affects
   the tokenizer used in this model, and in theory any other aspect of the recognizer.
   Supported values:
-   <UL>
-   <LI><I>czech</I>
-   <LI><I>english</I>
-   <LI><I>generic</I>
-   <P></P>
-   </UL>
-<LI><I>tagger</I> &ndash; the tagger identifier as described in the <A HREF="#tagger">Tagger</A> section
-<P></P>
-<LI><I>feature_templates_file</I> &ndash; file with feature templates as described in the
-  <A HREF="#feature_templates">Feature Templates</A> section.
-<P></P>
-<LI><I>stages</I> &ndash; the number of stages performed during recognition. Common
-  values are either <I>1</I> or <I>2</I>. With more stages, the model is larger and
+   <ul>
+   <li><i>czech</i>
+   </li>
+   <li><i>english</i>
+   </li>
+   <li><i>generic</i>
+   <p></p>
+   </li>
+   </ul>
+</li>
+<li><i>tagger</i> &ndash; the tagger identifier as described in the <a href="#tagger">Tagger</a> section
+<p></p>
+</li>
+<li><i>feature_templates_file</i> &ndash; file with feature templates as described in the
+  <a href="#feature_templates">Feature Templates</a> section.
+<p></p>
+</li>
+<li><i>stages</i> &ndash; the number of stages performed during recognition. Common
+  values are either <i>1</i> or <i>2</i>. With more stages, the model is larger and
   recognition is slower, but more accurate.
-<P></P>
-<LI><I>iterations</I> &ndash; the number of iterations performed when training each stage
+<p></p>
+</li>
+<li><i>iterations</i> &ndash; the number of iterations performed when training each stage
   of the recognizer. With more iterations, training take longer (the
   recognition time is unaffected), but the model gets over-trained when too
-  many iterations are used. Values from <I>10</I> to <I>30</I> or <I>50</I> are commonly used.
-<P></P>
-<LI><I>missing_weight</I> &ndash; default value of missing weights in the log-linear model.
-  Common values are small negative real numbers like <I>-0.2</I>.
-<P></P>
-<LI><I>initial_learning_rage</I> &ndash; learning rate used in the first iteration of SGD
-  training method of the log-linear model. Common value is <I>0.1</I>.
-<P></P>
-<LI><I>final_learning_rage</I> &ndash; learning rate used in the last iteration of SGD
+  many iterations are used. Values from <i>10</i> to <i>30</i> or <i>50</i> are commonly used.
+<p></p>
+</li>
+<li><i>missing_weight</i> &ndash; default value of missing weights in the log-linear model.
+  Common values are small negative real numbers like <i>-0.2</i>.
+<p></p>
+</li>
+<li><i>initial_learning_rage</i> &ndash; learning rate used in the first iteration of SGD
+  training method of the log-linear model. Common value is <i>0.1</i>.
+<p></p>
+</li>
+<li><i>final_learning_rage</i> &ndash; learning rate used in the last iteration of SGD
   training method of the log-linear model. Common values are in range from
-  <I>0.1</I> to <I>0.001</I>, with <I>0.01</I> working reasonably well.
-<P></P>
-<LI><I>gaussian</I> &ndash; the value of Gaussian prior imposed on the weights. In other
-  words, value of L2-norm regularizer. Common value is either <I>0</I> for no regularization,
-  or small real number like <I>0.5</I>.
-<P></P>
-<LI><I>hidden_layer</I> &ndash; experimental support for hidden layer in the artificial
-  neural network classifier. To not use the hidden layer (recommended), use <I>0</I>.
+  <i>0.1</i> to <i>0.001</i>, with <i>0.01</i> working reasonably well.
+<p></p>
+</li>
+<li><i>gaussian</i> &ndash; the value of Gaussian prior imposed on the weights. In other
+  words, value of L2-norm regularizer. Common value is either <i>0</i> for no regularization,
+  or small real number like <i>0.5</i>.
+<p></p>
+</li>
+<li><i>hidden_layer</i> &ndash; experimental support for hidden layer in the artificial
+  neural network classifier. To not use the hidden layer (recommended), use <i>0</i>.
   Otherwise, specify the number of neurons in the hidden layer. Please note that
   non-zero values will create enormous models, slower recognition and are
-  <I>not</I> guaranteed to create models with better accuracy.
-<P></P>
-<LI><I>heldout_data</I> &ndash; optional parameter with heldout data in the
-  <A HREF="#training_data">described</A> format. If the heldout data is present, the
+  <i>not</i> guaranteed to create models with better accuracy.
+<p></p>
+</li>
+<li><i>heldout_data</i> &ndash; optional parameter with heldout data in the
+  <a href="#training_data">described</a> format. If the heldout data is present, the
   accuracy of the heldout data classification is printed during training. The
   heldout data is not used in any other way.
-</OL>
+</li>
+</ol>
 
-<P>
-The training data in the <A HREF="#training_data">described</A> format is read from the standard
+<p>
+The training data in the <a href="#training_data">described</a> format is read from the standard
 input and the trained model is written to the standard output if the training
 is successful.
-</P>
+</p>
 
-<A NAME="api_reference"></A>
-<H1>5. NameTag API Reference</H1>
+<a id="api_reference" name="api_reference"></a>
+<h1>6. NameTag API Reference</h1>
 
-<P>
-The NameTag API is defined in header <CODE>nametag.h</CODE> and resides in
-<CODE>ufal::nametag</CODE> namespace.
-</P>
-<P>
+<p>
+The NameTag API is defined in header <code>nametag.h</code> and resides in
+<code>ufal::nametag</code> namespace.
+</p>
+<p>
 The strings used in the NameTag API are always UTF-8 encoded (except from
 file paths, whose encoding is system dependent).
-</P>
+</p>
 
-<A NAME="versioning"></A>
-<H2>5.1. NameTag Versioning</H2>
+<a id="versioning" name="versioning"></a>
+<h2>6.1. NameTag Versioning</h2>
 
-<P>
-NameTag is versioned using <A HREF="http://semver.org/">Semantic Versioning</A>.
-Therefore, a version consists of three numbers <I>major.minor.patch</I>, optionally
+<p>
+NameTag is versioned using <a href="http://semver.org/">Semantic Versioning</a>.
+Therefore, a version consists of three numbers <i>major.minor.patch</i>, optionally
 followed by a hyphen and pre-release version info, with the following semantics:
-</P>
+</p>
 
-<UL>
-<LI>Stable versions have no pre-release version info, development have non-empty
+<ul>
+<li>Stable versions have no pre-release version info, development have non-empty
   pre-release version info.
-<LI>Two versions with the same <I>major.minor</I> have the same API with the same
-  behaviour, apart from bugs. Therefore, if only <I>patch</I> is increased, the
+</li>
+<li>Two versions with the same <i>major.minor</i> have the same API with the same
+  behaviour, apart from bugs. Therefore, if only <i>patch</i> is increased, the
   new version is only a bug-fix release.
-<LI>If two versions <I>v</I> and <I>u</I> have the same <I>major</I>, but <I>minor(v)</I> is
-  greater than <I>minor(u)</I>, version <I>v</I> contains only additions to the API.
-  In other words, the API of <I>u</I> is all present in <I>v</I> with the same
+</li>
+<li>If two versions <i>v</i> and <i>u</i> have the same <i>major</i>, but <i>minor(v)</i> is
+  greater than <i>minor(u)</i>, version <i>v</i> contains only additions to the API.
+  In other words, the API of <i>u</i> is all present in <i>v</i> with the same
   behaviour (once again apart from bugs). It is therefore safe to upgrade to
-  a newer NameTag version with the same <I>major</I>.
-<LI>If two versions differ in <I>major</I>, their API may differ in any way.
-</UL>
+  a newer NameTag version with the same <i>major</i>.
+</li>
+<li>If two versions differ in <i>major</i>, their API may differ in any way.
+</li>
+</ul>
 
-<P>
+<p>
 Models created by NameTag have the same behaviour in all NameTag
-versions with same <I>major</I>, apart from obvious bugfixes. On the other hand,
-models created from the same data by different <I>major.minor</I> NameTag
+versions with same <i>major</i>, apart from obvious bugfixes. On the other hand,
+models created from the same data by different <i>major.minor</i> NameTag
 versions may have different behaviour.
-</P>
+</p>
 
-<A NAME="string_piece"></A>
-<H2>5.2. Struct string_piece</H2>
+<a id="string_piece" name="string_piece"></a>
+<h2>6.2. Struct string_piece</h2>
 
-<PRE>
+<pre>
 struct string_piece {
   const char* str;
   size_t len;
@@ -938,34 +1080,34 @@ struct string_piece {
   string_piece(const char* str, size_t len);
   string_piece(const std::string&amp; str);
 }
-</PRE>
+</pre>
 
-<P>
-The <A HREF="#string_piece"><CODE>string_piece</CODE></A> is used for efficient string passing. The string
-referenced in <A HREF="#string_piece"><CODE>string_piece</CODE></A> is not owned by it, so users have to make sure
-the referenced string exists as long as the <A HREF="#string_piece"><CODE>string_piece</CODE></A>.
-</P>
+<p>
+The <a href="#string_piece"><code>string_piece</code></a> is used for efficient string passing. The string
+referenced in <a href="#string_piece"><code>string_piece</code></a> is not owned by it, so users have to make sure
+the referenced string exists as long as the <a href="#string_piece"><code>string_piece</code></a>.
+</p>
 
-<A NAME="token_range"></A>
-<H2>5.3. Struct token_range</H2>
+<a id="token_range" name="token_range"></a>
+<h2>6.3. Struct token_range</h2>
 
-<PRE>
+<pre>
 struct token_range {
   size_t start;
   size_t length;
 };
-</PRE>
+</pre>
 
-<P>
-The <A HREF="#token_range"><CODE>token_range</CODE></A> represent a range of a token as returned by a <A HREF="#tokenizer">tokenizer</A>.
-The <CODE>start</CODE> and <CODE>length</CODE> fields specify the token position in Unicode
+<p>
+The <a href="#token_range"><code>token_range</code></a> represent a range of a token as returned by a <a href="#tokenizer">tokenizer</a>.
+The <code>start</code> and <code>length</code> fields specify the token position in Unicode
 characters, not in bytes of UTF-8 encoding.
-</P>
+</p>
 
-<A NAME="named_entity"></A>
-<H2>5.4. Struct named_entity</H2>
+<a id="named_entity" name="named_entity"></a>
+<h2>6.4. Struct named_entity</h2>
 
-<PRE>
+<pre>
 struct named_entity {
   size_t start;
   size_t length;
@@ -974,19 +1116,19 @@ struct named_entity {
   named_entity();
   named_entity(size_t start, size_t length, const std::string&amp; type);
 };
-</PRE>
+</pre>
 
-<P>
-The <A HREF="#named_entity"><CODE>named_entity</CODE></A> is used to represend a named entity. The
-<CODE>start</CODE> and <CODE>length</CODE> fields represent the entity range in either tokens,
-unicode characters or bytes, depending on the usage. The <CODE>type</CODE> represents
+<p>
+The <a href="#named_entity"><code>named_entity</code></a> is used to represend a named entity. The
+<code>start</code> and <code>length</code> fields represent the entity range in either tokens,
+unicode characters or bytes, depending on the usage. The <code>type</code> represents
 the entity type.
-</P>
+</p>
 
-<A NAME="version"></A>
-<H2>5.5. Class version</H2>
+<a id="version" name="version"></a>
+<h2>6.5. Class version</h2>
 
-<PRE>
+<pre>
 class version {
  public:
   unsigned major;
@@ -995,28 +1137,28 @@ class version {
 
   static <A HREF="#version">version</A> <A HREF="#version_current">current</A>();
 };
-</PRE>
+</pre>
 
-<P>
-The <A HREF="#version"><CODE>version</CODE></A> class represents NameTag version.
-See <A HREF="#versioning">NameTag Versioning</A> for more information.
-</P>
+<p>
+The <a href="#version"><code>version</code></a> class represents NameTag version.
+See <a href="#versioning">NameTag Versioning</a> for more information.
+</p>
 
-<A NAME="version_current"></A>
-<H3>5.5.1. version::current</H3>
+<a id="version_current" name="version_current"></a>
+<h3>6.5.1. version::current</h3>
 
-<PRE>
+<pre>
 static <A HREF="#version">version</A> current();
-</PRE>
+</pre>
 
-<P>
+<p>
 Returns current NameTag version.
-</P>
+</p>
 
-<A NAME="tokenizer"></A>
-<H2>5.6. Class tokenizer</H2>
+<a id="tokenizer" name="tokenizer"></a>
+<h2>6.6. Class tokenizer</h2>
 
-<PRE>
+<pre>
 class tokenizer {
  public:
   virtual ~tokenizer() {}
@@ -1026,67 +1168,67 @@ class tokenizer {
 
   static <A HREF="#tokenizer">tokenizer</A>* <A HREF="#tokenizer_new_vertical_tokenizer">new_vertical_tokenizer</A>();
 };
-</PRE>
+</pre>
 
-<P>
-The <A HREF="#tokenizer"><CODE>tokenizer</CODE></A> class performs segmentation and tokenization of given text.
-The class is <I>not</I> threadsafe.
-</P>
-<P>
-The <A HREF="#tokenizer"><CODE>tokenizer</CODE></A> instances can be obtained either directly using the
-static method <A HREF="#tokenizer_new_vertical_tokenizer"><CODE>new_vertical_tokenizer</CODE></A> or
-through instances of <A HREF="#ner"><CODE>ner</CODE></A>.
-</P>
+<p>
+The <a href="#tokenizer"><code>tokenizer</code></a> class performs segmentation and tokenization of given text.
+The class is <i>not</i> threadsafe.
+</p>
+<p>
+The <a href="#tokenizer"><code>tokenizer</code></a> instances can be obtained either directly using the
+static method <a href="#tokenizer_new_vertical_tokenizer"><code>new_vertical_tokenizer</code></a> or
+through instances of <a href="#ner"><code>ner</code></a>.
+</p>
 
-<A NAME="tokenizer_set_text"></A>
-<H3>5.6.1. tokenizer::set_text</H3>
+<a id="tokenizer_set_text" name="tokenizer_set_text"></a>
+<h3>6.6.1. tokenizer::set_text</h3>
 
-<PRE>
+<pre>
 virtual void set_text(<A HREF="#string_piece">string_piece</A> text, bool make_copy = false) = 0;
-</PRE>
+</pre>
 
-<P>
+<p>
 Set the text which is to be tokenized.
-</P>
-<P>
-If <CODE>make_copy</CODE> is <CODE>false</CODE>, only a reference to the given text is
+</p>
+<p>
+If <code>make_copy</code> is <code>false</code>, only a reference to the given text is
 stored and the user has to make sure it exists until the tokenizer
-is released or <CODE>set_text</CODE> is called again. If <CODE>make_copy</CODE>
-is <CODE>true</CODE>, a copy of the given text is made and retained until the
-tokenizer is released or <CODE>set_text</CODE> is called again.
-</P>
+is released or <code>set_text</code> is called again. If <code>make_copy</code>
+is <code>true</code>, a copy of the given text is made and retained until the
+tokenizer is released or <code>set_text</code> is called again.
+</p>
 
-<A NAME="tokenizer_next_sentence"></A>
-<H3>5.6.2. tokenizer::next_sentence</H3>
+<a id="tokenizer_next_sentence" name="tokenizer_next_sentence"></a>
+<h3>6.6.2. tokenizer::next_sentence</h3>
 
-<PRE>
+<pre>
 virtual bool next_sentence(std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;* forms, std::vector&lt;<A HREF="#token_range">token_range</A>&gt;* tokens) = 0;
-</PRE>
+</pre>
 
-<P>
-Locate and return next sentence of the given text. Returns <CODE>true</CODE> when successful and <CODE>false</CODE> when
-there are no more sentences in the given text. The arguments are filled with found tokens if not <CODE>NULL</CODE>.
-The <CODE>forms</CODE> contain token ranges in bytes of UTF-8 encoding, the <CODE>tokens</CODE> contain token ranges
+<p>
+Locate and return next sentence of the given text. Returns <code>true</code> when successful and <code>false</code> when
+there are no more sentences in the given text. The arguments are filled with found tokens if not <code>NULL</code>.
+The <code>forms</code> contain token ranges in bytes of UTF-8 encoding, the <code>tokens</code> contain token ranges
 in Unicode characters.
-</P>
+</p>
 
-<A NAME="tokenizer_new_vertical_tokenizer"></A>
-<H3>5.6.3. tokenizer::new_vertical_tokenizer</H3>
+<a id="tokenizer_new_vertical_tokenizer" name="tokenizer_new_vertical_tokenizer"></a>
+<h3>6.6.3. tokenizer::new_vertical_tokenizer</h3>
 
-<PRE>
+<pre>
 static <A HREF="#tokenizer">tokenizer</A> new_vertical_tokenizer();
-</PRE>
+</pre>
 
-<P>
+<p>
 Returns a new instance of a vertical tokenizer, which considers every line to
 be one token, with empty line denoting end of sentence. The user should delete
 the instance after use.
-</P>
+</p>
 
-<A NAME="ner"></A>
-<H2>5.7. Class ner</H2>
+<a id="ner" name="ner"></a>
+<h2>6.7. Class ner</h2>
 
-<PRE>
+<pre>
 class ner {
  public:
   virtual ~ner() {}
@@ -1098,93 +1240,93 @@ class ner {
 
   virtual <A HREF="#tokenizer">tokenizer</A>* <A HREF="#ner_new_tokenizer">new_tokenizer</A>() const = 0;
 };
-</PRE>
+</pre>
 
-<P>
-A <A HREF="#ner"><CODE>ner</CODE></A> instance represents a named entity recognizer. All methods
+<p>
+A <a href="#ner"><code>ner</code></a> instance represents a named entity recognizer. All methods
 are thread-safe.
-</P>
+</p>
 
-<A NAME="ner_load_cstring"></A>
-<H3>5.7.1. ner::load(const char*)</H3>
+<a id="ner_load_cstring" name="ner_load_cstring"></a>
+<h3>6.7.1. ner::load(const char*)</h3>
 
-<PRE>
+<pre>
 static <A HREF="#ner">ner</A>* load(const char* fname);
-</PRE>
+</pre>
 
-<P>
+<p>
 Factory method constructor. Accepts C string with a file name of the model.
-Returns a pointer to an instance of <A HREF="#ner"><CODE>ner</CODE></A> which the user should delete
+Returns a pointer to an instance of <a href="#ner"><code>ner</code></a> which the user should delete
 after use.
-</P>
+</p>
 
-<A NAME="ner_load_istream"></A>
-<H3>5.7.2. ner::load(istream&amp;)</H3>
+<a id="ner_load_istream" name="ner_load_istream"></a>
+<h3>6.7.2. ner::load(istream&amp;)</h3>
 
-<PRE>
+<pre>
 static <A HREF="#ner">ner</A>* load(istream&amp; is);
-</PRE>
+</pre>
 
-<P>
+<p>
 Factory method constructor. Accepts an input stream with the
-model. Returns a pointer to an instance of <A HREF="#ner"><CODE>ner</CODE></A> which the user should
+model. Returns a pointer to an instance of <a href="#ner"><code>ner</code></a> which the user should
 delete after use.
-</P>
+</p>
 
-<A NAME="ner_recognize"></A>
-<H3>5.7.3. ner::recognize</H3>
+<a id="ner_recognize" name="ner_recognize"></a>
+<h3>6.7.3. ner::recognize</h3>
 
-<PRE>
+<pre>
 virtual void recognize(const std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;&amp; forms, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities) const = 0;
-</PRE>
+</pre>
 
-<P>
-Perform named entity recognition on a tokenized sentence given in the <CODE>forms</CODE> argument.
-The found entities are returned in the <CODE>entities</CODE> argument. The range of the
-returned <A HREF="#named_entity">named_entity</A> is represented using form indices.
-</P>
+<p>
+Perform named entity recognition on a tokenized sentence given in the <code>forms</code> argument.
+The found entities are returned in the <code>entities</code> argument. The range of the
+returned <a href="#named_entity">named_entity</a> is represented using form indices.
+</p>
 
-<A NAME="ner_tokenize_and_recognize"></A>
-<H3>5.7.4. ner::tokenize_and_recognize</H3>
+<a id="ner_tokenize_and_recognize" name="ner_tokenize_and_recognize"></a>
+<h3>6.7.4. ner::tokenize_and_recognize</h3>
 
-<PRE>
+<pre>
 void tokenize_and_recognize(<A HREF="#string_piece">string_piece</A> text, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities, bool unicode_offsets = false) const;
-</PRE>
+</pre>
 
-<P>
-Perform named entity recognition on an untokenized text given in the <CODE>text</CODE> argument.
-The found entities are returned in the <CODE>entities</CODE> argument. The range of the
-returned <A HREF="#named_entity">named_entity</A> is represented either in Unicode characters
-(when <CODE>unicode_offsets == true</CODE>), or in UTF-8 bytes (when <CODE>unicode_offset == false</CODE>).
-</P>
+<p>
+Perform named entity recognition on an untokenized text given in the <code>text</code> argument.
+The found entities are returned in the <code>entities</code> argument. The range of the
+returned <a href="#named_entity">named_entity</a> is represented either in Unicode characters
+(when <code>unicode_offsets == true</code>), or in UTF-8 bytes (when <code>unicode_offset == false</code>).
+</p>
 
-<A NAME="ner_new_tokenizer"></A>
-<H3>5.7.5. ner::new_tokenizer</H3>
+<a id="ner_new_tokenizer" name="ner_new_tokenizer"></a>
+<h3>6.7.5. ner::new_tokenizer</h3>
 
-<PRE>
+<pre>
 virtual <A HREF="#tokenizer">tokenizer</A>* new_tokenizer() const = 0;
-</PRE>
+</pre>
 
-<P>
-Returns a new instance of a suitable tokenizer or <CODE>NULL</CODE> if no such tokenizer
+<p>
+Returns a new instance of a suitable tokenizer or <code>NULL</code> if no such tokenizer
 exists. The user should delete it after use.
-</P>
+</p>
 
-<A NAME="cpp_bindings_api"></A>
-<H2>5.8. C++ Bindings API</H2>
+<a id="cpp_bindings_api" name="cpp_bindings_api"></a>
+<h2>6.8. C++ Bindings API</h2>
 
-<P>
+<p>
 Bindings for other languages than C++ are created using SWIG from the C++
 bindings API, which is a slightly modified version of the native C++ API.
-Main changes are replacement of <A HREF="#string_piece"><CODE>string_piece</CODE></A> type by native
-strings and removal of methods using <CODE>istream</CODE>. Here is the C++ bindings API
+Main changes are replacement of <a href="#string_piece"><code>string_piece</code></a> type by native
+strings and removal of methods using <code>istream</code>. Here is the C++ bindings API
 declaration:
-</P>
+</p>
 
-<A NAME="bindings_helper_structures"></A>
-<H3>5.8.1. Helper Structures</H3>
+<a id="bindings_helper_structures" name="bindings_helper_structures"></a>
+<h3>6.8.1. Helper Structures</h3>
 
-<PRE>
+<pre>
 typedef vector&lt;string&gt; Forms;
 
 struct TokenRange {
@@ -1202,12 +1344,12 @@ struct NamedEntity {
   NamedEntity(size_t start, size_t length, const string&amp; type);
 };
 typedef vector&lt;NamedEntity&gt; NamedEntities;
-</PRE>
+</pre>
 
-<A NAME="bindings_main_classes"></A>
-<H3>5.8.2. Main Classes</H3>
+<a id="bindings_main_classes" name="bindings_main_classes"></a>
+<h3>6.8.2. Main Classes</h3>
 
-<PRE>
+<pre>
 class Version {
  public:
   unsigned major;
@@ -1232,99 +1374,102 @@ class Ner {
 
   virtual Tokenizer* newTokenizer() const;
 };
-</PRE>
+</pre>
 
-<A NAME="java_bindings"></A>
-<H2>5.9. Java Bindings</H2>
+<a id="java_bindings" name="java_bindings"></a>
+<h2>6.9. Java Bindings</h2>
 
-<P>
-NameTag library bindings is available in the <CODE>cz.cuni.mff.ufal.nametag</CODE>
+<p>
+NameTag library bindings is available in the <code>cz.cuni.mff.ufal.nametag</code>
 package.
-</P>
-<P>
-The bindings is a straightforward conversion of the <CODE>C++</CODE> bindings API.
+</p>
+<p>
+The bindings is a straightforward conversion of the <code>C++</code> bindings API.
 Vectors do not have native Java interface, see
-<CODE>cz.cuni.mff.ufal.nametag.Forms</CODE> class for reference. Also, class members
-are accessible and modifiable using using <CODE>getField</CODE> and <CODE>setField</CODE>
+<code>cz.cuni.mff.ufal.nametag.Forms</code> class for reference. Also, class members
+are accessible and modifiable using using <code>getField</code> and <code>setField</code>
 wrappers.
-</P>
-<P>
-The bindings require native C++ library <CODE>libnametag_java</CODE> (called
-<CODE>nametag_java</CODE> on Windows). If the library is found in the current
+</p>
+<p>
+The bindings require native C++ library <code>libnametag_java</code> (called
+<code>nametag_java</code> on Windows). If the library is found in the current
 directory, it is used, otherwise standard library search process is used.
-</P>
+</p>
 
-<A NAME="perl_bindings"></A>
-<H2>5.10. Perl Bindings</H2>
+<a id="perl_bindings" name="perl_bindings"></a>
+<h2>6.10. Perl Bindings</h2>
 
-<P>
+<p>
 NameTag library bindings is available in the
-<A HREF="http://search.cpan.org/~straka/Ufal-NameTag/"><CODE>Ufal::NameTag</CODE></A> package.
-The classes can be imported into the current namespace using the <CODE>:all</CODE>
+<a href="http://search.cpan.org/~straka/Ufal-NameTag/"><code>Ufal::NameTag</code></a> package.
+The classes can be imported into the current namespace using the <code>:all</code>
 export tag.
-</P>
-<P>
-The bindings is a straightforward conversion of the <CODE>C++</CODE> bindings API.
-Vectors do not have native Perl interface, see <CODE>Ufal::NameTag::Forms</CODE> for
+</p>
+<p>
+The bindings is a straightforward conversion of the <code>C++</code> bindings API.
+Vectors do not have native Perl interface, see <code>Ufal::NameTag::Forms</code> for
 reference. Static methods and enumerations are available only through the
 module, not through object instance.
-</P>
+</p>
 
-<A NAME="python_bindings"></A>
-<H2>5.11. Python Bindings</H2>
+<a id="python_bindings" name="python_bindings"></a>
+<h2>6.11. Python Bindings</h2>
 
-<P>
+<p>
 NameTag library bindings is available in the
-<A HREF="http://pypi.python.org/pypi/ufal.nametag"><CODE>ufal.nametag</CODE></A> module.
-</P>
-<P>
-The bindings is a straightforward conversion of the <CODE>C++</CODE> bindings API.
-In Python 2, strings can be both <CODE>unicode</CODE> and UTF-8 encoded <CODE>str</CODE>, and the
-library always produces <CODE>unicode</CODE>. In Python 3, strings must be only <CODE>str</CODE>.
-</P>
+<a href="http://pypi.python.org/pypi/ufal.nametag"><code>ufal.nametag</code></a> module.
+</p>
+<p>
+The bindings is a straightforward conversion of the <code>C++</code> bindings API.
+In Python 2, strings can be both <code>unicode</code> and UTF-8 encoded <code>str</code>, and the
+library always produces <code>unicode</code>. In Python 3, strings must be only <code>str</code>.
+</p>
 
-<A NAME="contact"></A>
-<H1>6. Contact</H1>
+<a id="contact" name="contact"></a>
+<h1>7. Contact</h1>
 
-<P>
+<p style="margin-bottom:0">
 Authors:
-</P>
+</p>
+<ul style="margin-top:0">
+<li><a href="http://ufal.mff.cuni.cz/milan-straka">Milan Straka</a>, <a href="mailto:straka@ufal.mff.cuni.cz">straka@ufal.mff.cuni.cz</a>
+</li>
+<li><a href="http://ufal.mff.cuni.cz/jana-strakova">Jana Straková</a>, <a href="mailto:strakova@ufal.mff.cuni.cz">strakova@ufal.mff.cuni.cz</a>
+</li>
+</ul>
 
-<UL>
-<LI><A HREF="http://ufal.mff.cuni.cz/milan-straka">Milan Straka</A>, <A HREF="mailto:straka@ufal.mff.cuni.cz">straka@ufal.mff.cuni.cz</A>
-<LI><A HREF="http://ufal.mff.cuni.cz/jana-strakova">Jana Straková</A>, <A HREF="mailto:strakova@ufal.mff.cuni.cz">strakova@ufal.mff.cuni.cz</A>
-</UL>
+<p>
+<a href="http://ufal.mff.cuni.cz/nametag">NameTag website</a>.
+</p>
+<p>
+<a href="http://hdl.handle.net/11858/00-097C-0000-0023-43CE-E">NameTag LINDAT/CLARIN entry</a>.
+</p>
 
-<P>
-<A HREF="http://ufal.mff.cuni.cz/nametag">NameTag website</A>.
-</P>
-<P>
-<A HREF="http://hdl.handle.net/11858/00-097C-0000-0023-43CE-E">NameTag LINDAT/CLARIN entry</A>.
-</P>
+<a id="nametag_acknowledgements" name="nametag_acknowledgements"></a>
+<h1>8. Acknowledgements</h1>
 
-<A NAME="nametag_acknowledgements"></A>
-<H1>7. Acknowledgements</H1>
-
-<P>
+<p>
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT/CLARIN project of the Ministry of Education of the Czech Republic (project LM2010013).
-</P>
-<P>
-Acknowledgements for individual language models are listed in <A HREF="#users_manual">NameTag User's Manual</A>.
-</P>
+</p>
+<p>
+Acknowledgements for individual language models are listed in <a href="#users_manual">NameTag User's Manual</a>.
+</p>
 
-<A NAME="publications"></A>
-<H2>7.1. Publications</H2>
+<a id="publications" name="publications"></a>
+<h2>8.1. Publications</h2>
 
-<UL>
-<LI>(Straková et al. 2014) Straková Jana, Straka Milan and Hajič Jan. <I><A HREF="http://www.aclweb.org/anthology/P/P14/P14-5003.pdf">Open-Source Tools for Morphology, Lemmatization, POS Tagging and Named Entity Recognition.</A></I> In Proceedings of 52nd Annual Meeting of the Association for Computational Linguistics: System Demonstrations, pages 13-18, Baltimore, Maryland, June 2014. Association for Computational Linguistics.
-<P></P>
-<LI>(Straková et al. 2013) Straková Jana, Straka Milan, Hajič Jan: <I><A HREF="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</A>.</I> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
-</UL>
+<ul>
+<li>(Straková et al. 2014) Straková Jana, Straka Milan and Hajič Jan. <i><a href="http://www.aclweb.org/anthology/P/P14/P14-5003.pdf">Open-Source Tools for Morphology, Lemmatization, POS Tagging and Named Entity Recognition.</a></i> In Proceedings of 52nd Annual Meeting of the Association for Computational Linguistics: System Demonstrations, pages 13-18, Baltimore, Maryland, June 2014. Association for Computational Linguistics.
+<p></p>
+</li>
+<li>(Straková et al. 2013) Straková Jana, Straka Milan, Hajič Jan: <i><a href="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</a>.</i> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
+</li>
+</ul>
 
-<A NAME="bibtex_for_referencing"></A>
-<H2>7.2. Bibtex for referencing</H2>
+<a id="bibtex_for_referencing" name="bibtex_for_referencing"></a>
+<h2>8.2. Bibtex for referencing</h2>
 
-<PRE>
+<pre>
 @InProceedings{strakova14,
   author    = {Strakov\'{a}, Jana  and  Straka, Milan  and  Haji\v{c}, Jan},
   title     = {Open-{S}ource {T}ools for {M}orphology, {L}emmatization, {POS} {T}agging and {N}amed {E}ntity {R}ecognition},
@@ -1336,17 +1481,17 @@ Acknowledgements for individual language models are listed in <A HREF="#users_ma
   pages     = {13--18},
   url       = {http://www.aclweb.org/anthology/P/P14/P14-5003.pdf}
 }
-</PRE>
+</pre>
 
-<A NAME="permanent_identifier"></A>
-<H2>7.3. Permanent Identifier</H2>
+<a id="permanent_identifier" name="permanent_identifier"></a>
+<h2>8.3. Permanent Identifier</h2>
 
-<P>
+<p>
 If you prefer to reference NameTag by a permanent identifier (PID),
-you can use <CODE>http://hdl.handle.net/11858/00-097C-0000-0023-43CE-E</CODE>.
-</P>
-</DIV>
+you can use <code>http://hdl.handle.net/11858/00-097C-0000-0023-43CE-E</code>.
+</p>
+</div>
 
 <!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
-<!-- cmdline: txt2tags -t html -C not_web.conf nametag.t2t -->
-</BODY></HTML>
+<!-- cmdline: txt2tags -t html -\-toc -\-enum-title -o nametag.html -C t2t_docsys/t2t_docsys_manual.conf nametag.t2t -->
+</body></html>
