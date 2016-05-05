@@ -1,5 +1,6 @@
-Version 1.1.1 [not yet released]
---------------------------------
+Version 1.1.1 [05 May 16]
+-------------------------
+- Remove forgotten dllimport attribute (fixes compilation on Windows).
 
 
 Version 1.1.0 [05 May 16]

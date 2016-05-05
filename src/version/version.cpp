@@ -17,7 +17,7 @@ namespace ufal {
 namespace nametag {
 
 version version::current() {
-  return {1, 1, 1, "devel"};
+  return {1, 1, 1, ""};
 }
 
 // Returns multi-line formated version and copyright string.
