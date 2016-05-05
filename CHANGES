@@ -1,21 +1,20 @@
 Version 1.0.1 [not yet released]
 --------------------------------
-- Add support for OS X 10.7 and later.
-- Use embedded version of MorphoDiTa instead of using GIT submodule.
+- Change license from LGPL to MPL 2.0.
 - Fix problem in external tagger, which was unusable.
-- Use UniLib from MorphoDiTa instead of NameTag specific utf8 class.
-- Use PyTypeObject in Python bindings instead of proxy classes.
+- Add support for OS X 10.7 and later.
+- Support compilation on Visual Studio 2015.
+- Add C# bindings.
+- Add REST server using MicroRestD http://github.com/ufal/microrestd.
+- Start using Semantic Versioning http://semver.org/.
+- Remove support for shared library build.
+- Use C++ Builtem http://github.com/ufal/cpp_builtem as build system.
+- Use embedded version of MorphoDiTa instead of using GIT submodule.
 - Use upstream version of C++ Utils http://github.com/ufal/cpp_utils.
 - Use upstream version of Unilib http://github.com/ufal/unilib.
+- Use PyTypeObject in Python bindings instead of proxy classes.
 - Use C++ iostreams instead of C stdio.
-- Start using Semantic Versioning http://semver.org/.
-- Use C++ Builtem http://github.com/ufal/cpp_builtem as build system.
-- Remove support for shared library build.
-- Support compilation on Visual Studio 2015.
 - Use t2t_docsys http://github.com/ufal/t2t_docsys as documentation system.
-- Add C# bindings.
-- Change license from LGPL to MPL 2.0.
-- Add REST server using MicroRestD http://github.com/ufal/microrestd.
 
 
 Version 1.0.0 [11 Apr 14]
