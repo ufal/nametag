@@ -93,15 +93,17 @@
       </li>
       </ul>
     </li>
-    <li><a href="#custom_models">5.4. Training of Custom Models</a>
+    <li><a href="#rest_server">5.4. Running REST Server</a>
+    </li>
+    <li><a href="#custom_models">5.5. Training of Custom Models</a>
       <ul>
-      <li><a href="#training_data">5.4.1. Training data</a>
+      <li><a href="#training_data">5.5.1. Training data</a>
       </li>
-      <li><a href="#tagger">5.4.2. Tagger</a>
+      <li><a href="#tagger">5.5.2. Tagger</a>
       </li>
-      <li><a href="#feature_templates">5.4.3. Feature Templates</a>
+      <li><a href="#feature_templates">5.5.3. Feature Templates</a>
       </li>
-      <li><a href="#train_ner">5.4.4. Running train_ner</a>
+      <li><a href="#train_ner">5.5.4. Running train_ner</a>
       </li>
       </ul>
     </li>
@@ -786,15 +788,39 @@ těší
 </li>
 </ul>
 
+<a id="rest_server" name="rest_server"></a>
+<h2>5.4. Running REST Server</h2>
+
+<p>
+NameTag also provides REST server binary <code>nametag_server</code>.
+The binary uses <a href="http://github.com/ufal/microrestd">MicroRestD</a> as a REST
+server implementation and provides
+<a href="http://lindat.mff.cuni.cz/services/nametag/api-reference.php">NameTag REST API</a>.
+</p>
+<p style="margin-bottom:0">
+The full command syntax of <code>nametag_server</code> is
+</p>
+<pre style="margin-top:0">
+nametag_server [options] port (model_name model_file acknowledgements)*
+Options: --daemon
+</pre>
+
+<p>
+The <code>nametag_server</code> can run either in foreground or in background (when
+<code>--daemon</code> is used). The specified model files are loaded during start and
+kept in memory all the time. This behaviour might change in future to load the
+models on demand.
+</p>
+
 <a id="custom_models" name="custom_models"></a>
-<h2>5.4. Training of Custom Models</h2>
+<h2>5.5. Training of Custom Models</h2>
 
 <p>
 Training of custom models is possible using the <code>train_ner</code> binary.
 </p>
 
 <a id="training_data" name="training_data"></a>
-<h3>5.4.1. Training data</h3>
+<h3>5.5.1. Training data</h3>
 
 <p>
 To train a named entity recognizer model, training data is needed. The training
@@ -821,7 +847,7 @@ except for one case &ndash; if the previous word is also a named entity of same 
  </ul>
 
 <a id="tagger" name="tagger"></a>
-<h3>5.4.2. Tagger</h3>
+<h3>5.5.2. Tagger</h3>
 
 <p>
 Most named entity recognizer models utilize part of speech tags and lemmas.
@@ -851,7 +877,7 @@ NameTag can utilize several taggers to obtain the tags and lemmas:
 </dl>
 
 <a id="tagger_lemma_structure" name="tagger_lemma_structure"></a>
-<h4>5.4.2.1. Lemma Structure</h4>
+<h4>5.5.2.1. Lemma Structure</h4>
 
 <p style="margin-bottom:0">
 The lemmas used by the recognizer can be structured and consist of three parts:
@@ -875,7 +901,7 @@ comment is empty.
 </p>
 
 <a id="feature_templates" name="feature_templates"></a>
-<h3>5.4.3. Feature Templates</h3>
+<h3>5.5.3. Feature Templates</h3>
 
 <p>
 The recognizer utilizes feature templates to generate features which are used
@@ -960,7 +986,7 @@ CzechAddContainers
 </pre>
 
 <a id="train_ner" name="train_ner"></a>
-<h3>5.4.4. Running train_ner</h3>
+<h3>5.5.4. Running train_ner</h3>
 
 <p>
 The <code>train_ner</code> binary has the following arguments (which has to be specified

@@ -500,6 +500,24 @@ output formats are:
 
 
 
+Running REST Server
+-------------------
+
+NameTag also provides REST server binary nametag_server. The binary uses
+MicroRestD (http://github.com/ufal/microrestd) as a REST server implementation
+and provides NameTag REST API
+(http://lindat.mff.cuni.cz/services/nametag/api-reference.php).
+
+The full command syntax of nametag_server is
+  nametag_server [options] port (model_name model_file acknowledgements)*
+  Options: --daemon
+
+The nametag_server can run either in foreground or in background (when --daemon
+is used). The specified model files are loaded during start and kept in memory
+all the time. This behaviour might change in future to load the models on
+demand.
+
+
 Training of Custom Models
 -------------------------
 
