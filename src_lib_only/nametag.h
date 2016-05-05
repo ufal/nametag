@@ -15,17 +15,10 @@
 #include <string>
 #include <vector>
 
-// Import attributes
-#if defined(_WIN32) && !defined(NAMETAG_STATIC)
-  #define NAMETAG_IMPORT __declspec(dllimport)
-#else
-  #define NAMETAG_IMPORT
-#endif
-
 namespace ufal {
 namespace nametag {
 
-struct NAMETAG_IMPORT string_piece {
+struct string_piece {
   const char* str;
   size_t len;
 
@@ -35,7 +28,7 @@ struct NAMETAG_IMPORT string_piece {
   string_piece(const std::string& str) : str(str.c_str()), len(str.size()) {}
 };
 
-struct NAMETAG_IMPORT token_range {
+struct token_range {
   size_t start;
   size_t length;
 
@@ -43,7 +36,7 @@ struct NAMETAG_IMPORT token_range {
   token_range(size_t start, size_t length) : start(start), length(length) {}
 };
 
-struct NAMETAG_IMPORT named_entity {
+struct named_entity {
   size_t start;
   size_t length;
   std::string type;
@@ -52,7 +45,7 @@ struct NAMETAG_IMPORT named_entity {
   named_entity(size_t start, size_t length, const std::string& type) : start(start), length(length), type(type) {}
 };
 
-class NAMETAG_IMPORT version {
+class version {
  public:
   unsigned major;
   unsigned minor;
@@ -63,7 +56,7 @@ class NAMETAG_IMPORT version {
   static version current();
 };
 
-class NAMETAG_IMPORT tokenizer {
+class tokenizer {
  public:
   virtual ~tokenizer() {}
 
@@ -74,7 +67,7 @@ class NAMETAG_IMPORT tokenizer {
   static tokenizer* new_vertical_tokenizer();
 };
 
-class NAMETAG_IMPORT ner {
+class ner {
  public:
   virtual ~ner() {}
 
