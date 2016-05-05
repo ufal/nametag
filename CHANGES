@@ -1,5 +1,5 @@
-Version 1.0.1 [not yet released]
---------------------------------
+Version 1.1.0 [05 May 16]
+-------------------------
 - Change license from LGPL to MPL 2.0.
 - Fix problem in external tagger, which was unusable.
 - Add support for OS X 10.7 and later.
