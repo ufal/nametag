@@ -11,7 +11,7 @@ use warnings;
 use strict;
 use open qw(:std :utf8);
 
-use Ufal::NameTag qw(:all);
+use Ufal::NameTag;
 
 sub encode_entities($) {
   my ($text) = @_;
@@ -31,14 +31,14 @@ sub sort_entities($) {
 @ARGV >= 1 or die "Usage: $0 recognizer_model\n";
 
 print STDERR "Loading ner: ";
-my $ner = Ner::load($ARGV[0]);
+my $ner = Ufal::NameTag::Ner::load($ARGV[0]);
 $ner or die "Cannot load recognizer from file '$ARGV[0]'\n";
 print STDERR "done\n";
 shift @ARGV;
 
-my $forms = Forms->new();
-my $tokens = TokenRanges->new();
-my $entities = NamedEntities->new();
+my $forms = Ufal::NameTag::Forms->new();
+my $tokens = Ufal::NameTag::TokenRanges->new();
+my $entities = Ufal::NameTag::NamedEntities->new();
 my @sorted_entities;
 my @open_entities;
 my $tokenizer = $ner->newTokenizer();
