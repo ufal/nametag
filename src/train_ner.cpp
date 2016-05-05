@@ -23,18 +23,19 @@ using namespace ufal::nametag;
 int main(int argc, char* argv[]) {
   iostreams_init();
 
+  ner_id id;
   options::map options;
-  if (!options::parse({{"version", options::value::none},
-                       {"help", options::value::none}}, argc, argv, options) ||
-      options.count("help") ||
-      (argc < 2 && !options.count("version")))
-    runtime_failure("Usage: " << argv[0] << " [options] ner_identifier [ner_identifier_specific_options]\n"
-                    "Options: --version\n"
-                    "         --help");
+  if (argc == 1 || !ner_ids::parse(argv[1], id))
+    if (!options::parse({{"version", options::value::none},
+                         {"help", options::value::none}}, argc, argv, options) ||
+        options.count("help") ||
+        (argc < 2 && !options.count("version")))
+      runtime_failure("Usage: " << argv[0] << " [options] ner_identifier [ner_identifier_specific_options]\n"
+                      "Options: --version\n"
+                      "         --help");
   if (options.count("version"))
     return cout << version::version_and_copyright() << endl, 0;
 
-  ner_id id;
   if (!ner_ids::parse(argv[1], id)) runtime_failure("Cannot parse ner_identifier '" << argv[1] << "'!\n");
 
   // Switch stdout to binary mode.
