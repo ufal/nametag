@@ -17,6 +17,8 @@ namespace nametag {
 namespace morphodita {
 
 unicode_tokenizer::unicode_tokenizer(unsigned url_email_tokenizer) : url_email_tokenizer(url_email_tokenizer) {
+  ragel_tokenizer::initialize_ragel_map();
+
   set_text(string_piece(nullptr, 0));
 }
 
