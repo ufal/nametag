@@ -41,7 +41,7 @@ void bilou_ner::recognize(const vector<string_piece>& forms, vector<named_entity
   // Tag
   tagger->tag(forms, sentence);
 
-  if (sentence.size >= sentence.size) {
+  if (sentence.size) {
     sentence.clear_previous_stage();
 
     // Perform required NER stages
