@@ -4,11 +4,23 @@
 
 %pragma(java) jniclasscode=%{
   static {
-    java.io.File localNametag = new java.io.File(System.mapLibraryName("nametag_java"));
+    java.io.File libraryFile = new java.io.File(nametag_java.libraryPath);
 
-    if (localNametag.exists())
-      System.load(localNametag.getAbsolutePath());
+    if (libraryFile.exists())
+      System.load(libraryFile.getAbsolutePath());
     else
       System.loadLibrary("nametag_java");
+  }
+%}
+
+%pragma(java) modulecode=%{
+  static String libraryPath;
+
+  static {
+    libraryPath = System.mapLibraryName("nametag_java");
+  }
+
+  public static void setLibraryPath(String path) {
+    libraryPath = path;
   }
 %}
