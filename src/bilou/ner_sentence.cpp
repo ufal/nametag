@@ -24,7 +24,7 @@ void ner_sentence::resize(unsigned size) {
 
 void ner_sentence::clear_features() {
   for (unsigned i = 0; i < size; i++)
-    features.clear();
+    features[i].clear();
 }
 
 void ner_sentence::clear_probabilities_local_filled() {
