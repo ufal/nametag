@@ -152,6 +152,7 @@ The full command syntax of ``nametag_server`` is
 ```
 nametag_server [options] port (model_name model_file acknowledgements)*
 Options: --daemon
+         --log=path to log file
 ```
 
 The ``nametag_server`` can run either in foreground or in background (when
