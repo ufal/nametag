@@ -61,12 +61,14 @@ int main(int argc, char* argv[]) {
   options::map options;
   if (!options::parse({{"daemon",options::value::none},
                        {"version", options::value::none},
+                       {"log", options::value::any},
                        {"help", options::value::none}}, argc, argv, options) ||
       options.count("help") ||
       ((argc < 2 || (argc % 3) != 2) && !options.count("version")))
     runtime_failure("Usage: " << argv[0] << " [options] port (model_name model_file acknowledgements)*\n"
                     "Options: --daemon\n"
                     "         --version\n"
+                    "         --log LOG_PATH\n"
                     "         --help");
   if (options.count("version")) {
     ostringstream other_libraries;
@@ -92,6 +94,8 @@ int main(int argc, char* argv[]) {
 
   // Open log file
   string log_file_name = string(argv[0]) + ".log";
+  if (options.count("log"))
+      log_file_name = options.at("log");
   ofstream log_file(log_file_name.c_str(), ofstream::app);
   if (!log_file) runtime_failure("Cannot open log file '" << log_file_name << "' for writing!");
 
