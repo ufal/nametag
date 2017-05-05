@@ -93,9 +93,7 @@ int main(int argc, char* argv[]) {
     runtime_failure("Cannot load specified models!");
 
   // Open log file
-  string log_file_name = string(argv[0]) + ".log";
-  if (options.count("log"))
-      log_file_name = options.at("log");
+  string log_file_name = options.count("log") ? options["log"] : string(argv[0]) + ".log";
   ofstream log_file(log_file_name.c_str(), ofstream::app);
   if (!log_file) runtime_failure("Cannot open log file '" << log_file_name << "' for writing!");
 
