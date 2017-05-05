@@ -67,8 +67,8 @@ int main(int argc, char* argv[]) {
       ((argc < 2 || (argc % 3) != 2) && !options.count("version")))
     runtime_failure("Usage: " << argv[0] << " [options] port (model_name model_file acknowledgements)*\n"
                     "Options: --daemon\n"
+                    "         --log=path to log file\n"
                     "         --version\n"
-                    "         --log LOG_PATH\n"
                     "         --help");
   if (options.count("version")) {
     ostringstream other_libraries;
