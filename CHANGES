@@ -1,5 +1,8 @@
 Version 1.1.2-devel [not yet released]
 --------------------------------------
+- Allow specifying custom path to C++ library in Java.
+- Fix bug causing a memory leak on g++.
+- Add --log option to the REST server.
 
 
 Version 1.1.1 [05 May 16]
