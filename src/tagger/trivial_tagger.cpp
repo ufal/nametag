@@ -25,6 +25,7 @@ void trivial_tagger::tag(const vector<string_piece>& forms, ner_sentence& senten
   for (unsigned i = 0; i < forms.size(); i++) {
     sentence.words[i].form.assign(forms[i].str, forms[i].len);
     sentence.words[i].raw_lemma = sentence.words[i].form;
+    sentence.words[i].raw_lemmas_all.assign(1, sentence.words[i].raw_lemma);
     sentence.words[i].lemma_id = sentence.words[i].form;
     sentence.words[i].lemma_comments.clear();
     sentence.words[i].tag.clear();

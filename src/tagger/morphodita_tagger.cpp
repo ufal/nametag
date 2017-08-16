@@ -7,9 +7,12 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include <algorithm>
 #include <fstream>
 
 #include "morphodita_tagger.h"
+#include "unilib/unicode.h"
+#include "unilib/utf8.h"
 
 namespace ufal {
 namespace nametag {
@@ -49,12 +52,35 @@ void morphodita_tagger::tag(const vector<string_piece>& forms, ner_sentence& sen
     sentence.resize(forms.size());
     for (unsigned i = 0; i < forms.size(); i++) {
       sentence.words[i].form.assign(forms[i].str, morpho->raw_form_len(forms[i]));
+
       const string& lemma = c->tags[i].lemma;
+      bool guesser_used = morpho->analyze(forms[i], morphodita::morpho::GUESSER, c->analyses) == morphodita::morpho::GUESSER;
+
       unsigned raw_lemma_len = morpho->raw_lemma_len(lemma);
-      sentence.words[i].raw_lemma = raw_lemma_len == lemma.size() ? lemma : lemma.substr(0, raw_lemma_len);
+      sentence.words[i].raw_lemma.assign(lemma, 0, raw_lemma_len);
+
+      sentence.words[i].raw_lemmas_all.clear();
+      for (auto&& analysis : c->analyses) {
+        unsigned analysis_raw_lemma_len = morpho->raw_lemma_len(analysis.lemma);
+
+        // Try to normalize the casing of guessed lemmas
+        if (guesser_used) {
+          c->lemma_cased.clear();
+          for (auto&& chr : unilib::utf8::decoder(analysis.lemma.c_str(), analysis_raw_lemma_len))
+            unilib::utf8::append(c->lemma_cased, c->lemma_cased.empty() ? chr : unilib::unicode::lowercase(chr));
+        } else {
+          c->lemma_cased.assign(analysis.lemma, 0, analysis_raw_lemma_len);
+        }
+
+        sentence.words[i].raw_lemmas_all.emplace_back(c->lemma_cased);
+      }
+      sort(sentence.words[i].raw_lemmas_all.begin(), sentence.words[i].raw_lemmas_all.end());
+      sentence.words[i].raw_lemmas_all.erase(unique(sentence.words[i].raw_lemmas_all.begin(), sentence.words[i].raw_lemmas_all.end()),
+                                             sentence.words[i].raw_lemmas_all.end());
+
       unsigned lemma_id_len = morpho->lemma_id_len(lemma);
-      sentence.words[i].lemma_id = lemma_id_len == lemma.size() ? lemma : lemma.substr(0, lemma_id_len);
-      sentence.words[i].lemma_comments = lemma_id_len == lemma.size() ? string() : lemma.substr(lemma_id_len);
+      sentence.words[i].lemma_id.assign(sentence.words[i].raw_lemma).append(lemma, raw_lemma_len, lemma_id_len - raw_lemma_len);
+      sentence.words[i].lemma_comments.assign(lemma, lemma_id_len, string::npos);
       sentence.words[i].tag = c->tags[i].tag;
     }
   }

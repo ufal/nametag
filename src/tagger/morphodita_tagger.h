@@ -31,7 +31,8 @@ class morphodita_tagger : public tagger {
   const morphodita::morpho* morpho;
 
   struct cache {
-    vector<morphodita::tagged_lemma> tags;
+    vector<morphodita::tagged_lemma> tags, analyses;
+    string lemma_cased;
   };
   mutable threadsafe_stack<cache> caches;
 };

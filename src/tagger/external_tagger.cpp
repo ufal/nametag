@@ -56,6 +56,7 @@ void external_tagger::tag(const vector<string_piece>& forms, ner_sentence& sente
       sentence.words[i].raw_lemma = sentence.words[i].form;
       sentence.words[i].tag.clear();
     }
+    sentence.words[i].raw_lemmas_all.assign(1, sentence.words[i].raw_lemma);
     sentence.words[i].lemma_id = sentence.words[i].raw_lemma;
     sentence.words[i].lemma_comments.clear();
   }

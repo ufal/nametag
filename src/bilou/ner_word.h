@@ -17,6 +17,7 @@ namespace nametag {
 struct ner_word {
   string form;
   string raw_lemma;
+  vector<string> raw_lemmas_all;
   string lemma_id;
   string lemma_comments;
   string tag;
