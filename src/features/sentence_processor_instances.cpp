@@ -160,6 +160,35 @@ class form : public sentence_processor {
 };
 
 
+// FormCapitalization
+class form_capitalization : public sentence_processor {
+ public:
+  virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const override {
+    using namespace unilib;
+
+    ner_feature fst_cap = lookup(buffer.assign("f"), total_features);
+    ner_feature all_cap = lookup(buffer.assign("a"), total_features);
+    ner_feature mixed_cap = lookup(buffer.assign("m"), total_features);
+
+    for (unsigned i = 0; i < sentence.size; i++) {
+      bool was_upper = false, was_lower = false;
+
+      auto* form = sentence.words[i].form.c_str();
+      char32_t chr;
+      for (bool first = true; (chr = utf8::decode(form)); first = false) {
+        auto category = unicode::category(chr);
+        was_upper = was_upper || category & unicode::Lut;
+        was_lower = was_lower || category & unicode::Ll;
+
+        if (first && was_upper) apply_in_window(i, fst_cap);
+      }
+      if (was_upper && !was_lower) apply_in_window(i, all_cap);
+      if (was_upper && was_lower) apply_in_window(i, mixed_cap);
+    }
+  }
+};
+
+
 // Gazetteers
 class gazetteers : public sentence_processor {
  public:
@@ -456,6 +485,7 @@ sentence_processor* sentence_processor::create(const string& name) {
   if (name.compare("BrownClusters") == 0) return new sentence_processors::brown_clusters();
   if (name.compare("CzechLemmaTerm") == 0) return new sentence_processors::czech_lemma_term();
   if (name.compare("Form") == 0) return new sentence_processors::form();
+  if (name.compare("FormCapitalization") == 0) return new sentence_processors::form_capitalization();
   if (name.compare("Gazetteers") == 0) return new sentence_processors::gazetteers();
   if (name.compare("Lemma") == 0) return new sentence_processors::lemma();
   if (name.compare("NumericTimeValue") == 0) return new sentence_processors::number_time_value();

@@ -249,6 +249,7 @@ exhaustive (see the sources in the ``features`` directory).
   The term information (personal name, geographic name, ...) specified in lemma
   comment are used as features.
 - ``Form`` -- use forms as features
+- ``FormCapitalization`` -- use capitalization of form as features
 - ``Gazetteers [files]`` -- use given files as gazetteers. Each file is one
   gazetteers list independent of the others and must contain a set of lemma
   sequences, each on a line, represented as raw lemmas separated by spaces.
