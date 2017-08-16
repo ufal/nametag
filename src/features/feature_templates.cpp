@@ -66,6 +66,9 @@ void feature_templates::process_sentence(ner_sentence& sentence, string& buffer,
 }
 
 void feature_templates::process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const {
+  for (auto&& processor : sentence_processors)
+    processor.processor->process_entities(sentence, entities, buffer);
+
   for (auto&& processor : entity_processors)
     processor.processor->process_entities(sentence, entities, buffer);
 }

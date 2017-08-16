@@ -12,6 +12,7 @@
 #include "common.h"
 #include "bilou/ner_sentence.h"
 #include "ner/entity_map.h"
+#include "ner/ner.h"
 #include "utils/binary_decoder.h"
 #include "utils/binary_encoder.h"
 
@@ -27,6 +28,7 @@ class sentence_processor {
   virtual void save(binary_encoder& enc);
 
   virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const = 0;
+  virtual void process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const;
 
  protected:
   int window;

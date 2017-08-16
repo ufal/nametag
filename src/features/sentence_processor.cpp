@@ -17,6 +17,8 @@ namespace nametag {
 // Sentence processor -- methods and virtual methods
 sentence_processor::~sentence_processor() {}
 
+void sentence_processor::process_entities(ner_sentence& /*sentence*/, vector<named_entity>& /*entities*/, vector<named_entity>& /*buffer*/) const {}
+
 bool sentence_processor::parse(int window, const vector<string>& /*args*/, entity_map& /*entities*/, ner_feature* total_features) {
   if (window < 0) return false;
   if (!total_features) return false;
