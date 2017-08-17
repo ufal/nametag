@@ -9,17 +9,15 @@
 
 #include <algorithm>
 
-#include "sentence_processor.h"
+#include "feature_processor.h"
 
 namespace ufal {
 namespace nametag {
 
-// Sentence processor -- methods and virtual methods
-sentence_processor::~sentence_processor() {}
+// Feature processor -- methods and virtual methods
+feature_processor::~feature_processor() {}
 
-void sentence_processor::process_entities(ner_sentence& /*sentence*/, vector<named_entity>& /*entities*/, vector<named_entity>& /*buffer*/) const {}
-
-bool sentence_processor::parse(int window, const vector<string>& /*args*/, entity_map& /*entities*/, ner_feature* total_features) {
+bool feature_processor::parse(int window, const vector<string>& /*args*/, entity_map& /*entities*/, ner_feature* total_features) {
   if (window < 0) return false;
   if (!total_features) return false;
 
@@ -31,7 +29,7 @@ bool sentence_processor::parse(int window, const vector<string>& /*args*/, entit
   return true;
 }
 
-void sentence_processor::load(binary_decoder& data) {
+void feature_processor::load(binary_decoder& data) {
   window = data.next_4B();
 
   map.clear();
@@ -43,7 +41,7 @@ void sentence_processor::load(binary_decoder& data) {
   }
 }
 
-void sentence_processor::save(binary_encoder& enc) {
+void feature_processor::save(binary_encoder& enc) {
   enc.add_4B(window);
 
   enc.add_4B(map.bucket_count());
@@ -56,6 +54,10 @@ void sentence_processor::save(binary_encoder& enc) {
     enc.add_4B(element.second);
   }
 }
+
+void feature_processor::process_sentence(ner_sentence& /*sentence*/, ner_feature* /*total_features*/, string& /*buffer*/) const {}
+
+void feature_processor::process_entities(ner_sentence& /*sentence*/, vector<named_entity>& /*entities*/, vector<named_entity>& /*buffer*/) const {}
 
 } // namespace nametag
 } // namespace ufal

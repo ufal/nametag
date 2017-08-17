@@ -10,8 +10,7 @@
 #pragma once
 
 #include "common.h"
-#include "entity_processor.h"
-#include "sentence_processor.h"
+#include "feature_processor.h"
 #include "ner/entity_map.h"
 
 namespace ufal {
@@ -31,21 +30,13 @@ class feature_templates {
  private:
   mutable ner_feature total_features;
 
-  struct sentence_processor_info {
+  struct feature_processor_info {
     string name;
-    unique_ptr<sentence_processor> processor;
+    unique_ptr<feature_processor> processor;
 
-    sentence_processor_info(const string& name, sentence_processor* processor) : name(name), processor(processor) {}
+    feature_processor_info(const string& name, feature_processor* processor) : name(name), processor(processor) {}
   };
-  vector<sentence_processor_info> sentence_processors;
-
-  struct entity_processor_info {
-    string name;
-    unique_ptr<entity_processor> processor;
-
-    entity_processor_info(const string& name, entity_processor* processor) : name(name), processor(processor) {}
-  };
-  vector<entity_processor_info> entity_processors;
+  vector<feature_processor_info> processors;
 };
 
 } // namespace nametag

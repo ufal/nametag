@@ -16,8 +16,7 @@ namespace ufal {
 namespace nametag {
 
 void feature_templates::parse(istream& is, entity_map& entities) {
-  sentence_processors.clear();
-  entity_processors.clear();
+  processors.clear();
   total_features = 1; // An omnipresent feature used in process_sentence
 
   string line;
@@ -39,20 +38,11 @@ void feature_templates::parse(istream& is, entity_map& entities) {
     for (unsigned i = 1; i < tokens.size(); i++)
       args.emplace_back(tokens[i]);
 
-    // Try sentence processor
-    auto* maybe_sentence_processor = sentence_processor::create(template_name);
-    if (maybe_sentence_processor) {
-      if (!maybe_sentence_processor->parse(window, args, entities, &total_features)) runtime_failure("Cannot initialize feature template sentence processor '" << template_name << "' from line '" << line << "' of feature templates file!");
-      sentence_processors.emplace_back(template_name, maybe_sentence_processor);
-      continue;
-    }
-
-    // Try entity processor
-    auto* maybe_entity_processor = entity_processor::create(template_name);
-    if (maybe_entity_processor) {
-      if (window) cerr << "Ignoring window of " << window << " specified in entity_processor '" << template_name << "'." << endl;
-      if (!maybe_entity_processor->parse(args, entities)) runtime_failure("Cannot initialize feature template entity processor '" << template_name << "' from line '" << line << "' of feature templates file!");
-      entity_processors.emplace_back(template_name, maybe_entity_processor);
+    // Try initialize the processor
+    auto* processor = feature_processor::create(template_name);
+    if (processor) {
+      if (!processor->parse(window, args, entities, &total_features)) runtime_failure("Cannot initialize feature processor '" << template_name << "' from line '" << line << "' of feature templates file!");
+      processors.emplace_back(template_name, processor);
       continue;
     }
 
@@ -66,12 +56,8 @@ bool feature_templates::save(ostream& os) {
 
   enc.add_4B(total_features);
 
-  enc.add_4B(sentence_processors.size() + entity_processors.size());
-  for (auto&& processor : sentence_processors) {
-    enc.add_str(processor.name);
-    processor.processor->save(enc);
-  }
-  for (auto&& processor : entity_processors) {
+  enc.add_4B(processors.size());
+  for (auto&& processor : processors) {
     enc.add_str(processor.name);
     processor.processor->save(enc);
   }

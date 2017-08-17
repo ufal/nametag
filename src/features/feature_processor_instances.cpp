@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <fstream>
 
-#include "sentence_processor.h"
+#include "feature_processor.h"
 #include "unilib/unicode.h"
 #include "unilib/utf8.h"
 #include "utils/parse_int.h"
@@ -45,15 +45,15 @@ namespace nametag {
 
 
 //////////////////////////////////////////////////////////////
-// Sentence processor instances (ordered lexicographically) //
+// Feature processor instances (ordered lexicographically) //
 //////////////////////////////////////////////////////////////
-namespace sentence_processors {
+namespace feature_processors {
 
 // BrownClusters
-class brown_clusters : public sentence_processor {
+class brown_clusters : public feature_processor {
  public:
   virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features) override {
-    if (!sentence_processor::parse(window, args, entities, total_features)) return false;
+    if (!feature_processor::parse(window, args, entities, total_features)) return false;
     if (args.size() < 1) return cerr << "BrownCluster requires a cluster file as the first argument!" << endl, false;
 
     ifstream in(args[0]);
@@ -96,7 +96,7 @@ class brown_clusters : public sentence_processor {
   }
 
   virtual void load(binary_decoder& data) override {
-    sentence_processor::load(data);
+    feature_processor::load(data);
 
     clusters.resize(data.next_4B());
     for (auto&& cluster : clusters) {
@@ -107,7 +107,7 @@ class brown_clusters : public sentence_processor {
   }
 
   virtual void save(binary_encoder& enc) override {
-    sentence_processor::save(enc);
+    feature_processor::save(enc);
 
     enc.add_4B(clusters.size());
     for (auto&& cluster : clusters) {
@@ -133,8 +133,55 @@ class brown_clusters : public sentence_processor {
 };
 
 
+// CzechAddContainers
+class czech_add_containers : public feature_processor {
+ public:
+  virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features) {
+    if (window) return cerr << "CzechAddContainers cannot have non-zero window!" << endl, false;
+
+    return feature_processor::parse(window, args, entities, total_features);
+  }
+
+  virtual void process_entities(ner_sentence& /*sentence*/, vector<named_entity>& entities, vector<named_entity>& buffer) const override {
+    buffer.clear();
+
+    for (unsigned i = 0; i < entities.size(); i++) {
+      // P if ps+ pf+
+      if (entities[i].type.compare("pf") == 0 && (!i || entities[i-1].start + entities[i-1].length < entities[i].start || entities[i-1].type.compare("pf") != 0)) {
+        unsigned j = i + 1;
+        while (j < entities.size() && entities[j].start == entities[j-1].start + entities[j-1].length && entities[j].type.compare("pf") == 0) j++;
+        if (j < entities.size() && entities[j].start == entities[j-1].start + entities[j-1].length && entities[j].type.compare("ps") == 0) {
+          j++;
+          while (j < entities.size() && entities[j].start == entities[j-1].start + entities[j-1].length && entities[j].type.compare("ps") == 0) j++;
+          buffer.emplace_back(entities[i].start, entities[j - 1].start + entities[j - 1].length - entities[i].start, "P");
+        }
+      }
+
+      // T if td tm ty | td tm
+      if (entities[i].type.compare("td") == 0 && i+1 < entities.size() && entities[i+1].start == entities[i].start + entities[i].length && entities[i+1].type.compare("tm") == 0) {
+        unsigned j = i + 2;
+        if (j < entities.size() && entities[j].start == entities[j-1].start + entities[j-1].length && entities[j].type.compare("ty") == 0) j++;
+        buffer.emplace_back(entities[i].start, entities[j - 1].start + entities[j - 1].length - entities[i].start, "T");
+      }
+      // T if !td tm ty
+      if (entities[i].type.compare("tm") == 0 && (!i || entities[i-1].start + entities[i-1].length < entities[i].start || entities[i-1].type.compare("td") != 0))
+        if (i+1 < entities.size() && entities[i+1].start == entities[i].start + entities[i].length && entities[i+1].type.compare("ty") == 0)
+          buffer.emplace_back(entities[i].start, entities[i + 1].start + entities[i + 1].length - entities[i].start, "T");
+
+      buffer.push_back(entities[i]);
+    }
+
+    if (buffer.size() > entities.size()) entities = buffer;
+  }
+
+  // CzechAddContainers used to be entity_processor which had empty load and save methods.
+  virtual void load(binary_decoder& /*data*/) override {}
+  virtual void save(binary_encoder& /*enc*/) override {}
+};
+
+
 // CzechLemmaTerm
-class czech_lemma_term : public sentence_processor {
+class czech_lemma_term : public feature_processor {
  public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const override {
     for (unsigned i = 0; i < sentence.size; i++) {
@@ -149,7 +196,7 @@ class czech_lemma_term : public sentence_processor {
 
 
 // Form
-class form : public sentence_processor {
+class form : public feature_processor {
  public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& /*buffer*/) const override {
     for (unsigned i = 0; i < sentence.size; i++)
@@ -161,7 +208,7 @@ class form : public sentence_processor {
 
 
 // FormCapitalization
-class form_capitalization : public sentence_processor {
+class form_capitalization : public feature_processor {
  public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const override {
     using namespace unilib;
@@ -190,12 +237,12 @@ class form_capitalization : public sentence_processor {
 
 
 // Gazetteers
-class gazetteers : public sentence_processor {
+class gazetteers : public feature_processor {
  public:
   enum { G = 0, U = 1, B = 2, L = 3, I = 4 };
 
   virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features) override {
-    if (!sentence_processor::parse(window, args, entities, total_features)) return false;
+    if (!feature_processor::parse(window, args, entities, total_features)) return false;
 
     gazetteers_info.clear();
     for (auto&& arg : args) {
@@ -234,7 +281,7 @@ class gazetteers : public sentence_processor {
   }
 
   virtual void load(binary_decoder& data) override {
-    sentence_processor::load(data);
+    feature_processor::load(data);
 
     gazetteers_info.resize(data.next_4B());
     for (auto&& gazetteer : gazetteers_info) {
@@ -246,7 +293,7 @@ class gazetteers : public sentence_processor {
   }
 
   virtual void save(binary_encoder& enc) override {
-    sentence_processor::save(enc);
+    feature_processor::save(enc);
 
     enc.add_4B(gazetteers_info.size());
     for (auto&& gazetteer : gazetteers_info) {
@@ -295,7 +342,7 @@ class gazetteers : public sentence_processor {
 
 
 // Lemma
-class lemma : public sentence_processor {
+class lemma : public feature_processor {
  public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& /*buffer*/) const override {
     for (unsigned i = 0; i < sentence.size; i++)
@@ -307,7 +354,7 @@ class lemma : public sentence_processor {
 
 
 // NumericTimeValue
-class number_time_value : public sentence_processor {
+class number_time_value : public feature_processor {
  public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const override {
     ner_feature hour = lookup(buffer.assign("H"), total_features);
@@ -350,7 +397,7 @@ class number_time_value : public sentence_processor {
 
 
 // PreviousStage
-class previous_stage : public sentence_processor {
+class previous_stage : public feature_processor {
  public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const override {
     for (unsigned i = 0; i < sentence.size; i++)
@@ -376,7 +423,7 @@ class previous_stage : public sentence_processor {
 
 
 // RawLemma
-class raw_lemma : public sentence_processor {
+class raw_lemma : public feature_processor {
  public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& /*buffer*/) const override {
     for (unsigned i = 0; i < sentence.size; i++)
@@ -388,7 +435,7 @@ class raw_lemma : public sentence_processor {
 
 
 // RawLemmaCapitalization
-class raw_lemma_capitalization : public sentence_processor {
+class raw_lemma_capitalization : public feature_processor {
  public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const override {
     using namespace unilib;
@@ -417,7 +464,7 @@ class raw_lemma_capitalization : public sentence_processor {
 
 
 // Tag
-class tag : public sentence_processor {
+class tag : public feature_processor {
  public:
   virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& /*buffer*/) const override {
     for (unsigned i = 0; i < sentence.size; i++)
@@ -429,10 +476,10 @@ class tag : public sentence_processor {
 
 
 // URLEmailDetector
-class url_email_detector : public sentence_processor {
+class url_email_detector : public feature_processor {
  public:
   virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features) override {
-    if (!sentence_processor::parse(window, args, entities, total_features)) return false;
+    if (!feature_processor::parse(window, args, entities, total_features)) return false;
     if (args.size() != 2) return cerr << "URLEmailDetector requires exactly two arguments -- named entity types for URL and email!" << endl, false;
 
     url = entities.parse(args[0].c_str(), true);
@@ -444,14 +491,14 @@ class url_email_detector : public sentence_processor {
   }
 
   virtual void load(binary_decoder& data) override {
-    sentence_processor::load(data);
+    feature_processor::load(data);
 
     url = data.next_4B();
     email = data.next_4B();
   }
 
   virtual void save(binary_encoder& enc) override {
-    sentence_processor::save(enc);
+    feature_processor::save(enc);
 
     enc.add_4B(url);
     enc.add_4B(email);
@@ -478,22 +525,23 @@ class url_email_detector : public sentence_processor {
 };
 
 
-} // namespace sentence_processors
+} // namespace feature_processors
 
-// Sentence processor factory method
-sentence_processor* sentence_processor::create(const string& name) {
-  if (name.compare("BrownClusters") == 0) return new sentence_processors::brown_clusters();
-  if (name.compare("CzechLemmaTerm") == 0) return new sentence_processors::czech_lemma_term();
-  if (name.compare("Form") == 0) return new sentence_processors::form();
-  if (name.compare("FormCapitalization") == 0) return new sentence_processors::form_capitalization();
-  if (name.compare("Gazetteers") == 0) return new sentence_processors::gazetteers();
-  if (name.compare("Lemma") == 0) return new sentence_processors::lemma();
-  if (name.compare("NumericTimeValue") == 0) return new sentence_processors::number_time_value();
-  if (name.compare("PreviousStage") == 0) return new sentence_processors::previous_stage();
-  if (name.compare("RawLemma") == 0) return new sentence_processors::raw_lemma();
-  if (name.compare("RawLemmaCapitalization") == 0) return new sentence_processors::raw_lemma_capitalization();
-  if (name.compare("Tag") == 0) return new sentence_processors::tag();
-  if (name.compare("URLEmailDetector") == 0) return new sentence_processors::url_email_detector();
+// Feature processor factory method
+feature_processor* feature_processor::create(const string& name) {
+  if (name.compare("BrownClusters") == 0) return new feature_processors::brown_clusters();
+  if (name.compare("CzechAddContainers") == 0) return new feature_processors::czech_add_containers();
+  if (name.compare("CzechLemmaTerm") == 0) return new feature_processors::czech_lemma_term();
+  if (name.compare("Form") == 0) return new feature_processors::form();
+  if (name.compare("FormCapitalization") == 0) return new feature_processors::form_capitalization();
+  if (name.compare("Gazetteers") == 0) return new feature_processors::gazetteers();
+  if (name.compare("Lemma") == 0) return new feature_processors::lemma();
+  if (name.compare("NumericTimeValue") == 0) return new feature_processors::number_time_value();
+  if (name.compare("PreviousStage") == 0) return new feature_processors::previous_stage();
+  if (name.compare("RawLemma") == 0) return new feature_processors::raw_lemma();
+  if (name.compare("RawLemmaCapitalization") == 0) return new feature_processors::raw_lemma_capitalization();
+  if (name.compare("Tag") == 0) return new feature_processors::tag();
+  if (name.compare("URLEmailDetector") == 0) return new feature_processors::url_email_detector();
   return nullptr;
 }
 

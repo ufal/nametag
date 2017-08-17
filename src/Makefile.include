@@ -14,8 +14,7 @@ NAMETAG_MORPHODITA_OBJECTS = $(addprefix morphodita/,$(filter-out unilib/% utils
 
 NAMETAG_OBJECTS = $(NAMETAG_MORPHODITA_OBJECTS)
 NAMETAG_OBJECTS += bilou/bilou_probabilities bilou/ner_sentence classifier/network_classifier
-NAMETAG_OBJECTS += features/entity_processor features/entity_processor_instances
-NAMETAG_OBJECTS += features/feature_templates features/sentence_processor features/sentence_processor_instances
+NAMETAG_OBJECTS += features/feature_processor features/feature_processor_instances features/feature_templates
 NAMETAG_OBJECTS += ner/bilou_ner ner/czech_ner ner/english_ner ner/entity_map ner/generic_ner ner/ner
 NAMETAG_OBJECTS += tagger/external_tagger tagger/morphodita_tagger tagger/tagger tagger/trivial_tagger
 NAMETAG_OBJECTS += tokenizer/morphodita_tokenizer_wrapper tokenizer/tokenizer utils/url_detector version/version

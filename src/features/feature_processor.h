@@ -19,15 +19,15 @@
 namespace ufal {
 namespace nametag {
 
-class sentence_processor {
+class feature_processor {
  public:
-  virtual ~sentence_processor();
+  virtual ~feature_processor();
 
   virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features);
   virtual void load(binary_decoder& data);
   virtual void save(binary_encoder& enc);
 
-  virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const = 0;
+  virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const;
   virtual void process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const;
 
  protected:
@@ -46,7 +46,7 @@ class sentence_processor {
 
   // Factory method
  public:
-  static sentence_processor* create(const string& name);
+  static feature_processor* create(const string& name);
 };
 
 } // namespace nametag
