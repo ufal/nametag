@@ -65,5 +65,10 @@ ner_feature feature_templates::get_total_features() const {
   return total_features;
 }
 
+void feature_templates::gazetteers(vector<string>& gazetteers, vector<int>* gazetteer_types) const {
+  for (auto&& processor : processors)
+    processor.processor->gazetteers(gazetteers, gazetteer_types);
+}
+
 } // namespace nametag
 } // namespace ufal

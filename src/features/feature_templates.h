@@ -27,6 +27,8 @@ class feature_templates {
   void process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const;
   ner_feature get_total_features() const;
 
+  void gazetteers(vector<string>& gazetteers, vector<int>* gazetteer_types) const;
+
  private:
   mutable ner_feature total_features;
 

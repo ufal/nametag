@@ -30,6 +30,8 @@ class feature_processor {
   virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const;
   virtual void process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const;
 
+  virtual void gazetteers(vector<string>& gazetteers, vector<int>* gazetteer_types) const;
+
  protected:
   int window;
 

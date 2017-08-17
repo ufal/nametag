@@ -59,5 +59,7 @@ void feature_processor::process_sentence(ner_sentence& /*sentence*/, ner_feature
 
 void feature_processor::process_entities(ner_sentence& /*sentence*/, vector<named_entity>& /*entities*/, vector<named_entity>& /*buffer*/) const {}
 
+void feature_processor::gazetteers(vector<string>& /*gazetteers*/, vector<int>* /*gazetteer_types*/) const {}
+
 } // namespace nametag
 } // namespace ufal

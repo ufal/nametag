@@ -94,7 +94,11 @@ void bilou_ner::entity_types(vector<string>& types) const {
     types[i] = named_entities.name(i);
 }
 
-void bilou_ner::gazetteers(vector<string>& /*gazetteers*/, vector<int>* /*gazetteer_types*/) const {
+void bilou_ner::gazetteers(vector<string>& gazetteers, vector<int>* gazetteer_types) const {
+  gazetteers.clear();
+  if (gazetteer_types) gazetteer_types->clear();
+
+  templates.gazetteers(gazetteers, gazetteer_types);
 }
 
 void bilou_ner::fill_bilou_probabilities(const vector<double>& outcomes, bilou_probabilities& prob) {
