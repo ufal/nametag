@@ -84,5 +84,8 @@ Main Classes
 
     virtual void recognize(Forms& forms, NamedEntities& entities) const;
 
+    virtual void entityTypes(Forms& types) const;
+    virtual void gazetteers(Forms& gazetteers, Ints& gazetteer_types) const;
+
     virtual Tokenizer* newTokenizer() const;
   };

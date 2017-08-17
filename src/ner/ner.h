@@ -35,6 +35,12 @@ class ner {
   // named entities in the given vector.
   virtual void recognize(const vector<string_piece>& forms, vector<named_entity>& entities) const = 0;
 
+  // Return the possible entity types
+  virtual void entity_types(vector<string>& types) const = 0;
+
+  // Return gazetteers used by the recognizer, if any, optionally with the index of entity type
+  virtual void gazetteers(vector<string>& gazetteers, vector<int>* gazetteer_types) const = 0;
+
   // Construct a new tokenizer instance appropriate for this recognizer.
   // Can return NULL if no such tokenizer exists.
   virtual tokenizer* new_tokenizer() const = 0;

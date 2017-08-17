@@ -886,6 +886,9 @@ Class ner
 
     virtual void recognize(const std::vector<string_piece>& forms, std::vector<named_entity>& entities) const = 0;
 
+    virtual void entity_types(std::vector<std::string>& types) const = 0;
+    virtual void gazetteers(std::vector<std::string>& gazetteers, std::vector<int>* gazetteer_types) const = 0;
+
     virtual tokenizer* new_tokenizer() const = 0;
   };
 
@@ -921,15 +924,22 @@ argument. The found entities are returned in the entities argument. The range of
 the returned named_entity is represented using form indices.
 
 
-ner::tokenize_and_recognize
----------------------------
+ner::entity_types
+-----------------
 
-  void tokenize_and_recognize(string_piece text, std::vector<named_entity>& entities, bool unicode_offsets = false) const;
+  virtual void entity_types(std::vector<std::string>& types) const = 0;
 
-Perform named entity recognition on an untokenized text given in the text
-argument. The found entities are returned in the entities argument. The range of
-the returned named_entity is represented either in Unicode characters (when
-unicode_offsets == true), or in UTF-8 bytes (when unicode_offset == false).
+Return the entity types recognizable by the recognizer.
+
+
+ner::gazetteers
+---------------
+
+  virtual void gazetteers(std::vector<std::string>& gazetteers, std::vector<int>* gazetteer_types) const = 0;
+
+Return a list of gazetteers stored in the recognizer, optionally together with
+corresponding named entity types. Currently only gazetteers from the
+GazetteersEnhanced feature template are returned.
 
 
 ner::new_tokenizer
@@ -997,6 +1007,9 @@ Main Classes
     static ner* load(const char* fname);
 
     virtual void recognize(Forms& forms, NamedEntities& entities) const;
+
+    virtual void entityTypes(Forms& types) const;
+    virtual void gazetteers(Forms& gazetteers, Ints& gazetteer_types) const;
 
     virtual Tokenizer* newTokenizer() const;
   };

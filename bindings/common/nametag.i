@@ -14,6 +14,9 @@
 using namespace ufal::nametag;
 %}
 
+%template(Ints) std::vector<int>;
+typedef std::vector<int> Ints;
+
 %template(Forms) std::vector<std::string>;
 typedef std::vector<std::string> Forms;
 
@@ -96,6 +99,11 @@ class ner {
       $self->recognize(string_pieces, entities);
     }
   }
+
+  %rename(entityTypes) entity_types;
+  virtual void entity_types(std::vector<std::string>& types) const;
+
+  virtual void gazetteers(std::vector<std::string>& gazetteers, std::vector<int>* gazetteer_types) const;
 
   %rename(newTokenizer) new_tokenizer;
   %newobject new_tokenizer;

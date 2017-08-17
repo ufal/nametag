@@ -143,9 +143,11 @@
       </li>
       <li><a href="#ner_recognize">6.7.3. ner::recognize</a>
       </li>
-      <li><a href="#ner_tokenize_and_recognize">6.7.4. ner::tokenize_and_recognize</a>
+      <li><a href="#ner_entity_types">6.7.4. ner::entity_types</a>
       </li>
-      <li><a href="#ner_new_tokenizer">6.7.5. ner::new_tokenizer</a>
+      <li><a href="#ner_gazetteers">6.7.5. ner::gazetteers</a>
+      </li>
+      <li><a href="#ner_new_tokenizer">6.7.6. ner::new_tokenizer</a>
       </li>
       </ul>
     </li>
@@ -1281,6 +1283,9 @@ class ner {
 
   virtual void <A HREF="#ner_recognize">recognize</A>(const std::vector&lt;<A HREF="#string_piece">string_piece</A>&gt;&amp; forms, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities) const = 0;
 
+  virtual void <A HREF="#ner_entity_types">entity_types</A>(std::vector&lt;std::string&gt;&amp; types) const = 0;
+  virtual void <A HREF="#ner_gazetteers">gazetteers</A>(std::vector&lt;std::string&gt;&amp; gazetteers, std::vector&lt;int&gt;* gazetteer_types) const = 0;
+
   virtual <A HREF="#tokenizer">tokenizer</A>* <A HREF="#ner_new_tokenizer">new_tokenizer</A>() const = 0;
 };
 </pre>
@@ -1329,22 +1334,32 @@ The found entities are returned in the <code>entities</code> argument. The range
 returned <a href="#named_entity">named_entity</a> is represented using form indices.
 </p>
 
-<a id="ner_tokenize_and_recognize" name="ner_tokenize_and_recognize"></a>
-<h3>6.7.4. ner::tokenize_and_recognize</h3>
+<a id="ner_entity_types" name="ner_entity_types"></a>
+<h3>6.7.4. ner::entity_types</h3>
 
 <pre>
-void tokenize_and_recognize(<A HREF="#string_piece">string_piece</A> text, std::vector&lt;<A HREF="#named_entity">named_entity</A>&gt;&amp; entities, bool unicode_offsets = false) const;
+virtual void entity_types(std::vector&lt;std::string&gt;&amp; types) const = 0;
 </pre>
 
 <p>
-Perform named entity recognition on an untokenized text given in the <code>text</code> argument.
-The found entities are returned in the <code>entities</code> argument. The range of the
-returned <a href="#named_entity">named_entity</a> is represented either in Unicode characters
-(when <code>unicode_offsets == true</code>), or in UTF-8 bytes (when <code>unicode_offset == false</code>).
+Return the entity types recognizable by the recognizer.
+</p>
+
+<a id="ner_gazetteers" name="ner_gazetteers"></a>
+<h3>6.7.5. ner::gazetteers</h3>
+
+<pre>
+virtual void gazetteers(std::vector&lt;std::string&gt;&amp; gazetteers, std::vector&lt;int&gt;* gazetteer_types) const = 0;
+</pre>
+
+<p>
+Return a list of gazetteers stored in the recognizer, optionally together with
+corresponding named entity types. Currently only gazetteers from the
+<code>GazetteersEnhanced</code> feature template are returned.
 </p>
 
 <a id="ner_new_tokenizer" name="ner_new_tokenizer"></a>
-<h3>6.7.5. ner::new_tokenizer</h3>
+<h3>6.7.6. ner::new_tokenizer</h3>
 
 <pre>
 virtual <A HREF="#tokenizer">tokenizer</A>* new_tokenizer() const = 0;
@@ -1415,6 +1430,9 @@ class Ner {
   static ner* load(const char* fname);
 
   virtual void recognize(Forms&amp; forms, NamedEntities&amp; entities) const;
+
+  virtual void entityTypes(Forms&amp; types) const;
+  virtual void gazetteers(Forms&amp; gazetteers, Ints&amp; gazetteer_types) const;
 
   virtual Tokenizer* newTokenizer() const;
 };

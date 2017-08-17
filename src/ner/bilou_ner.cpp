@@ -88,6 +88,15 @@ void bilou_ner::recognize(const vector<string_piece>& forms, vector<named_entity
   caches.push(c);
 }
 
+void bilou_ner::entity_types(vector<string>& types) const {
+  types.resize(named_entities.size());
+  for (unsigned i = 0; i < types.size(); i++)
+    types[i] = named_entities.name(i);
+}
+
+void bilou_ner::gazetteers(vector<string>& /*gazetteers*/, vector<int>* /*gazetteer_types*/) const {
+}
+
 void bilou_ner::fill_bilou_probabilities(const vector<double>& outcomes, bilou_probabilities& prob) {
   for (auto&& prob_bilou : prob.bilou)
     prob_bilou.probability = -1;

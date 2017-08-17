@@ -27,6 +27,9 @@ class bilou_ner : public ner {
 
   virtual void recognize(const vector<string_piece>& forms, vector<named_entity>& entities) const override;
 
+  virtual void entity_types(vector<string>& types) const override;
+
+  virtual void gazetteers(vector<string>& gazetteers, vector<int>* gazetteer_types) const override;
  private:
   friend class bilou_ner_trainer;
 
