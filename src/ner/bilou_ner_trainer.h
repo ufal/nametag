@@ -14,6 +14,7 @@
 #include "classifier/network_classifier.h"
 #include "entity_map.h"
 #include "features/feature_templates.h"
+#include "ner/ner_ids.h"
 #include "tagger/tagger.h"
 
 namespace ufal {
@@ -21,7 +22,8 @@ namespace nametag {
 
 class bilou_ner_trainer {
  public:
-  static void train(int stages, const network_parameters& parameters, const tagger& tagger, istream& features, istream& train, istream& heldout, ostream& os);
+  static void train(ner_id id, int stages, const network_parameters& parameters, const tagger& tagger,
+                    istream& features, istream& train, istream& heldout, ostream& os);
 
  private:
   struct labelled_sentence {

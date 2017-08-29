@@ -17,7 +17,8 @@
 namespace ufal {
 namespace nametag {
 
-void bilou_ner_trainer::train(int stages, const network_parameters& parameters, const tagger& tagger, istream& features, istream& train, istream& heldout, ostream& os) {
+void bilou_ner_trainer::train(ner_id id, int stages, const network_parameters& parameters, const tagger& tagger,
+                              istream& features, istream& train, istream& heldout, ostream& os) {
   if (stages <= 0) runtime_failure("Cannot train NER with <= 0 stages!");
   if (stages >= 256) runtime_failure("Cannot train NER with >= 256 stages!");
 

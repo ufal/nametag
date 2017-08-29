@@ -11,9 +11,12 @@
 #include "bilou_ner.h"
 #include "bilou/bilou_entity.h"
 #include "bilou/bilou_type.h"
+#include "tokenizer/morphodita_tokenizer_wrapper.h"
 
 namespace ufal {
 namespace nametag {
+
+bilou_ner::bilou_ner(ner_id id) : id(id) {}
 
 bool bilou_ner::load(istream& is) {
   if (tagger.reset(tagger::load_instance(is)), !tagger) return false;
@@ -88,6 +91,10 @@ void bilou_ner::recognize(const vector<string_piece>& forms, vector<named_entity
   caches.push(c);
 }
 
+tokenizer* bilou_ner::new_tokenizer() const {
+  return new_tokenizer(id);
+}
+
 void bilou_ner::entity_types(vector<string>& types) const {
   types.resize(named_entities.size());
   for (unsigned i = 0; i < types.size(); i++)
@@ -112,6 +119,19 @@ void bilou_ner::fill_bilou_probabilities(const vector<double>& outcomes, bilou_p
       prob.bilou[bilou].entity = bilou_entity::get_entity(i);
     }
   }
+}
+
+tokenizer* bilou_ner::new_tokenizer(ner_id id) {
+  switch (id) {
+    case ner_id::CZECH_NER:
+      return new morphodita_tokenizer_wrapper(morphodita::tokenizer::new_czech_tokenizer());
+    case ner_id::ENGLISH_NER:
+      return new morphodita_tokenizer_wrapper(morphodita::tokenizer::new_english_tokenizer());
+    case ner_id::GENERIC_NER:
+      return new morphodita_tokenizer_wrapper(morphodita::tokenizer::new_generic_tokenizer());
+  }
+
+  return nullptr;
 }
 
 } // namespace nametag

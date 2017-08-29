@@ -9,9 +9,7 @@
 
 #include <fstream>
 
-#include "czech_ner.h"
-#include "english_ner.h"
-#include "generic_ner.h"
+#include "bilou_ner.h"
 #include "ner.h"
 #include "ner_ids.h"
 
@@ -19,22 +17,13 @@ namespace ufal {
 namespace nametag {
 
 ner* ner::load(istream& is) {
-  switch (is.get()) {
+  ner_id id = ner_id(is.get());
+  switch (id) {
     case ner_ids::CZECH_NER:
-      {
-        unique_ptr<czech_ner> res(new czech_ner());
-        if (res->load(is)) return res.release();
-        break;
-      }
     case ner_ids::ENGLISH_NER:
-      {
-        unique_ptr<english_ner> res(new english_ner());
-        if (res->load(is)) return res.release();
-        break;
-      }
     case ner_ids::GENERIC_NER:
       {
-        unique_ptr<generic_ner> res(new generic_ner());
+        unique_ptr<bilou_ner> res(new bilou_ner(id));
         if (res->load(is)) return res.release();
         break;
       }

@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
         }
 
         // Encode the ner itself
-        bilou_ner_trainer::train(stages, parameters, *tagger, features, cin, heldout, cout);
+        bilou_ner_trainer::train(id, stages, parameters, *tagger, features, cin, heldout, cout);
 
         cerr << "Recognizer saved." << endl;
         break;
