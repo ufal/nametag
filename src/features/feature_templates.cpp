@@ -14,7 +14,7 @@
 namespace ufal {
 namespace nametag {
 
-bool feature_templates::load(istream& is) {
+bool feature_templates::load(istream& is, const nlp_pipeline& pipeline) {
   binary_decoder data;
   if (!compressor::load(is, data)) return false;
 
@@ -29,7 +29,7 @@ bool feature_templates::load(istream& is) {
       // Try creating the processor
       auto* processor = feature_processor::create(name);
       if (processor) {
-        processor->load(data);
+        processor->load(data, pipeline);
         processors.emplace_back(name, processor);
         continue;
       }

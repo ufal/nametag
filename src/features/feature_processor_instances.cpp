@@ -52,8 +52,9 @@ namespace feature_processors {
 // BrownClusters
 class brown_clusters : public feature_processor {
  public:
-  virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features) override {
-    if (!feature_processor::parse(window, args, entities, total_features)) return false;
+  virtual bool parse(int window, const vector<string>& args, entity_map& entities,
+                     ner_feature* total_features, const nlp_pipeline& pipeline) override {
+    if (!feature_processor::parse(window, args, entities, total_features, pipeline)) return false;
     if (args.size() < 1) return cerr << "BrownCluster requires a cluster file as the first argument!" << endl, false;
 
     ifstream in(args[0]);
@@ -95,8 +96,8 @@ class brown_clusters : public feature_processor {
     return true;
   }
 
-  virtual void load(binary_decoder& data) override {
-    feature_processor::load(data);
+  virtual void load(binary_decoder& data, const nlp_pipeline& pipeline) override {
+    feature_processor::load(data, pipeline);
 
     clusters.resize(data.next_4B());
     for (auto&& cluster : clusters) {
@@ -136,10 +137,10 @@ class brown_clusters : public feature_processor {
 // CzechAddContainers
 class czech_add_containers : public feature_processor {
  public:
-  virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features) {
+  virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features, const nlp_pipeline& pipeline) {
     if (window) return cerr << "CzechAddContainers cannot have non-zero window!" << endl, false;
 
-    return feature_processor::parse(window, args, entities, total_features);
+    return feature_processor::parse(window, args, entities, total_features, pipeline);
   }
 
   virtual void process_entities(ner_sentence& /*sentence*/, vector<named_entity>& entities, vector<named_entity>& buffer) const override {
@@ -175,7 +176,7 @@ class czech_add_containers : public feature_processor {
   }
 
   // CzechAddContainers used to be entity_processor which had empty load and save methods.
-  virtual void load(binary_decoder& /*data*/) override {}
+  virtual void load(binary_decoder& /*data*/, const nlp_pipeline& /*pipeline*/) override {}
   virtual void save(binary_encoder& /*enc*/) override {}
 };
 
@@ -241,8 +242,9 @@ class gazetteers : public feature_processor {
  public:
   enum { G = 0, U = 1, B = 2, L = 3, I = 4 };
 
-  virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features) override {
-    if (!feature_processor::parse(window, args, entities, total_features)) return false;
+  virtual bool parse(int window, const vector<string>& args, entity_map& entities,
+                     ner_feature* total_features, const nlp_pipeline& pipeline) override {
+    if (!feature_processor::parse(window, args, entities, total_features, pipeline)) return false;
 
     gazetteers_info.clear();
     for (auto&& arg : args) {
@@ -280,8 +282,8 @@ class gazetteers : public feature_processor {
     return true;
   }
 
-  virtual void load(binary_decoder& data) override {
-    feature_processor::load(data);
+  virtual void load(binary_decoder& data, const nlp_pipeline& pipeline) override {
+    feature_processor::load(data, pipeline);
 
     gazetteers_info.resize(data.next_4B());
     for (auto&& gazetteer : gazetteers_info) {
@@ -478,8 +480,9 @@ class tag : public feature_processor {
 // URLEmailDetector
 class url_email_detector : public feature_processor {
  public:
-  virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features) override {
-    if (!feature_processor::parse(window, args, entities, total_features)) return false;
+  virtual bool parse(int window, const vector<string>& args, entity_map& entities,
+                     ner_feature* total_features, const nlp_pipeline& pipeline) override {
+    if (!feature_processor::parse(window, args, entities, total_features, pipeline)) return false;
     if (args.size() != 2) return cerr << "URLEmailDetector requires exactly two arguments -- named entity types for URL and email!" << endl, false;
 
     url = entities.parse(args[0].c_str(), true);
@@ -490,8 +493,8 @@ class url_email_detector : public feature_processor {
     return true;
   }
 
-  virtual void load(binary_decoder& data) override {
-    feature_processor::load(data);
+  virtual void load(binary_decoder& data, const nlp_pipeline& pipeline) override {
+    feature_processor::load(data, pipeline);
 
     url = data.next_4B();
     email = data.next_4B();

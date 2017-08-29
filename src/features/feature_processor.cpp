@@ -17,7 +17,8 @@ namespace nametag {
 // Feature processor -- methods and virtual methods
 feature_processor::~feature_processor() {}
 
-bool feature_processor::parse(int window, const vector<string>& /*args*/, entity_map& /*entities*/, ner_feature* total_features) {
+bool feature_processor::parse(int window, const vector<string>& /*args*/, entity_map& /*entities*/,
+                              ner_feature* total_features, const nlp_pipeline& /*pipeline*/) {
   if (window < 0) return false;
   if (!total_features) return false;
 
@@ -29,7 +30,7 @@ bool feature_processor::parse(int window, const vector<string>& /*args*/, entity
   return true;
 }
 
-void feature_processor::load(binary_decoder& data) {
+void feature_processor::load(binary_decoder& data, const nlp_pipeline& /*pipeline*/) {
   window = data.next_4B();
 
   map.clear();

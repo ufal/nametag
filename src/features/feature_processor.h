@@ -13,6 +13,7 @@
 #include "bilou/ner_sentence.h"
 #include "ner/entity_map.h"
 #include "ner/ner.h"
+#include "nlp_pipeline.h"
 #include "utils/binary_decoder.h"
 #include "utils/binary_encoder.h"
 
@@ -23,8 +24,9 @@ class feature_processor {
  public:
   virtual ~feature_processor();
 
-  virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features);
-  virtual void load(binary_decoder& data);
+  virtual bool parse(int window, const vector<string>& args, entity_map& entities,
+                     ner_feature* total_features, const nlp_pipeline& pipeline);
+  virtual void load(binary_decoder& data, const nlp_pipeline& pipeline);
   virtual void save(binary_encoder& enc);
 
   virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const;

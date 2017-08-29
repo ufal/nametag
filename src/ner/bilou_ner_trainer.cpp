@@ -39,8 +39,9 @@ void bilou_ner_trainer::train(ner_id id, int stages, const network_parameters& p
 
   // Parse feature templates
   feature_templates templates;
+  unique_ptr<tokenizer> tokenizer(bilou_ner::new_tokenizer(id));
   cerr << "Parsing feature templates: ";
-  templates.parse(features, entities);
+  templates.parse(features, entities, nlp_pipeline(tokenizer.get(), &tagger));
   cerr << "done" << endl;
 
   // Train required number of stages

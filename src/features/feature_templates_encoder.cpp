@@ -15,7 +15,7 @@
 namespace ufal {
 namespace nametag {
 
-void feature_templates::parse(istream& is, entity_map& entities) {
+void feature_templates::parse(istream& is, entity_map& entities, const nlp_pipeline& pipeline) {
   processors.clear();
   total_features = 1; // An omnipresent feature used in process_sentence
 
@@ -41,7 +41,7 @@ void feature_templates::parse(istream& is, entity_map& entities) {
     // Try initialize the processor
     auto* processor = feature_processor::create(template_name);
     if (processor) {
-      if (!processor->parse(window, args, entities, &total_features)) runtime_failure("Cannot initialize feature processor '" << template_name << "' from line '" << line << "' of feature templates file!");
+      if (!processor->parse(window, args, entities, &total_features, pipeline)) runtime_failure("Cannot initialize feature processor '" << template_name << "' from line '" << line << "' of feature templates file!");
       processors.emplace_back(template_name, processor);
       continue;
     }

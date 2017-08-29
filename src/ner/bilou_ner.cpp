@@ -21,7 +21,9 @@ bilou_ner::bilou_ner(ner_id id) : id(id) {}
 bool bilou_ner::load(istream& is) {
   if (tagger.reset(tagger::load_instance(is)), !tagger) return false;
   if (!named_entities.load(is)) return false;
-  if (!templates.load(is)) return false;
+
+  unique_ptr<tokenizer> tokenizer(new_tokenizer());
+  if (!templates.load(is, nlp_pipeline(tokenizer.get(), tagger.get()))) return false;
 
   int stages = is.get();
   if (stages == EOF) return false;

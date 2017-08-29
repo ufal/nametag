@@ -18,9 +18,9 @@ namespace nametag {
 
 class feature_templates {
  public:
-  void parse(istream& is, entity_map& entities);
+  void parse(istream& is, entity_map& entities, const nlp_pipeline& pipeline);
 
-  bool load(istream& is);
+  bool load(istream& is, const nlp_pipeline& pipeline);
   bool save(ostream& os);
 
   void process_sentence(ner_sentence& sentence, string& buffer, bool add_features = false) const;
