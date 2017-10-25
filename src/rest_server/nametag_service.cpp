@@ -168,7 +168,8 @@ bool nametag_service::handle_rest_recognize(microrestd::rest_request& req) {
       sort_entities(entities);
 
       if (output.mode == VERTICAL) {
-        for (auto&& entity : entities) {
+        if (!entities.size()) json.value("", true);
+        else for (auto&& entity : entities) {
           for (size_t i = entity.start; i < entity.start + entity.length; i++) {
             sprintf(token_number, "%zu", total_tokens + i + 1);
             if (i > entity.start) json.value(",", true);
