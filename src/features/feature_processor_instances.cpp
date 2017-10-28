@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <unordered_map>
 
 #include "feature_processor.h"
 #include "unilib/unicode.h"
@@ -244,6 +245,8 @@ class gazetteers : public feature_processor {
 
   virtual bool parse(int window, const vector<string>& args, entity_map& entities,
                      ner_feature* total_features, const nlp_pipeline& pipeline) override {
+    cerr << "The 'Gazetteers' feature template is deprecated, use 'GazetteersEnhanced' !" << endl;
+
     if (!feature_processor::parse(window, args, entities, total_features, pipeline)) return false;
 
     gazetteers_info.clear();
@@ -341,6 +344,312 @@ class gazetteers : public feature_processor {
   };
   vector<gazetteer_info> gazetteers_info;
 };
+
+
+// GazetteersEnhanced
+class gazetteers_enhanced : public feature_processor {
+ public:
+  enum { G = 0, U = 1, B = 2, L = 3, I = 4, TOTAL = 5 };
+
+  virtual bool parse(int window, const vector<string>& args, entity_map& entities,
+                     ner_feature* total_features, const nlp_pipeline& pipeline) override {
+    if (!feature_processor::parse(window, args, entities, total_features, pipeline)) return false;
+
+    gazetteer_metas.clear();
+    gazetteer_lists.clear();
+
+    if (args.size() & 1) return cerr << "Odd number of parameters to GazetteersEnhanced!" << endl, false;
+    for (unsigned i = 0; i < args.size(); i += 2) {
+      gazetteer_metas.emplace_back();
+      gazetteer_metas.back().basename = args[i];
+      gazetteer_metas.back().feature = *total_features + window; *total_features += TOTAL * (2 * window + 1);
+      gazetteer_metas.back().entity = args[i + 1] == "NONE" ? -1 : entities.parse(args[i + 1].c_str(), true);
+    }
+
+    entity_list.clear();
+    for (entity_type i = 0; i < entities.size(); i++)
+      entity_list.push_back(entities.name(i));
+
+    if (!load_gazetteer_lists(pipeline, true)) return false;
+
+    return true;
+  }
+
+  virtual void load(binary_decoder& data, const nlp_pipeline& pipeline) override {
+    feature_processor::load(data, pipeline);
+
+    gazetteer_metas.resize(data.next_4B());
+    for (auto&& gazetteer_meta : gazetteer_metas) {
+      data.next_str(gazetteer_meta.basename);
+      gazetteer_meta.feature = data.next_4B();
+      gazetteer_meta.entity = data.next_4B();
+    }
+
+    gazetteer_lists.resize(data.next_4B());
+    for (auto&& gazetteer_list : gazetteer_lists) {
+      gazetteer_list.gazetteers.resize(data.next_4B());
+      for (auto&& gazetteer : gazetteer_list.gazetteers)
+        data.next_str(gazetteer);
+      gazetteer_list.feature = data.next_4B();
+      gazetteer_list.entity = data.next_4B();
+      gazetteer_list.mode = data.next_4B();
+    }
+
+    entity_list.resize(data.next_4B());
+    for (auto&& entity : entity_list)
+      data.next_str(entity);
+
+    load_gazetteer_lists(pipeline, false);
+  }
+
+  virtual void save(binary_encoder& enc) override {
+    feature_processor::save(enc);
+
+    enc.add_4B(gazetteer_metas.size());
+    for (auto&& gazetteer_meta : gazetteer_metas) {
+      enc.add_str(gazetteer_meta.basename);
+      enc.add_4B(gazetteer_meta.feature);
+      enc.add_4B(gazetteer_meta.entity);
+    }
+
+    enc.add_4B(gazetteer_lists.size());
+    for (auto&& gazetteer_list : gazetteer_lists) {
+      enc.add_4B(gazetteer_list.gazetteers.size());
+      for (auto&& gazetteer : gazetteer_list.gazetteers)
+        enc.add_str(gazetteer);
+      enc.add_4B(gazetteer_list.feature);
+      enc.add_4B(gazetteer_list.entity);
+      enc.add_4B(gazetteer_list.mode);
+    }
+
+    enc.add_4B(entity_list.size());
+    for (auto&& entity : entity_list)
+      enc.add_str(entity);
+  }
+
+  virtual void process_sentence(ner_sentence& sentence, ner_feature* /*total_features*/, string& /*buffer*/) const override {
+    vector<unsigned> nodes, new_nodes;
+    vector<vector<ner_feature>> features(sentence.size);
+
+    for (unsigned i = 0; i < sentence.size; i++) {
+      unsigned hard_pre_length = 0, hard_pre_node = -1;
+      bool hard_pre_possible = true;
+      nodes.assign(1, 0);
+      for (unsigned j = i; j < sentence.size && !nodes.empty(); j++) {
+        new_nodes.clear();
+        for (auto&& node : nodes)
+          if (!gazetteers_trie[node].children.empty())
+            for (auto&& raw_lemma : sentence.words[j].raw_lemmas_all) {
+              auto range = gazetteers_trie[node].children.equal_range(raw_lemma);
+              for (auto&& it = range.first; it != range.second; it++)
+                append_unless_exists(new_nodes, it->second);
+            }
+
+        hard_pre_possible = hard_pre_possible && !sentence.probabilities[j].local_filled;
+        if (hard_pre_possible)
+          for (auto&& node : new_nodes)
+            if (gazetteers_trie[node].mode == HARD_PRE &&
+                ((j - i + 1) > hard_pre_length || node < hard_pre_node))
+              hard_pre_length = j - i + 1, hard_pre_node = node;
+
+        // Fill features
+        for (auto&& node : new_nodes)
+          for (auto&& feature : gazetteers_trie[node].features)
+            for (unsigned k = i; k <= j; k++) {
+              bilou_type type = j == i ? bilou_type_U : k == i ? bilou_type_B : k == j ? bilou_type_L : bilou_type_I;
+              append_unless_exists(features[k], feature + G * (2 * window + 1));
+              append_unless_exists(features[k], feature + type * (2 * window + 1));
+            }
+
+        nodes.swap(new_nodes);
+      }
+
+      if (hard_pre_length)
+        for (unsigned j = i; j < i + hard_pre_length; j++) {
+          for (auto&& bilou : sentence.probabilities[j].local.bilou) {
+            bilou.probability = 0.;
+            bilou.entity = entity_type_unknown;
+          }
+          bilou_type type = hard_pre_length == 1 ? bilou_type_U :
+              j == i ? bilou_type_B : j + 1 == i + hard_pre_length ? bilou_type_L : bilou_type_I;
+          sentence.probabilities[j].local.bilou[type].probability = 1.;
+          sentence.probabilities[j].local.bilou[type].entity = gazetteers_trie[hard_pre_node].entity;
+          sentence.probabilities[j].local_filled = true;
+        }
+    }
+
+    // Apply generated features
+    for (unsigned i = 0; i < sentence.size; i++)
+      for (auto&& feature : features[i])
+        apply_in_window(i, feature);
+  }
+
+  virtual void process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const override {
+    vector<unsigned> nodes, new_nodes;
+
+    buffer.clear();
+
+    unsigned entity_until = 0;
+    for (unsigned i = 0, e = 0; i < sentence.size; i++) {
+      while (e < entities.size() && entities[e].start == i) {
+        if (i + entities[e].length > entity_until)
+          entity_until = i + entities[e].length;
+        buffer.push_back(entities[e++]);
+      }
+
+      if (entity_until <= i) {
+        // There is place for a possible POST gazetteer
+        unsigned free_until = e < entities.size() ? entities[e].start : sentence.size;
+
+        unsigned hard_post_length = 0, hard_post_node = -1;
+        nodes.assign(1, 0);
+        for (unsigned j = i; j < free_until && !nodes.empty(); j++) {
+          new_nodes.clear();
+          for (auto&& node : nodes)
+            if (!gazetteers_trie[node].children.empty())
+              for (auto&& raw_lemma : sentence.words[j].raw_lemmas_all) {
+                auto range = gazetteers_trie[node].children.equal_range(raw_lemma);
+                for (auto&& it = range.first; it != range.second; it++)
+                  append_unless_exists(new_nodes, it->second);
+              }
+
+          for (auto&& node : new_nodes)
+            if (gazetteers_trie[node].mode == HARD_POST &&
+                ((j - i + 1) > hard_post_length || node < hard_post_node))
+              hard_post_length = j - i + 1, hard_post_node = node;
+
+          nodes.swap(new_nodes);
+        }
+
+        if (hard_post_length)
+          buffer.emplace_back(i, hard_post_length, entity_list[gazetteers_trie[hard_post_node].entity]);
+      }
+    }
+
+    if (buffer.size() != entities.size())
+      entities.swap(buffer);
+  }
+
+  virtual void gazetteers(vector<string>& gazetteers, vector<int>* gazetteer_types) const override {
+    for (auto&& gazetteer_list : gazetteer_lists)
+      for (auto&& gazetteer : gazetteer_list.gazetteers) {
+        gazetteers.push_back(gazetteer);
+        if (gazetteer_types) gazetteer_types->push_back(gazetteer_list.entity);
+      }
+  }
+
+ private:
+  enum { SOFT, HARD_PRE, HARD_POST, MODES_TOTAL };
+  const static vector<string> basename_suffixes;
+
+  struct gazetteer_meta_info {
+    string basename;
+    ner_feature feature;
+    int entity;
+  };
+  vector<gazetteer_meta_info> gazetteer_metas;
+
+  struct gazetteer_list_info {
+    vector<string> gazetteers;
+    ner_feature feature;
+    int entity;
+    int mode;
+  };
+  vector<gazetteer_list_info> gazetteer_lists;
+
+  struct gazetteer_trie_node {
+    vector<ner_feature> features;
+    unordered_multimap<string, unsigned> children;
+    int mode = SOFT, entity = -1;
+  };
+  vector<gazetteer_trie_node> gazetteers_trie;
+
+  vector<string> entity_list;
+
+  template <class T>
+  inline static void append_unless_exists(vector<T>& array, T value) {
+    size_t i;
+    for (i = array.size(); i; i--)
+      if (array[i - 1] == value)
+        break;
+
+    if (!i)
+      array.push_back(value);
+  }
+
+  bool load_gazetteer_lists(const nlp_pipeline& pipeline, bool files_must_exist) {
+    string file_name, line;
+
+    // Load raw gazetteers (maybe additional during inference)
+    for (auto&& gazetteer_meta : gazetteer_metas)
+      for (int mode = 0; mode < MODES_TOTAL; mode++) {
+        file_name.assign(gazetteer_meta.basename).append(basename_suffixes[mode]);
+
+        ifstream file(file_name);
+        if (!file.is_open()) {
+          if (mode == SOFT && files_must_exist)
+            return cerr << "Cannot open gazetteers file '" << file_name << "'!" << endl, false;
+          continue;
+        }
+
+        gazetteer_lists.emplace_back();
+        gazetteer_lists.back().feature = gazetteer_meta.feature;
+        gazetteer_lists.back().entity = gazetteer_meta.entity;
+        gazetteer_lists.back().mode = mode;
+
+        while (getline(file, line))
+          if (!line.empty() && line[0] != '#')
+            gazetteer_lists.back().gazetteers.push_back(line);
+      }
+
+    // Build the gazetteers_trie
+    unordered_map<string, int> gazetteer_prefixes;
+    vector<string_piece> gazetteer_tokens, gazetteer_tokens_additional, gazetteer_token(1);
+    ner_sentence gazetteer_token_tagged;
+
+    gazetteers_trie.clear();
+    gazetteers_trie.emplace_back();
+    for (auto&& gazetteer_list : gazetteer_lists)
+      for (auto&& gazetteer : gazetteer_list.gazetteers) {
+        pipeline.tokenizer->set_text(gazetteer);
+        if (!pipeline.tokenizer->next_sentence(&gazetteer_tokens, nullptr)) continue;
+        while (pipeline.tokenizer->next_sentence(&gazetteer_tokens_additional, nullptr))
+          gazetteer_tokens.insert(gazetteer_tokens.end(), gazetteer_tokens_additional.begin(), gazetteer_tokens_additional.end());
+
+        unsigned node = 0;
+        string prefix;
+        for (unsigned token = 0; token < gazetteer_tokens.size(); token++) {
+          if (token) prefix.push_back('\t');
+          prefix.append(gazetteer_tokens[token].str, gazetteer_tokens[token].len);
+          auto prefix_it = gazetteer_prefixes.find(prefix);
+          if (prefix_it == gazetteer_prefixes.end()) {
+            unsigned new_node = gazetteers_trie.size();
+            gazetteers_trie.emplace_back();
+            gazetteer_prefixes.emplace(prefix, new_node);
+
+            gazetteer_token[0] = string_piece(gazetteer_tokens[token]);
+            pipeline.tagger->tag(gazetteer_token, gazetteer_token_tagged);
+            for (auto&& raw_lemma : gazetteer_token_tagged.words[0].raw_lemmas_all)
+              gazetteers_trie[node].children.emplace(raw_lemma, new_node);
+
+            node = new_node;
+          } else {
+            node = prefix_it->second;
+          }
+        }
+
+        append_unless_exists(gazetteers_trie[node].features, gazetteer_list.feature);
+        if ((gazetteer_list.mode == HARD_PRE && gazetteers_trie[node].mode != HARD_PRE) ||
+            (gazetteer_list.mode == HARD_POST && gazetteers_trie[node].mode == SOFT)) {
+          gazetteers_trie[node].mode = gazetteer_list.mode;
+          gazetteers_trie[node].entity = gazetteer_list.entity;
+        }
+      }
+
+    return true;
+  }
+};
+const vector<string> gazetteers_enhanced::basename_suffixes = {".txt", ".hard_pre.txt", ".hard_post.txt"};
 
 
 // Lemma
@@ -538,6 +847,7 @@ feature_processor* feature_processor::create(const string& name) {
   if (name.compare("Form") == 0) return new feature_processors::form();
   if (name.compare("FormCapitalization") == 0) return new feature_processors::form_capitalization();
   if (name.compare("Gazetteers") == 0) return new feature_processors::gazetteers();
+  if (name.compare("GazetteersEnhanced") == 0) return new feature_processors::gazetteers_enhanced();
   if (name.compare("Lemma") == 0) return new feature_processors::lemma();
   if (name.compare("NumericTimeValue") == 0) return new feature_processors::number_time_value();
   if (name.compare("PreviousStage") == 0) return new feature_processors::previous_stage();
