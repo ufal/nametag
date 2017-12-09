@@ -85,25 +85,21 @@
       </li>
       <li><a href="#run_ner_output_formats">5.2.2. Output Formats</a>
       </li>
-      </ul>
-    </li>
-    <li><a href="#run_tokenizer">5.3. Running the Tokenizer</a>
-      <ul>
-      <li><a href="#run_tokenizer_output_formats">5.3.1. Output Formats</a>
+      <li><a href="#run_tokenizer_output_formats">5.2.3. Output Formats</a>
       </li>
       </ul>
     </li>
-    <li><a href="#rest_server">5.4. Running REST Server</a>
+    <li><a href="#rest_server">5.3. Running REST Server</a>
     </li>
-    <li><a href="#custom_models">5.5. Training of Custom Models</a>
+    <li><a href="#custom_models">5.4. Training of Custom Models</a>
       <ul>
-      <li><a href="#training_data">5.5.1. Training data</a>
+      <li><a href="#training_data">5.4.1. Training data</a>
       </li>
-      <li><a href="#tagger">5.5.2. Tagger</a>
+      <li><a href="#tagger">5.4.2. Tagger</a>
       </li>
-      <li><a href="#feature_templates">5.5.3. Feature Templates</a>
+      <li><a href="#feature_templates">5.4.3. Feature Templates</a>
       </li>
-      <li><a href="#train_ner">5.5.4. Running train_ner</a>
+      <li><a href="#train_ner">5.4.4. Running train_ner</a>
       </li>
       </ul>
     </li>
@@ -722,20 +718,49 @@ Václav Havel byl český dramatik, esejista, kritik komunistického režimu a p
 2	ps	Havel
 </pre>
 
+<p></p>
+</li>
+<li><code>conll</code>: A CoNLL-like vertical format. Every word is on a line, followed by a tab and
+  recognized entity label. An empty line denotes end of sentence. The entity labels are:
+  <ul>
+  <li><code>_</code>: no entity
+  </li>
+  <li><code>B-type</code>: the word is the first in the entity of type <code>type</code>
+  </li>
+  <li><code>I-type</code>: the word is a non-initial word in the entity of type <code>type</code>
+  </li>
+  </ul>
+  If there are embedded entities, only the outermost entity is saved in the
+  file, the embedded ones are ignored.
+<p></p>
+  Example input:
+
+<pre>
+Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
+</pre>
+
+<p></p>
+  Example output:
+
+<pre>
+Václav	B-P
+Havel	I-P
+byl	_
+český	_
+...
+</pre>
+
+<p></p>
+== Running the Tokenizer ==[run_tokenizer]
+<p></p>
+Using the <code>run_tokenizer</code> executable it is possible to perform only
+tokenization and segmentation used in a specified model.
+<p></p>
+The input is a UTF-8 encoded plain text and the input files are specified same
+as with the <a href="#run_ner"><code>run_ner</code></a> command.
 </li>
 </ul>
 
-<a id="run_tokenizer" name="run_tokenizer"></a>
-<h2>5.3. Running the Tokenizer</h2>
-
-<p>
-Using the <code>run_tokenizer</code> executable it is possible to perform only
-tokenization and segmentation used in a specified model.
-</p>
-<p>
-The input is a UTF-8 encoded plain text and the input files are specified same
-as with the <a href="#run_ner"><code>run_ner</code></a> command.
-</p>
 <p style="margin-bottom:0">
 The full command syntax of <code>run_tokenizer</code> is
 </p>
@@ -745,7 +770,7 @@ Options: --output=vertical|xml
 </pre>
 
 <a id="run_tokenizer_output_formats" name="run_tokenizer_output_formats"></a>
-<h3>5.3.1. Output Formats</h3>
+<h3>5.2.3. Output Formats</h3>
 
 <p style="margin-bottom:0">
 The output format is specified using the <code>--output</code> option. Currently
@@ -789,7 +814,7 @@ těší
 </ul>
 
 <a id="rest_server" name="rest_server"></a>
-<h2>5.4. Running REST Server</h2>
+<h2>5.3. Running REST Server</h2>
 
 <p>
 NameTag also provides REST server binary <code>nametag_server</code>.
@@ -814,14 +839,14 @@ models on demand.
 </p>
 
 <a id="custom_models" name="custom_models"></a>
-<h2>5.5. Training of Custom Models</h2>
+<h2>5.4. Training of Custom Models</h2>
 
 <p>
 Training of custom models is possible using the <code>train_ner</code> binary.
 </p>
 
 <a id="training_data" name="training_data"></a>
-<h3>5.5.1. Training data</h3>
+<h3>5.4.1. Training data</h3>
 
 <p>
 To train a named entity recognizer model, training data is needed. The training
@@ -848,7 +873,7 @@ except for one case &ndash; if the previous word is also a named entity of same 
  </ul>
 
 <a id="tagger" name="tagger"></a>
-<h3>5.5.2. Tagger</h3>
+<h3>5.4.2. Tagger</h3>
 
 <p>
 Most named entity recognizer models utilize part of speech tags and lemmas.
@@ -878,7 +903,7 @@ NameTag can utilize several taggers to obtain the tags and lemmas:
 </dl>
 
 <a id="tagger_lemma_structure" name="tagger_lemma_structure"></a>
-<h4>5.5.2.1. Lemma Structure</h4>
+<h4>5.4.2.1. Lemma Structure</h4>
 
 <p style="margin-bottom:0">
 The lemmas used by the recognizer can be structured and consist of three parts:
@@ -902,7 +927,7 @@ comment is empty.
 </p>
 
 <a id="feature_templates" name="feature_templates"></a>
-<h3>5.5.3. Feature Templates</h3>
+<h3>5.4.3. Feature Templates</h3>
 
 <p>
 The recognizer utilizes feature templates to generate features which are used
@@ -989,7 +1014,7 @@ CzechAddContainers
 </pre>
 
 <a id="train_ner" name="train_ner"></a>
-<h3>5.5.4. Running train_ner</h3>
+<h3>5.4.4. Running train_ner</h3>
 
 <p>
 The <code>train_ner</code> binary has the following arguments (which has to be specified

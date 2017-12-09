@@ -21,6 +21,7 @@
 using namespace ufal::nametag;
 
 static void sort_entities(vector<named_entity>& entities);
+static void recognize_conll(istream& is, ostream& os, const ner& recognizer, tokenizer& tokenizer);
 static void recognize_vertical(istream& is, ostream& os, const ner& recognizer, tokenizer& tokenizer);
 static void recognize_untokenized(istream& is, ostream& os, const ner& recognizer, tokenizer& tokenizer);
 
@@ -29,7 +30,7 @@ int main(int argc, char* argv[]) {
 
   options::map options;
   if (!options::parse({{"input",options::value{"untokenized", "vertical"}},
-                       {"output",options::value{"vertical","xml"}},
+                       {"output",options::value{"vertical","xml", "conll"}},
                        {"version", options::value::none},
                        {"help", options::value::none}}, argc, argv, options) ||
       options.count("help") ||
@@ -52,10 +53,50 @@ int main(int argc, char* argv[]) {
 
   clock_t now = clock();
   if (options.count("output") && options["output"] == "vertical")  process_args(2, argc, argv, recognize_vertical, *recognizer, *tokenizer);
+  else if (options.count("output") && options["output"] == "conll")  process_args(2, argc, argv, recognize_conll, *recognizer, *tokenizer);
   else process_args(2, argc, argv, recognize_untokenized, *recognizer, *tokenizer);
   cerr << "Recognizing done, in " << fixed << setprecision(3) << (clock() - now) / double(CLOCKS_PER_SEC) << " seconds." << endl;
 
   return 0;
+}
+
+void recognize_conll(istream& is, ostream& os, const ner& recognizer, tokenizer& tokenizer) {
+  string para;
+  vector<string_piece> forms;
+  vector<named_entity> entities;
+
+  while (getpara(is, para)) {
+    // Tokenize and tag
+    tokenizer.set_text(para);
+    while (tokenizer.next_sentence(&forms, nullptr)) {
+      recognizer.recognize(forms, entities);
+      sort_entities(entities);
+
+      string entity_type;
+      unsigned in_entity = 0;
+      bool entity_start;
+      for (unsigned i = 0, e = 0; i < forms.size(); i++) {
+        if (!in_entity && e < entities.size() && entities[e].start == i) {
+          in_entity = entities[e].length;
+          entity_start = true;
+          entity_type = entities[e].type;
+          e++;
+        }
+
+        os << forms[i] << '\t';
+        if (in_entity) {
+          os << (entity_start ? "B-" : "I-") << entity_type;
+          entity_start = false;
+          in_entity--;
+        } else {
+          os << '_';
+        }
+        os << '\n';
+      }
+
+      os << '\n' << flush;
+    }
+  }
 }
 
 void recognize_vertical(istream& is, ostream& os, const ner& recognizer, tokenizer& tokenizer) {

@@ -451,15 +451,34 @@ output formats are:
   2	ps	Havel
 
 
+- conll: A CoNLL-like vertical format. Every word is on a line, followed by a
+  tab and recognized entity label. An empty line denotes end of sentence. The
+  entity labels are:
+  - _: no entity
+  - B-type: the word is the first in the entity of type type
+  - I-type: the word is a non-initial word in the entity of type type
+  If there are embedded entities, only the outermost entity is saved in the
+  file, the embedded ones are ignored.
 
-Running the Tokenizer
----------------------
+  Example input:
+  Václav Havel byl český dramatik, esejista, kritik komunistického režimu a později politik.
 
-Using the run_tokenizer executable it is possible to perform only tokenization
-and segmentation used in a specified model.
 
-The input is a UTF-8 encoded plain text and the input files are specified same
-as with the run_ner command.
+  Example output:
+  Václav	B-P
+  Havel	I-P
+  byl	_
+  český	_
+  ...
+
+
+  == Running the Tokenizer ==[run_tokenizer]
+
+  Using the run_tokenizer executable it is possible to perform only tokenization
+  and segmentation used in a specified model.
+
+  The input is a UTF-8 encoded plain text and the input files are specified same
+  as with the run_ner command.
 
 The full command syntax of run_tokenizer is
   run_tokenizer [options] recognizer_model [file[:output_file]]...
