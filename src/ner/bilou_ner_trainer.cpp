@@ -28,7 +28,7 @@ void bilou_ner_trainer::train(ner_id id, int stages, const network_parameters& p
   cerr << "Loading train data: ";
   load_data(train, tagger, train_data, entities, true);
   cerr << "done, " << train_data.size() << " sentences" << endl;
-  if (!entities.size()) runtime_failure("No named entities present in the training data!");
+  cerr << "Found " << entities.size() << " annotated entity types." << endl;
 
   vector<labelled_sentence> heldout_data;
   if (heldout) {
