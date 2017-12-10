@@ -449,6 +449,10 @@ class gazetteers_enhanced : public feature_processor {
     vector<unsigned> nodes, new_nodes;
     vector<vector<ner_feature>> features(sentence.size);
 
+    vector<vector<string>> recased_raw_lemmas(sentence.size);
+    for (unsigned i = 0; i < sentence.size; i++)
+      recase_raw_lemmas(sentence.words[i].form, sentence.words[i].raw_lemmas_all, recased_raw_lemmas[i]);
+
     for (unsigned i = 0; i < sentence.size; i++) {
       unsigned hard_pre_length = 0, hard_pre_node = -1;
       bool hard_pre_possible = true;
@@ -457,7 +461,7 @@ class gazetteers_enhanced : public feature_processor {
         new_nodes.clear();
         for (auto&& node : nodes)
           if (!gazetteers_trie[node].children.empty())
-            for (auto&& raw_lemma : sentence.words[j].raw_lemmas_all) {
+            for (auto&& raw_lemma : recased_raw_lemmas[j]) {
               auto range = gazetteers_trie[node].children.equal_range(raw_lemma);
               for (auto&& it = range.first; it != range.second; it++)
                 append_unless_exists(new_nodes, it->second);
@@ -505,8 +509,11 @@ class gazetteers_enhanced : public feature_processor {
   virtual void process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const override {
     vector<unsigned> nodes, new_nodes;
 
-    buffer.clear();
+    vector<vector<string>> recased_raw_lemmas(sentence.size);
+    for (unsigned i = 0; i < sentence.size; i++)
+      recase_raw_lemmas(sentence.words[i].form, sentence.words[i].raw_lemmas_all, recased_raw_lemmas[i]);
 
+    buffer.clear();
     unsigned entity_until = 0;
     for (unsigned i = 0, e = 0; i < sentence.size; i++) {
       while (e < entities.size() && entities[e].start == i) {
@@ -525,7 +532,7 @@ class gazetteers_enhanced : public feature_processor {
           new_nodes.clear();
           for (auto&& node : nodes)
             if (!gazetteers_trie[node].children.empty())
-              for (auto&& raw_lemma : sentence.words[j].raw_lemmas_all) {
+              for (auto&& raw_lemma : recased_raw_lemmas[j]) {
                 auto range = gazetteers_trie[node].children.equal_range(raw_lemma);
                 for (auto&& it = range.first; it != range.second; it++)
                   append_unless_exists(new_nodes, it->second);
@@ -539,8 +546,10 @@ class gazetteers_enhanced : public feature_processor {
           nodes.swap(new_nodes);
         }
 
-        if (hard_post_length)
+        if (hard_post_length) {
           buffer.emplace_back(i, hard_post_length, entity_list[gazetteers_trie[hard_post_node].entity]);
+          entity_until = i + hard_post_length;
+        }
       }
     }
 
@@ -624,6 +633,7 @@ class gazetteers_enhanced : public feature_processor {
     unordered_map<string, int> gazetteer_prefixes;
     vector<string_piece> gazetteer_tokens, gazetteer_tokens_additional, gazetteer_token(1);
     ner_sentence gazetteer_token_tagged;
+    vector<string> gazetteer_recased_raw_lemmas;
 
     gazetteers_trie.clear();
     gazetteers_trie.emplace_back();
@@ -647,7 +657,9 @@ class gazetteers_enhanced : public feature_processor {
 
             gazetteer_token[0] = string_piece(gazetteer_tokens[token]);
             pipeline.tagger->tag(gazetteer_token, gazetteer_token_tagged);
-            for (auto&& raw_lemma : gazetteer_token_tagged.words[0].raw_lemmas_all)
+            recase_raw_lemmas(gazetteer_token[0], gazetteer_token_tagged.words[0].raw_lemmas_all,
+                              gazetteer_recased_raw_lemmas);
+            for (auto&& raw_lemma : gazetteer_recased_raw_lemmas)
               gazetteers_trie[node].children.emplace(raw_lemma, new_node);
 
             node = new_node;
@@ -665,6 +677,30 @@ class gazetteers_enhanced : public feature_processor {
       }
 
     return true;
+  }
+
+  static void recase_raw_lemmas(string_piece form, const vector<string>& raw_lemmas, vector<string>& recased_raw_lemmas) {
+    using namespace unilib;
+
+    bool any_lower = false, first_uc = false, first = true;
+    for (auto&& chr : utf8::decoder(form.str, form.len)) {
+      any_lower = any_lower || (unicode::category(chr) & unicode::Ll);
+      if (first) first_uc = unicode::category(chr) & unicode::Lut;
+      first = false;
+    }
+
+    recased_raw_lemmas.clear();
+    recased_raw_lemmas.reserve(raw_lemmas.size());
+    for (auto&& raw_lemma : raw_lemmas) {
+      recased_raw_lemmas.emplace_back();
+
+      first = true;
+      for (auto&& chr : utf8::decoder(raw_lemma)) {
+        utf8::append(recased_raw_lemmas.back(),
+                     (first_uc && (first || !any_lower)) ? unicode::uppercase(chr) : unicode::lowercase(chr));
+        first = false;
+      }
+    }
   }
 };
 const vector<string> gazetteers_enhanced::basename_suffixes = {".txt", ".hard_pre.txt", ".hard_post.txt"};
