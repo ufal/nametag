@@ -238,6 +238,24 @@ class form_capitalization : public feature_processor {
 };
 
 
+// FormCaseNormalized
+class form_case_normalized : public feature_processor {
+ public:
+  virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const override {
+    using namespace unilib;
+
+    for (unsigned i = 0; i < sentence.size; i++) {
+      buffer.clear();
+      for (auto&& chr : utf8::decoder(sentence.words[i].form))
+        utf8::append(buffer, buffer.empty() ? chr : unicode::lowercase(chr));
+      apply_in_window(i, lookup(buffer, total_features));
+    }
+
+    apply_outer_words_in_window(lookup_empty());
+  }
+};
+
+
 // Gazetteers
 class gazetteers : public feature_processor {
  public:
@@ -774,6 +792,24 @@ class raw_lemma_capitalization : public feature_processor {
 };
 
 
+// RawLemmaCaseNormalized
+class raw_lemma_case_normalized : public feature_processor {
+ public:
+  virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const override {
+    using namespace unilib;
+
+    for (unsigned i = 0; i < sentence.size; i++) {
+      buffer.clear();
+      for (auto&& chr : utf8::decoder(sentence.words[i].raw_lemma))
+        utf8::append(buffer, buffer.empty() ? chr : unicode::lowercase(chr));
+      apply_in_window(i, lookup(buffer, total_features));
+    }
+
+    apply_outer_words_in_window(lookup_empty());
+  }
+};
+
+
 // Tag
 class tag : public feature_processor {
  public:
@@ -846,6 +882,7 @@ feature_processor* feature_processor::create(const string& name) {
   if (name.compare("CzechLemmaTerm") == 0) return new feature_processors::czech_lemma_term();
   if (name.compare("Form") == 0) return new feature_processors::form();
   if (name.compare("FormCapitalization") == 0) return new feature_processors::form_capitalization();
+  if (name.compare("FormCaseNormalized") == 0) return new feature_processors::form_case_normalized();
   if (name.compare("Gazetteers") == 0) return new feature_processors::gazetteers();
   if (name.compare("GazetteersEnhanced") == 0) return new feature_processors::gazetteers_enhanced();
   if (name.compare("Lemma") == 0) return new feature_processors::lemma();
@@ -853,6 +890,7 @@ feature_processor* feature_processor::create(const string& name) {
   if (name.compare("PreviousStage") == 0) return new feature_processors::previous_stage();
   if (name.compare("RawLemma") == 0) return new feature_processors::raw_lemma();
   if (name.compare("RawLemmaCapitalization") == 0) return new feature_processors::raw_lemma_capitalization();
+  if (name.compare("RawLemmaCaseNormalized") == 0) return new feature_processors::raw_lemma_case_normalized();
   if (name.compare("Tag") == 0) return new feature_processors::tag();
   if (name.compare("URLEmailDetector") == 0) return new feature_processors::url_email_detector();
   return nullptr;
