@@ -54,26 +54,14 @@ void morphodita_tagger::tag(const vector<string_piece>& forms, ner_sentence& sen
       sentence.words[i].form.assign(forms[i].str, morpho->raw_form_len(forms[i]));
 
       const string& lemma = c->tags[i].lemma;
-      bool guesser_used = morpho->analyze(forms[i], morphodita::morpho::GUESSER, c->analyses) == morphodita::morpho::GUESSER;
 
       unsigned raw_lemma_len = morpho->raw_lemma_len(lemma);
       sentence.words[i].raw_lemma.assign(lemma, 0, raw_lemma_len);
 
+      morpho->analyze(forms[i], morphodita::morpho::GUESSER, c->analyses);
       sentence.words[i].raw_lemmas_all.clear();
-      for (auto&& analysis : c->analyses) {
-        unsigned analysis_raw_lemma_len = morpho->raw_lemma_len(analysis.lemma);
-
-        // Try to normalize the casing of guessed lemmas
-        if (guesser_used) {
-          c->lemma_cased.clear();
-          for (auto&& chr : unilib::utf8::decoder(analysis.lemma.c_str(), analysis_raw_lemma_len))
-            unilib::utf8::append(c->lemma_cased, c->lemma_cased.empty() ? chr : unilib::unicode::lowercase(chr));
-        } else {
-          c->lemma_cased.assign(analysis.lemma, 0, analysis_raw_lemma_len);
-        }
-
-        sentence.words[i].raw_lemmas_all.emplace_back(c->lemma_cased);
-      }
+      for (auto&& analysis : c->analyses)
+        sentence.words[i].raw_lemmas_all.emplace_back(analysis.lemma, 0, morpho->raw_lemma_len(analysis.lemma));
       sort(sentence.words[i].raw_lemmas_all.begin(), sentence.words[i].raw_lemmas_all.end());
       sentence.words[i].raw_lemmas_all.erase(unique(sentence.words[i].raw_lemmas_all.begin(), sentence.words[i].raw_lemmas_all.end()),
                                              sentence.words[i].raw_lemmas_all.end());
