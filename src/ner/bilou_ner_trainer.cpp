@@ -85,6 +85,9 @@ void bilou_ner_trainer::load_data(istream& is, const tagger& tagger, vector<labe
     if (eof || line.empty()) {
       if (!words.empty()) {
         // Tag the sentence
+        forms.clear();
+        for (auto&& word : words)
+          forms.emplace_back(word);
         data.emplace_back();
         auto& sentence = data.back();
         tagger.tag(forms, sentence.sentence);
@@ -107,7 +110,6 @@ void bilou_ner_trainer::load_data(istream& is, const tagger& tagger, vector<labe
 
         // Start a new sentence
         words.clear();
-        forms.clear();
         entities.clear();
       }
       if (eof) break;
@@ -115,7 +117,6 @@ void bilou_ner_trainer::load_data(istream& is, const tagger& tagger, vector<labe
       split(line, '\t', tokens);
       if (tokens.size() != 2) runtime_failure("The NER data line '" << line << "' does not contain two columns!");
       words.emplace_back(tokens[0]);
-      forms.emplace_back(words.back());
       entities.emplace_back(tokens[1]);
     }
   }
