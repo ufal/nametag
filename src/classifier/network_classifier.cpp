@@ -14,6 +14,7 @@
 
 #include "network_classifier.h"
 #include "utils/compressor.h"
+#include "utils/unaligned_access.h"
 
 namespace ufal {
 namespace nametag {
@@ -25,7 +26,7 @@ bool network_classifier::load(istream& is) {
   try {
     // Direct connections
     load_matrix(data, indices);
-    missing_weight = *data.next<double>(1);
+    missing_weight = unaligned_load<double>(data.next<double>(1));
     load_matrix(data, weights);
 
     // Hidden layer
