@@ -25,7 +25,6 @@ struct token_range {
   token_range(size_t start, size_t length) : start(start), length(length) {}
 };
 
-// This must be in sync with morphodita::tokenizer.
 class tokenizer {
  public:
   virtual ~tokenizer() {}

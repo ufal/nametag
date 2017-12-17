@@ -9,13 +9,13 @@
 
 #include "english_ner.h"
 
-#include "morphodita/tokenizer/tokenizer.h"
+#include "tokenizer/morphodita_tokenizer_wrapper.h"
 
 namespace ufal {
 namespace nametag {
 
 tokenizer* english_ner::new_tokenizer() const {
-  return (tokenizer*) morphodita::tokenizer::new_english_tokenizer();
+  return new morphodita_tokenizer_wrapper(morphodita::tokenizer::new_english_tokenizer());
 }
 
 } // namespace nametag
