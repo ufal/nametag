@@ -18,6 +18,7 @@
 #include "utils/binary_decoder.h"
 #include "utils/binary_encoder.h"
 #include "utils/pointer_decoder.h"
+#include "utils/unaligned_access.h"
 
 namespace ufal {
 namespace nametag {
@@ -87,13 +88,13 @@ struct persistent_unordered_map::fnv_hash {
 
     size = data.next_4B();
     this->data.resize(size);
-    memcpy(this->data.data(), data.next<char>(size), size);
+    if (size) memcpy(this->data.data(), data.next<char>(size), size);
   }
 
   inline uint32_t index(const char* data, int len) const {
     if (len <= 0) return 0;
-    if (len == 1) return *(const uint8_t*)data;
-    if (len == 2) return *(const uint16_t*)data;
+    if (len == 1) return unaligned_load<uint8_t>(data);
+    if (len == 2) return unaligned_load<uint16_t>(data);
 
     uint32_t hash = 2166136261U;
     while (len--)
