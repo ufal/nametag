@@ -138,7 +138,7 @@ class brown_clusters : public feature_processor {
 // CzechAddContainers
 class czech_add_containers : public feature_processor {
  public:
-  virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features, const nlp_pipeline& pipeline) {
+  virtual bool parse(int window, const vector<string>& args, entity_map& entities, ner_feature* total_features, const nlp_pipeline& pipeline) override {
     if (window) return cerr << "CzechAddContainers cannot have non-zero window!" << endl, false;
 
     return feature_processor::parse(window, args, entities, total_features, pipeline);
