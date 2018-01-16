@@ -846,6 +846,65 @@ class raw_lemma_case_normalized : public feature_processor {
 };
 
 
+// *Suffix
+enum { SUFFIX_SOURCE_FORM, SUFFIX_SOURCE_RAWLEMMA };
+enum { SUFFIX_CASE_ORIGINAL, SUFFIX_CASE_NORMALIZED };
+class suffix : public feature_processor {
+ public:
+  suffix(int source, int casing) : source(source), casing(casing) {}
+
+  virtual bool parse(int window, const vector<string>& args, entity_map& entities,
+                     ner_feature* total_features, const nlp_pipeline& pipeline) override {
+    if (!feature_processor::parse(window, args, entities, total_features, pipeline)) return false;
+    if (args.size() != 2) return cerr << "*Suffix features require exactly two arguments -- shortest and longest suffix length!" << endl, false;
+
+    string error;
+    if (!parse_int(args[0], "*Suffix shortest length", shortest, error)) return cerr << error << endl, false;
+    if (!parse_int(args[1], "*Suffix longest length", longest, error)) return cerr << error << endl, false;
+    return true;
+  }
+
+  virtual void load(binary_decoder& data, const nlp_pipeline& pipeline) override {
+    feature_processor::load(data, pipeline);
+
+    shortest = data.next_4B();
+    longest = data.next_4B();
+  }
+
+  virtual void save(binary_encoder& enc) override {
+    feature_processor::save(enc);
+
+    enc.add_4B(shortest);
+    enc.add_4B(longest);
+  }
+
+  virtual void process_sentence(ner_sentence& sentence, ner_feature* total_features, string& buffer) const override {
+    using namespace unilib;
+
+    vector<char32_t> chrs;
+    for (unsigned i = 0; i < sentence.size; i++) {
+      chrs.clear();
+      for (auto&& chr : utf8::decoder(source == SUFFIX_SOURCE_FORM ? sentence.words[i].form : sentence.words[i].raw_lemma))
+        chrs.push_back((casing == SUFFIX_CASE_ORIGINAL || chrs.empty()) ? chr : unicode::lowercase(chr));
+
+      buffer.clear();
+      for (int s = 1; s <= longest && s <= int(chrs.size()); s++) {
+        utf8::append(buffer, chrs[chrs.size() - s]);
+        if (s >= shortest) {
+          apply_in_window(i, lookup(buffer, total_features));
+        }
+      }
+    }
+
+    apply_outer_words_in_window(lookup_empty());
+  }
+
+ private:
+  int shortest, longest;
+  int source, casing;
+};
+
+
 // Tag
 class tag : public feature_processor {
  public:
@@ -913,22 +972,28 @@ class url_email_detector : public feature_processor {
 
 // Feature processor factory method
 feature_processor* feature_processor::create(const string& name) {
-  if (name.compare("BrownClusters") == 0) return new feature_processors::brown_clusters();
-  if (name.compare("CzechAddContainers") == 0) return new feature_processors::czech_add_containers();
-  if (name.compare("CzechLemmaTerm") == 0) return new feature_processors::czech_lemma_term();
-  if (name.compare("Form") == 0) return new feature_processors::form();
-  if (name.compare("FormCapitalization") == 0) return new feature_processors::form_capitalization();
-  if (name.compare("FormCaseNormalized") == 0) return new feature_processors::form_case_normalized();
+  using namespace feature_processors;
+
+  if (name.compare("BrownClusters") == 0) return new brown_clusters();
+  if (name.compare("CzechAddContainers") == 0) return new czech_add_containers();
+  if (name.compare("CzechLemmaTerm") == 0) return new czech_lemma_term();
+  if (name.compare("Form") == 0) return new form();
+  if (name.compare("FormCapitalization") == 0) return new form_capitalization();
+  if (name.compare("FormCaseNormalized") == 0) return new form_case_normalized();
+  if (name.compare("FormCaseNormalizedSuffix") == 0) return new suffix(SUFFIX_SOURCE_FORM, SUFFIX_CASE_NORMALIZED);
+  if (name.compare("FormSuffix") == 0) return new suffix(SUFFIX_SOURCE_FORM, SUFFIX_CASE_ORIGINAL);
   if (name.compare("Gazetteers") == 0) return new feature_processors::gazetteers();
-  if (name.compare("GazetteersEnhanced") == 0) return new feature_processors::gazetteers_enhanced();
-  if (name.compare("Lemma") == 0) return new feature_processors::lemma();
-  if (name.compare("NumericTimeValue") == 0) return new feature_processors::number_time_value();
-  if (name.compare("PreviousStage") == 0) return new feature_processors::previous_stage();
-  if (name.compare("RawLemma") == 0) return new feature_processors::raw_lemma();
-  if (name.compare("RawLemmaCapitalization") == 0) return new feature_processors::raw_lemma_capitalization();
-  if (name.compare("RawLemmaCaseNormalized") == 0) return new feature_processors::raw_lemma_case_normalized();
-  if (name.compare("Tag") == 0) return new feature_processors::tag();
-  if (name.compare("URLEmailDetector") == 0) return new feature_processors::url_email_detector();
+  if (name.compare("GazetteersEnhanced") == 0) return new gazetteers_enhanced();
+  if (name.compare("Lemma") == 0) return new lemma();
+  if (name.compare("NumericTimeValue") == 0) return new number_time_value();
+  if (name.compare("PreviousStage") == 0) return new previous_stage();
+  if (name.compare("RawLemma") == 0) return new raw_lemma();
+  if (name.compare("RawLemmaCapitalization") == 0) return new raw_lemma_capitalization();
+  if (name.compare("RawLemmaCaseNormalized") == 0) return new raw_lemma_case_normalized();
+  if (name.compare("RawLemmaCaseNormalizedSuffix") == 0) return new suffix(SUFFIX_SOURCE_RAWLEMMA, SUFFIX_CASE_NORMALIZED);
+  if (name.compare("RawLemmaSuffix") == 0) return new suffix(SUFFIX_SOURCE_RAWLEMMA, SUFFIX_CASE_ORIGINAL);
+  if (name.compare("Tag") == 0) return new tag();
+  if (name.compare("URLEmailDetector") == 0) return new url_email_detector();
   return nullptr;
 }
 
