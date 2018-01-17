@@ -376,8 +376,13 @@ class gazetteers_enhanced : public feature_processor {
     gazetteer_metas.clear();
     gazetteer_lists.clear();
 
-    if (args.size() & 1) return cerr << "Odd number of parameters to GazetteersEnhanced!" << endl, false;
-    for (unsigned i = 0; i < args.size(); i += 2) {
+    if (!(args.size() & 1)) return cerr << "Even number of parameters to GazetteersEnhanced!" << endl, false;
+    if (args[0] == "form") match = MATCH_FORM;
+    else if (args[0] == "rawlemma") match = MATCH_RAWLEMMA;
+    else if (args[0] == "rawlemmas") match = MATCH_RAWLEMMAS;
+    else return cerr << "First parameter of GazetteersEnhanced not valid!" << endl, false;
+
+    for (unsigned i = 1; i < args.size(); i += 2) {
       gazetteer_metas.emplace_back();
       gazetteer_metas.back().basename = args[i];
       gazetteer_metas.back().feature = *total_features + window; *total_features += TOTAL * (2 * window + 1);
@@ -395,6 +400,8 @@ class gazetteers_enhanced : public feature_processor {
 
   virtual void load(binary_decoder& data, const nlp_pipeline& pipeline) override {
     feature_processor::load(data, pipeline);
+
+    match = data.next_4B();
 
     gazetteer_metas.resize(data.next_4B());
     for (auto&& gazetteer_meta : gazetteer_metas) {
@@ -423,6 +430,8 @@ class gazetteers_enhanced : public feature_processor {
   virtual void save(binary_encoder& enc) override {
     feature_processor::save(enc);
 
+    enc.add_4B(match);
+
     enc.add_4B(gazetteer_metas.size());
     for (auto&& gazetteer_meta : gazetteer_metas) {
       enc.add_str(gazetteer_meta.basename);
@@ -449,9 +458,9 @@ class gazetteers_enhanced : public feature_processor {
     vector<unsigned> nodes, new_nodes;
     vector<vector<ner_feature>> features(sentence.size);
 
-    vector<vector<string>> recased_raw_lemmas(sentence.size);
+    vector<vector<string>> recased_match_sources(sentence.size);
     for (unsigned i = 0; i < sentence.size; i++)
-      recase_raw_lemmas(sentence.words[i].form, sentence.words[i].raw_lemmas_all, recased_raw_lemmas[i]);
+      recase_match_source(sentence.words[i], RECASE_ANY, recased_match_sources[i]);
 
     for (unsigned i = 0; i < sentence.size; i++) {
       unsigned hard_pre_length = 0, hard_pre_node = -1;
@@ -461,8 +470,8 @@ class gazetteers_enhanced : public feature_processor {
         new_nodes.clear();
         for (auto&& node : nodes)
           if (!gazetteers_trie[node].children.empty())
-            for (auto&& raw_lemma : recased_raw_lemmas[j]) {
-              auto range = gazetteers_trie[node].children.equal_range(raw_lemma);
+            for (auto&& match_source : recased_match_sources[j]) {
+              auto range = gazetteers_trie[node].children.equal_range(match_source);
               for (auto&& it = range.first; it != range.second; it++)
                 append_unless_exists(new_nodes, it->second);
             }
@@ -509,9 +518,9 @@ class gazetteers_enhanced : public feature_processor {
   virtual void process_entities(ner_sentence& sentence, vector<named_entity>& entities, vector<named_entity>& buffer) const override {
     vector<unsigned> nodes, new_nodes;
 
-    vector<vector<string>> recased_raw_lemmas(sentence.size);
+    vector<vector<string>> recased_match_sources(sentence.size);
     for (unsigned i = 0; i < sentence.size; i++)
-      recase_raw_lemmas(sentence.words[i].form, sentence.words[i].raw_lemmas_all, recased_raw_lemmas[i]);
+      recase_match_source(sentence.words[i], RECASE_ANY, recased_match_sources[i]);
 
     buffer.clear();
     unsigned entity_until = 0;
@@ -532,8 +541,8 @@ class gazetteers_enhanced : public feature_processor {
           new_nodes.clear();
           for (auto&& node : nodes)
             if (!gazetteers_trie[node].children.empty())
-              for (auto&& raw_lemma : recased_raw_lemmas[j]) {
-                auto range = gazetteers_trie[node].children.equal_range(raw_lemma);
+              for (auto&& match_source : recased_match_sources[j]) {
+                auto range = gazetteers_trie[node].children.equal_range(match_source);
                 for (auto&& it = range.first; it != range.second; it++)
                   append_unless_exists(new_nodes, it->second);
               }
@@ -566,6 +575,9 @@ class gazetteers_enhanced : public feature_processor {
   }
 
  private:
+  enum { MATCH_FORM = 0, MATCH_RAWLEMMA = 1, MATCH_RAWLEMMAS = 2 };
+  int match;
+
   enum { SOFT, HARD_PRE, HARD_POST, MODES_TOTAL };
   const static vector<string> basename_suffixes;
 
@@ -633,7 +645,7 @@ class gazetteers_enhanced : public feature_processor {
     unordered_map<string, int> gazetteer_prefixes;
     vector<string_piece> gazetteer_tokens, gazetteer_tokens_additional, gazetteer_token(1);
     ner_sentence gazetteer_token_tagged;
-    vector<string> gazetteer_recased_raw_lemmas;
+    vector<string> gazetteer_recased_match_sources;
 
     gazetteers_trie.clear();
     gazetteers_trie.emplace_back();
@@ -657,10 +669,9 @@ class gazetteers_enhanced : public feature_processor {
 
             gazetteer_token[0] = string_piece(gazetteer_tokens[token]);
             pipeline.tagger->tag(gazetteer_token, gazetteer_token_tagged);
-            recase_raw_lemmas(gazetteer_token[0], gazetteer_token_tagged.words[0].raw_lemmas_all,
-                              gazetteer_recased_raw_lemmas);
-            for (auto&& raw_lemma : gazetteer_recased_raw_lemmas)
-              gazetteers_trie[node].children.emplace(raw_lemma, new_node);
+            recase_match_source(gazetteer_token_tagged.words[0], RECASE_NATIVE, gazetteer_recased_match_sources);
+            for (auto&& match_source : gazetteer_recased_match_sources)
+              gazetteers_trie[node].children.emplace(match_source, new_node);
 
             node = new_node;
           } else {
@@ -679,27 +690,52 @@ class gazetteers_enhanced : public feature_processor {
     return true;
   }
 
-  static void recase_raw_lemmas(string_piece form, const vector<string>& raw_lemmas, vector<string>& recased_raw_lemmas) {
+  enum { TO_LOWER, TO_TITLE, TO_UPPER, TO_TOTAL };
+  static void recase_text(const string& text, int mode, vector<string>& recased) {
+    using namespace unilib;
+
+    recased.emplace_back();
+
+    if (mode == TO_UPPER)
+      utf8::map(unicode::uppercase, text, recased.back());
+    else if (mode == TO_LOWER)
+      utf8::map(unicode::lowercase, text, recased.back());
+    else if (mode == TO_TITLE)
+      for (auto&& chr : utf8::decoder(text))
+        utf8::append(recased.back(), recased.back().empty() ? unicode::uppercase(chr) : unicode::lowercase(chr));
+  }
+
+  enum { RECASE_NATIVE, RECASE_ANY };
+  void recase_match_source(const ner_word& word, int mode, vector<string>& recased) const {
     using namespace unilib;
 
     bool any_lower = false, first_uc = false, first = true;
-    for (auto&& chr : utf8::decoder(form.str, form.len)) {
+    for (auto&& chr : utf8::decoder(word.form)) {
       any_lower = any_lower || (unicode::category(chr) & unicode::Ll);
       if (first) first_uc = unicode::category(chr) & unicode::Lut;
       first = false;
     }
 
-    recased_raw_lemmas.clear();
-    recased_raw_lemmas.reserve(raw_lemmas.size());
-    for (auto&& raw_lemma : raw_lemmas) {
-      recased_raw_lemmas.emplace_back();
+    recased.clear();
 
-      first = true;
-      for (auto&& chr : utf8::decoder(raw_lemma)) {
-        utf8::append(recased_raw_lemmas.back(),
-                     (first_uc && (first || !any_lower)) ? unicode::uppercase(chr) : unicode::lowercase(chr));
-        first = false;
+    for (int perform = 0; perform < TO_TOTAL; perform++) {
+      if (mode == RECASE_NATIVE) {
+        if (perform == TO_UPPER && !(first_uc && !any_lower)) continue;
+        if (perform == TO_TITLE && !(first_uc && any_lower)) continue;
+        if (perform == TO_LOWER && first_uc) continue;
       }
+      if (mode == RECASE_ANY) {
+        if (perform == TO_UPPER && !(first_uc && !any_lower)) continue;
+        if (perform == TO_TITLE && !first_uc) continue;
+      }
+
+      if (match == MATCH_FORM)
+        recase_text(word.form, perform, recased);
+      else if (match == MATCH_RAWLEMMA)
+        recase_text(word.raw_lemma, perform, recased);
+      else if (match == MATCH_RAWLEMMAS)
+        for (auto&& raw_lemma : word.raw_lemmas_all)
+          recase_text(raw_lemma, perform, recased);
     }
   }
 };
