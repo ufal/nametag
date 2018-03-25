@@ -376,13 +376,19 @@ class gazetteers_enhanced : public feature_processor {
     gazetteer_metas.clear();
     gazetteer_lists.clear();
 
-    if (!(args.size() & 1)) return cerr << "Even number of parameters to GazetteersEnhanced!" << endl, false;
+    if (args.size() < 4) return cerr << "Not enough parameters to GazetteersEnhanced!" << endl, false;
+    if (args.size() & 1) return cerr << "Odd number of parameters to GazetteersEnhanced!" << endl, false;
+
     if (args[0] == "form") match = MATCH_FORM;
     else if (args[0] == "rawlemma") match = MATCH_RAWLEMMA;
     else if (args[0] == "rawlemmas") match = MATCH_RAWLEMMAS;
-    else return cerr << "First parameter of GazetteersEnhanced not valid!" << endl, false;
+    else return cerr << "First parameter of GazetteersEnhanced not one of form/rawlemma/rawlemmas!" << endl, false;
 
-    for (unsigned i = 1; i < args.size(); i += 2) {
+    if (args[1] == "embed_in_model") embed = EMBED_IN_MODEL;
+    else if (args[1] == "out_of_model") embed = OUT_OF_MODEL;
+    else return cerr << "Second parameter of GazetteersEnhanced not one of [embed_in|out_of]_model!" << endl, false;
+
+    for (unsigned i = 2; i < args.size(); i += 2) {
       gazetteer_metas.emplace_back();
       gazetteer_metas.back().basename = args[i];
       gazetteer_metas.back().feature = *total_features + window; *total_features += TOTAL * (2 * window + 1);
@@ -402,6 +408,7 @@ class gazetteers_enhanced : public feature_processor {
     feature_processor::load(data, pipeline);
 
     match = data.next_4B();
+    embed = OUT_OF_MODEL;
 
     gazetteer_metas.resize(data.next_4B());
     for (auto&& gazetteer_meta : gazetteer_metas) {
@@ -439,14 +446,18 @@ class gazetteers_enhanced : public feature_processor {
       enc.add_4B(gazetteer_meta.entity);
     }
 
-    enc.add_4B(gazetteer_lists.size());
-    for (auto&& gazetteer_list : gazetteer_lists) {
-      enc.add_4B(gazetteer_list.gazetteers.size());
-      for (auto&& gazetteer : gazetteer_list.gazetteers)
-        enc.add_str(gazetteer);
-      enc.add_4B(gazetteer_list.feature);
-      enc.add_4B(gazetteer_list.entity);
-      enc.add_4B(gazetteer_list.mode);
+    if (embed == EMBED_IN_MODEL) {
+      enc.add_4B(gazetteer_lists.size());
+      for (auto&& gazetteer_list : gazetteer_lists) {
+        enc.add_4B(gazetteer_list.gazetteers.size());
+        for (auto&& gazetteer : gazetteer_list.gazetteers)
+          enc.add_str(gazetteer);
+        enc.add_4B(gazetteer_list.feature);
+        enc.add_4B(gazetteer_list.entity);
+        enc.add_4B(gazetteer_list.mode);
+      }
+    } else {
+      enc.add_4B(0);
     }
 
     enc.add_4B(entity_list.size());
@@ -577,6 +588,9 @@ class gazetteers_enhanced : public feature_processor {
  private:
   enum { MATCH_FORM = 0, MATCH_RAWLEMMA = 1, MATCH_RAWLEMMAS = 2 };
   int match;
+
+  enum { EMBED_IN_MODEL = 0, OUT_OF_MODEL = 1 };
+  int embed;
 
   enum { SOFT, HARD_PRE, HARD_POST, MODES_TOTAL };
   const static vector<string> basename_suffixes;
