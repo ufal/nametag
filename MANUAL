@@ -472,13 +472,15 @@ output formats are:
   ...
 
 
-  == Running the Tokenizer ==[run_tokenizer]
 
-  Using the run_tokenizer executable it is possible to perform only tokenization
-  and segmentation used in a specified model.
+Running the Tokenizer
+---------------------
 
-  The input is a UTF-8 encoded plain text and the input files are specified same
-  as with the run_ner command.
+Using the run_tokenizer executable it is possible to perform only tokenization
+and segmentation used in a specified model.
+
+The input is a UTF-8 encoded plain text and the input files are specified same
+as with the run_ner command.
 
 The full command syntax of run_tokenizer is
   run_tokenizer [options] recognizer_model [file[:output_file]]...
@@ -624,21 +626,51 @@ exhaustive (see the sources in the features directory).
   addition to the full Brown cluster can be specified. Each line of the Brown
   clusters file must contain two tab-separated columns, the first of which is
   the Brown cluster label and the second is a raw lemma.
+- CzechAddContainers - add CNEC containers (currently only P and T)
 - CzechLemmaTerm - feature template specific for Czech morphological system by
   Jan Hajič (Hajič 2004 (http://books.google.cz/books?id=sB63AAAACAAJ)). The
   term information (personal name, geographic name, ...) specified in lemma
   comment are used as features.
 - Form - use forms as features
 - FormCapitalization - use capitalization of form as features
+- FormCaseNormalized - use case normalized (first character as-is, others
+  lowercased) forms as features
+- FormCaseNormalizedSuffix shortest longest - use suffixes of case normalized
+  (first character as-is, others lowercased) forms of lengths between shortest
+  and longest
 - Gazetteers [files] - use given files as gazetteers. Each file is one
   gazetteers list independent of the others and must contain a set of lemma
   sequences, each on a line, represented as raw lemmas separated by spaces.
+- GazetteersEnhanced (form|rawlemma|rawlemmas) (embed_in_model|out_of_model)
+  file_base entity [file_base entity ...]
+  - use gazetteers from given files. Each gazetteer contains (possibly
+    multiword) named entities per line. Matching of the named entities can be
+    performed either using form, disambiguated rawlemma of any of rawlemmas
+    proposed by the morphological analyzer. The gazetteers might be embedded in
+    the model file or not; in either case, additional gazetteers are loaded
+    during each startup. For each file_base specified in GazetteersEnhanced
+    templates, three files are tried:
+  - file_base.txt: gazetteers used as features, representing each file_base
+    with a unique feature
+  - file_base.hard_pre.txt: matched named entities (finding non-overlapping
+    entities, preferring the ones starting earlier and longer ones in case of
+    ties) are forced to the specified entity type even before the NER model is
+    executed
+  - file_base.hard_post.txt: after running the NER model, tokens not recognized
+    as entities are matched against the gazetteers (again finding
+    non-overlapping entities, preferring the ones starting earlier and longer
+    ones in case of ties) and marked as entity type if found
 - Lemma - use lemma ids as a feature
 - NumericTimeValue - recognize numbers which could represent hours, minutes,
   hour:minute time, days, months or years
 - PreviousStage - use named entities predicted by previous stage as features
 - RawLemma - use raw lemmas as features
 - RawLemmaCapitalization - use capitalization of raw lemma as features
+- RawLemmaCaseNormalized - use case normalized (first character as-is, others
+  lowercased) raw lemmas as features
+- RawLemmaCaseNormalizedSuffix shortest longest - use suffixes of case
+  normalized (first character as-is, others lowercased) raw lemmas of lengths
+  between shortest and longest
 - Tag - use tags as features
 - URLEmailDetector url_type email_type - detect URLs and emails. If an URL or
   an email is detected, it is immediately marked with specified named entity

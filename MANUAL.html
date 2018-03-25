@@ -85,21 +85,25 @@
       </li>
       <li><a href="#run_ner_output_formats">5.2.2. Output Formats</a>
       </li>
-      <li><a href="#run_tokenizer_output_formats">5.2.3. Output Formats</a>
+      </ul>
+    </li>
+    <li><a href="#run_tokenizer">5.3. Running the Tokenizer</a>
+      <ul>
+      <li><a href="#run_tokenizer_output_formats">5.3.1. Output Formats</a>
       </li>
       </ul>
     </li>
-    <li><a href="#rest_server">5.3. Running REST Server</a>
+    <li><a href="#rest_server">5.4. Running REST Server</a>
     </li>
-    <li><a href="#custom_models">5.4. Training of Custom Models</a>
+    <li><a href="#custom_models">5.5. Training of Custom Models</a>
       <ul>
-      <li><a href="#training_data">5.4.1. Training data</a>
+      <li><a href="#training_data">5.5.1. Training data</a>
       </li>
-      <li><a href="#tagger">5.4.2. Tagger</a>
+      <li><a href="#tagger">5.5.2. Tagger</a>
       </li>
-      <li><a href="#feature_templates">5.4.3. Feature Templates</a>
+      <li><a href="#feature_templates">5.5.3. Feature Templates</a>
       </li>
-      <li><a href="#train_ner">5.4.4. Running train_ner</a>
+      <li><a href="#train_ner">5.5.4. Running train_ner</a>
       </li>
       </ul>
     </li>
@@ -750,17 +754,20 @@ byl	_
 ...
 </pre>
 
-<p></p>
-== Running the Tokenizer ==[run_tokenizer]
-<p></p>
-Using the <code>run_tokenizer</code> executable it is possible to perform only
-tokenization and segmentation used in a specified model.
-<p></p>
-The input is a UTF-8 encoded plain text and the input files are specified same
-as with the <a href="#run_ner"><code>run_ner</code></a> command.
 </li>
 </ul>
 
+<a id="run_tokenizer" name="run_tokenizer"></a>
+<h2>5.3. Running the Tokenizer</h2>
+
+<p>
+Using the <code>run_tokenizer</code> executable it is possible to perform only
+tokenization and segmentation used in a specified model.
+</p>
+<p>
+The input is a UTF-8 encoded plain text and the input files are specified same
+as with the <a href="#run_ner"><code>run_ner</code></a> command.
+</p>
 <p style="margin-bottom:0">
 The full command syntax of <code>run_tokenizer</code> is
 </p>
@@ -770,7 +777,7 @@ Options: --output=vertical|xml
 </pre>
 
 <a id="run_tokenizer_output_formats" name="run_tokenizer_output_formats"></a>
-<h3>5.2.3. Output Formats</h3>
+<h3>5.3.1. Output Formats</h3>
 
 <p style="margin-bottom:0">
 The output format is specified using the <code>--output</code> option. Currently
@@ -814,7 +821,7 @@ těší
 </ul>
 
 <a id="rest_server" name="rest_server"></a>
-<h2>5.3. Running REST Server</h2>
+<h2>5.4. Running REST Server</h2>
 
 <p>
 NameTag also provides REST server binary <code>nametag_server</code>.
@@ -839,14 +846,14 @@ models on demand.
 </p>
 
 <a id="custom_models" name="custom_models"></a>
-<h2>5.4. Training of Custom Models</h2>
+<h2>5.5. Training of Custom Models</h2>
 
 <p>
 Training of custom models is possible using the <code>train_ner</code> binary.
 </p>
 
 <a id="training_data" name="training_data"></a>
-<h3>5.4.1. Training data</h3>
+<h3>5.5.1. Training data</h3>
 
 <p>
 To train a named entity recognizer model, training data is needed. The training
@@ -873,7 +880,7 @@ except for one case &ndash; if the previous word is also a named entity of same 
  </ul>
 
 <a id="tagger" name="tagger"></a>
-<h3>5.4.2. Tagger</h3>
+<h3>5.5.2. Tagger</h3>
 
 <p>
 Most named entity recognizer models utilize part of speech tags and lemmas.
@@ -903,7 +910,7 @@ NameTag can utilize several taggers to obtain the tags and lemmas:
 </dl>
 
 <a id="tagger_lemma_structure" name="tagger_lemma_structure"></a>
-<h4>5.4.2.1. Lemma Structure</h4>
+<h4>5.5.2.1. Lemma Structure</h4>
 
 <p style="margin-bottom:0">
 The lemmas used by the recognizer can be structured and consist of three parts:
@@ -927,7 +934,7 @@ comment is empty.
 </p>
 
 <a id="feature_templates" name="feature_templates"></a>
-<h3>5.4.3. Feature Templates</h3>
+<h3>5.5.3. Feature Templates</h3>
 
 <p>
 The recognizer utilizes feature templates to generate features which are used
@@ -952,6 +959,8 @@ exhaustive (see the sources in the <code>features</code> directory).
   clusters file must contain two tab-separated columns, the first of which is
   the Brown cluster label and the second is a raw lemma.
 </li>
+<li><code>CzechAddContainers</code> &ndash; add CNEC containers (currently only <code>P</code> and <code>T</code>)
+</li>
 <li><code>CzechLemmaTerm</code> &ndash; feature template specific for Czech morphological system
   by Jan Hajič (<a href="http://books.google.cz/books?id=sB63AAAACAAJ">Hajič 2004</a>).
   The term information (personal name, geographic name, ...) specified in lemma
@@ -961,9 +970,40 @@ exhaustive (see the sources in the <code>features</code> directory).
 </li>
 <li><code>FormCapitalization</code> &ndash; use capitalization of form as features
 </li>
+<li><code>FormCaseNormalized</code> &ndash; use case normalized (first character as-is, others
+  lowercased) forms as features
+</li>
+<li><code>FormCaseNormalizedSuffix shortest longest</code> &ndash; use suffixes of case
+  normalized (first character as-is, others lowercased) forms of lengths
+  between <code>shortest</code> and <code>longest</code>
+</li>
 <li><code>Gazetteers [files]</code> &ndash; use given files as gazetteers. Each file is one
   gazetteers list independent of the others and must contain a set of lemma
   sequences, each on a line, represented as raw lemmas separated by spaces.
+</li>
+<li><code>GazetteersEnhanced (form|rawlemma|rawlemmas) (embed_in_model|out_of_model) file_base entity [file_base entity ...]</code>
+  &ndash; use gazetteers from given files. Each gazetteer contains (possibly multiword)
+  named entities per line. Matching of the named entities can be performed either
+  using <code>form</code>, disambiguated <code>rawlemma</code> of any of <code>rawlemma</code>s proposed
+  by the morphological analyzer. The gazetteers might be embedded in the model
+  file or not; in either case, additional gazetteers are loaded during each
+  startup. For each <code>file_base</code> specified in <code>GazetteersEnhanced</code> templates,
+  three files are tried:
+  <ul>
+  <li><code>file_base.txt</code>: gazetteers used as features, representing each
+    <code>file_base</code> with a unique feature
+  </li>
+  <li><code>file_base.hard_pre.txt</code>: matched named entities (finding non-overlapping
+    entities, preferring the ones starting earlier and longer ones in case of
+    ties) are forced to the specified <code>entity</code> type even <i>before</i> the
+    NER model is executed
+  </li>
+  <li><code>file_base.hard_post.txt</code>: <i>after</i> running the NER model, tokens not
+    recognized as entities are matched against the gazetteers (again finding
+    non-overlapping entities, preferring the ones starting earlier and longer
+    ones in case of ties) and marked as <code>entity</code> type if found
+  </li>
+  </ul>
 </li>
 <li><code>Lemma</code> &ndash; use lemma ids as a feature
 </li>
@@ -975,6 +1015,13 @@ exhaustive (see the sources in the <code>features</code> directory).
 <li><code>RawLemma</code> &ndash; use raw lemmas as features
 </li>
 <li><code>RawLemmaCapitalization</code> &ndash; use capitalization of raw lemma as features
+</li>
+<li><code>RawLemmaCaseNormalized</code> &ndash; use case normalized (first character as-is, others
+  lowercased) raw lemmas as features
+</li>
+<li><code>RawLemmaCaseNormalizedSuffix shortest longest</code> &ndash; use suffixes of case
+  normalized (first character as-is, others lowercased) raw lemmas of lengths
+  between <code>shortest</code> and <code>longest</code>
 </li>
 <li><code>Tag</code> &ndash; use tags as features
 </li>
@@ -1014,7 +1061,7 @@ CzechAddContainers
 </pre>
 
 <a id="train_ner" name="train_ner"></a>
-<h3>5.4.4. Running train_ner</h3>
+<h3>5.5.4. Running train_ner</h3>
 
 <p>
 The <code>train_ner</code> binary has the following arguments (which has to be specified
