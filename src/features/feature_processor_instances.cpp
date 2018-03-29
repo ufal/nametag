@@ -399,7 +399,7 @@ class gazetteers_enhanced : public feature_processor {
     for (entity_type i = 0; i < entities.size(); i++)
       entity_list.push_back(entities.name(i));
 
-    if (!load_gazetteer_lists(pipeline, true)) return false;
+    if (!load_gazetteer_lists(pipeline, embed == EMBED_IN_MODEL)) return false;
 
     return true;
   }
