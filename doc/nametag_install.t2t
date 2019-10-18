@@ -61,7 +61,7 @@ please refer to its manual if interested in all supported options.
 == Other language bindings ==[other_language_bindings]
 
 
-== C# ==[csharp_installation]
+=== C# ===[csharp_installation]
 %!include: nametag_bindings_csharp_install.t2t
 
 
