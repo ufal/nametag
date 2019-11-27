@@ -377,20 +377,23 @@ czech-cnec1.1-<version>-no_numbers.ner
   F1-measure on two-level hierarchy and 80.72% F1-measure on top-level hierarchy
   of CNEC 1.1 (http://ufal.mff.cuni.cz/cnec/cnec1.1) etest data without c
   (Bibliographic items), n (Number expressions) and q (Quantitative expressions)
-  supertypes.  Model speed: ~40k words/s, model size: ~7MB. == English NameTag
-  Models ==[english-conll]
+  supertypes.  Model speed: ~40k words/s, model size: ~7MB.
 
-  English models are distributed under the CC BY-NC-SA
-  (http://creativecommons.org/licenses/by-nc-sa/3.0/) licence. They are trained
-  on CoNLL-2003 NER annotations (Sang and De Meulder, 2003)
-  (https://www.aclweb.org/anthology/W03-0419/) of part of Reuters Corpus
-  (http://trec.nist.gov/data/reuters/reuters.html) and internally use
-  [MorphoDiTa http://ufal.mff.cuni.cz/morphodita/] as a tagger and lemmatizer.
-  English models work in NameTag version 1.0 or later.
 
-  English models are versioned according to the date when released, the version
-  format is YYMMDD, where YY, MM and DD are two-digit representation of year,
-  month and day, respectively. The latest version is 140408.
+English NameTag Models
+----------------------
+
+English models are distributed under the CC BY-NC-SA
+(http://creativecommons.org/licenses/by-nc-sa/3.0/) licence. They are trained on
+CoNLL-2003 NER annotations (Sang and De Meulder, 2003)
+(https://www.aclweb.org/anthology/W03-0419/) of part of Reuters Corpus
+(http://trec.nist.gov/data/reuters/reuters.html) and internally use [MorphoDiTa
+http://ufal.mff.cuni.cz/morphodita/] as a tagger and lemmatizer. English models
+work in NameTag version 1.0 or later.
+
+English models are versioned according to the date when released, the version
+format is YYMMDD, where YY, MM and DD are two-digit representation of year,
+month and day, respectively. The latest version is 140408.
 
 
 Acknowledgements

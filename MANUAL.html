@@ -77,37 +77,41 @@
       </li>
       <li><a href="#czech-cnec11_model">5.1.4. Czech Named Entity Corpus 1.1 Model</a>
       </li>
-      <li><a href="#english-conll_acknowledgements">5.1.5. Acknowledgements</a>
+      </ul>
+    </li>
+    <li><a href="#english-conll">5.2. English NameTag Models</a>
+      <ul>
+      <li><a href="#english-conll_acknowledgements">5.2.1. Acknowledgements</a>
       </li>
-      <li><a href="#english-conll_model">5.1.6. English Model</a>
+      <li><a href="#english-conll_model">5.2.2. English Model</a>
       </li>
       </ul>
     </li>
-    <li><a href="#run_ner">5.2. Running the Recognizer</a>
+    <li><a href="#run_ner">5.3. Running the Recognizer</a>
       <ul>
-      <li><a href="#run_ner_input_formats">5.2.1. Input Formats</a>
+      <li><a href="#run_ner_input_formats">5.3.1. Input Formats</a>
       </li>
-      <li><a href="#run_ner_output_formats">5.2.2. Output Formats</a>
+      <li><a href="#run_ner_output_formats">5.3.2. Output Formats</a>
       </li>
       </ul>
     </li>
-    <li><a href="#run_tokenizer">5.3. Running the Tokenizer</a>
+    <li><a href="#run_tokenizer">5.4. Running the Tokenizer</a>
       <ul>
-      <li><a href="#run_tokenizer_output_formats">5.3.1. Output Formats</a>
+      <li><a href="#run_tokenizer_output_formats">5.4.1. Output Formats</a>
       </li>
       </ul>
     </li>
-    <li><a href="#rest_server">5.4. Running REST Server</a>
+    <li><a href="#rest_server">5.5. Running REST Server</a>
     </li>
-    <li><a href="#custom_models">5.5. Training of Custom Models</a>
+    <li><a href="#custom_models">5.6. Training of Custom Models</a>
       <ul>
-      <li><a href="#training_data">5.5.1. Training data</a>
+      <li><a href="#training_data">5.6.1. Training data</a>
       </li>
-      <li><a href="#tagger">5.5.2. Tagger</a>
+      <li><a href="#tagger">5.6.2. Tagger</a>
       </li>
-      <li><a href="#feature_templates">5.5.3. Feature Templates</a>
+      <li><a href="#feature_templates">5.6.3. Feature Templates</a>
       </li>
-      <li><a href="#train_ner">5.5.4. Running train_ner</a>
+      <li><a href="#train_ner">5.6.4. Running train_ner</a>
       </li>
       </ul>
     </li>
@@ -621,8 +625,13 @@ whose detailed description is available in the documentation of the
   without <code>c</code> (Bibliographic items), <code>n</code> (Number expressions) and <code>q</code>
   (Quantitative expressions) supertypes.  Model speed: ~40k words/s,
   model size: ~7MB.
-== English NameTag Models ==[english-conll]
-<p></p>
+</dd>
+</dl>
+
+<a id="english-conll" name="english-conll"></a>
+<h2>5.2. English NameTag Models</h2>
+
+<p>
 English models are distributed under the
 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</a> licence. They
 are trained on
@@ -630,16 +639,16 @@ are trained on
 of part of <a href="http://trec.nist.gov/data/reuters/reuters.html">Reuters Corpus</a> and internally use [MorphoDiTa
 <a href="http://ufal.mff.cuni.cz/morphodita/">http://ufal.mff.cuni.cz/morphodita/</a>] as a tagger and lemmatizer. English models
 work in NameTag version 1.0 or later.
-<p></p>
+</p>
+<p>
 English models are versioned according to the date when released, the version
 format is <code>YYMMDD</code>, where <code>YY</code>, <code>MM</code> and <code>DD</code> are two-digit
 representation of year, month and day, respectively. The latest version is
 140408.
-</dd>
-</dl>
+</p>
 
 <a id="english-conll_acknowledgements" name="english-conll_acknowledgements"></a>
-<h3>5.1.5. Acknowledgements</h3>
+<h3>5.2.1. Acknowledgements</h3>
 
 <p>
 This work has been using language resources developed and/or stored and/or
@@ -663,7 +672,7 @@ apply.
 </p>
 
 <a id="english-conll_publications" name="english-conll_publications"></a>
-<h4>5.1.5.1. Publications</h4>
+<h4>5.2.1.1. Publications</h4>
 
 <ul>
 <li>Straková Jana, Straka Milan, Hajič Jan: <i><a href="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</a>.</i> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
@@ -674,7 +683,7 @@ apply.
 </ul>
 
 <a id="english-conll_model" name="english-conll_model"></a>
-<h3>5.1.6. English Model</h3>
+<h3>5.2.2. English Model</h3>
 
 <p>
 English model is trained on <a href="https://www.aclweb.org/anthology/W03-0419/">CoNLL-2003 NER annotations (Sang and De Meulder, 2003)</a> of part of
@@ -691,7 +700,7 @@ CoNLL2003 etest data. Model speed: ~20k words/s, model size: ~10MB.
 </p>
 
 <a id="run_ner" name="run_ner"></a>
-<h2>5.2. Running the Recognizer</h2>
+<h2>5.3. Running the Recognizer</h2>
 
 <p style="margin-bottom:0">
 The NameTag Recognizer can be executed using the following command:
@@ -722,7 +731,7 @@ Options: --input=untokenized|vertical
 </pre>
 
 <a id="run_ner_input_formats" name="run_ner_input_formats"></a>
-<h3>5.2.1. Input Formats</h3>
+<h3>5.3.1. Input Formats</h3>
 
 <p style="margin-bottom:0">
 The input format is specified using the <code>--input</code> option. Currently supported
@@ -738,7 +747,7 @@ input formats are:
 </ul>
 
 <a id="run_ner_output_formats" name="run_ner_output_formats"></a>
-<h3>5.2.2. Output Formats</h3>
+<h3>5.3.2. Output Formats</h3>
 
 <p style="margin-bottom:0">
 The output format is specified using the <code>--output</code> option. Currently
@@ -828,7 +837,7 @@ byl	_
 </ul>
 
 <a id="run_tokenizer" name="run_tokenizer"></a>
-<h2>5.3. Running the Tokenizer</h2>
+<h2>5.4. Running the Tokenizer</h2>
 
 <p>
 Using the <code>run_tokenizer</code> executable it is possible to perform only
@@ -847,7 +856,7 @@ Options: --output=vertical|xml
 </pre>
 
 <a id="run_tokenizer_output_formats" name="run_tokenizer_output_formats"></a>
-<h3>5.3.1. Output Formats</h3>
+<h3>5.4.1. Output Formats</h3>
 
 <p style="margin-bottom:0">
 The output format is specified using the <code>--output</code> option. Currently
@@ -891,7 +900,7 @@ těší
 </ul>
 
 <a id="rest_server" name="rest_server"></a>
-<h2>5.4. Running REST Server</h2>
+<h2>5.5. Running REST Server</h2>
 
 <p>
 NameTag also provides REST server binary <code>nametag_server</code>.
@@ -916,14 +925,14 @@ models on demand.
 </p>
 
 <a id="custom_models" name="custom_models"></a>
-<h2>5.5. Training of Custom Models</h2>
+<h2>5.6. Training of Custom Models</h2>
 
 <p>
 Training of custom models is possible using the <code>train_ner</code> binary.
 </p>
 
 <a id="training_data" name="training_data"></a>
-<h3>5.5.1. Training data</h3>
+<h3>5.6.1. Training data</h3>
 
 <p>
 To train a named entity recognizer model, training data is needed. The training
@@ -950,7 +959,7 @@ except for one case &ndash; if the previous word is also a named entity of same 
  </ul>
 
 <a id="tagger" name="tagger"></a>
-<h3>5.5.2. Tagger</h3>
+<h3>5.6.2. Tagger</h3>
 
 <p>
 Most named entity recognizer models utilize part of speech tags and lemmas.
@@ -980,7 +989,7 @@ NameTag can utilize several taggers to obtain the tags and lemmas:
 </dl>
 
 <a id="tagger_lemma_structure" name="tagger_lemma_structure"></a>
-<h4>5.5.2.1. Lemma Structure</h4>
+<h4>5.6.2.1. Lemma Structure</h4>
 
 <p style="margin-bottom:0">
 The lemmas used by the recognizer can be structured and consist of three parts:
@@ -1004,7 +1013,7 @@ comment is empty.
 </p>
 
 <a id="feature_templates" name="feature_templates"></a>
-<h3>5.5.3. Feature Templates</h3>
+<h3>5.6.3. Feature Templates</h3>
 
 <p>
 The recognizer utilizes feature templates to generate features which are used
@@ -1131,7 +1140,7 @@ CzechAddContainers
 </pre>
 
 <a id="train_ner" name="train_ner"></a>
-<h3>5.5.4. Running train_ner</h3>
+<h3>5.6.4. Running train_ner</h3>
 
 <p>
 The <code>train_ner</code> binary has the following arguments (which has to be specified
