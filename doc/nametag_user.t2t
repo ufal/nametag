@@ -17,6 +17,7 @@ commandline tools. The C++ library is described in NameTag API Reference.
 
 
 %!include: nametag_model_czech-cnec.t2t
+%!include: nametag_model_english-conll.t2t
 
 
 == Running the Recognizer ==[run_ner]

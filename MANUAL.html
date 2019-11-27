@@ -77,6 +77,10 @@
       </li>
       <li><a href="#czech-cnec11_model">5.1.4. Czech Named Entity Corpus 1.1 Model</a>
       </li>
+      <li><a href="#english-conll_acknowledgements">5.1.5. Acknowledgements</a>
+      </li>
+      <li><a href="#english-conll_model">5.1.6. English Model</a>
+      </li>
       </ul>
     </li>
     <li><a href="#run_ner">5.2. Running the Recognizer</a>
@@ -261,7 +265,7 @@ Currently the following language models are available:
 <ul>
 <li>Czech: <a href="http://hdl.handle.net/11858/00-097C-0000-0023-7D42-8">czech-cnec-140304</a> (<a href="http://ufal.mff.cuni.cz/nametag/users-manual#czech-cnec">documentation</a>)
 </li>
-<li>English: in development
+<li>English: <a href="http://hdl.handle.net/11234/1-3118">english-conll-140408</a> (<a href="http://ufal.mff.cuni.cz/nametag/users-manual#english-conll">documentation</a>)
 </li>
 </ul>
 
@@ -617,8 +621,76 @@ whose detailed description is available in the documentation of the
   without <code>c</code> (Bibliographic items), <code>n</code> (Number expressions) and <code>q</code>
   (Quantitative expressions) supertypes.  Model speed: ~40k words/s,
   model size: ~7MB.
+== English NameTag Models ==[english-conll]
+<p></p>
+English models are distributed under the
+<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA</a> licence. They
+are trained on [CoNLL-2003 NER annotations (Sang and De Meulder, 2003)
+<a href="https://www.aclweb.org/anthology/W03-0419/">https://www.aclweb.org/anthology/W03-0419/</a>] of part of [Reuters Corpus
+<a href="http://trec.nist.gov/data/reuters/reuters.html">http://trec.nist.gov/data/reuters/reuters.html</a>] and internally use [MorphoDiTa
+<a href="http://ufal.mff.cuni.cz/morphodita/">http://ufal.mff.cuni.cz/morphodita/</a>] as a tagger and lemmatizer. English models
+work in NameTag version 1.0 or later.
+<p></p>
+English models are versioned according to the date when released, the version
+format is <code>YYMMDD</code>, where <code>YY</code>, <code>MM</code> and <code>DD</code> are two-digit
+representation of year, month and day, respectively. The latest version is
+140408.
 </dd>
 </dl>
+
+<a id="english-conll_acknowledgements" name="english-conll_acknowledgements"></a>
+<h3>5.1.5. Acknowledgements</h3>
+
+<p>
+This work has been using language resources developed and/or stored and/or
+distributed by the LINDAT/CLARIN project of the Ministry of Education of the
+Czech Republic (project <i>LM2010013</i>).
+</p>
+<p>
+The recognizer research was supported by the projects
+<i>MSM0021620838</i> and <i>LC536</i> of Ministry of Education, Youth and Sports of the Czech Republic,
+<i>1ET101120503</i> of Academy of Sciences of the Czech Republic, LINDAT/CLARIN
+project of the Ministry of Education of the Czech Republic (project <i>LM2010013</i>),
+and partially by SVV project number 267 314.  The research was performed by
+Jana Straková, Zdeněk Žabokrtský and Milan Straka.
+</p>
+<p>
+Czech models use MorphoDiTa as a tagger and lemmatizer, therefore
+<a href="http://ufal.mff.cuni.cz/morphodita#morphodita_acknowledgements">MorphoDiTa Acknowledgements</a>
+and
+<a href="http://ufal.mff.cuni.cz/morphodita/users-manual#english-morphium-wsj_acknowledgements">English MorphoDiTa Model Acknowledgements</a>
+apply.
+</p>
+
+<a id="english-conll_publications" name="english-conll_publications"></a>
+<h4>5.1.5.1. Publications</h4>
+
+<ul>
+<li>Straková Jana, Straka Milan, Hajič Jan: <i><a href="http://ufal.mff.cuni.cz/~straka/papers/2013-tsd_ner.pdf">A New State-of-The-Art Czech Named Entity Recognizer</a>.</i> In: Lecture Notes in Computer Science, Vol. 8082, Text, Speech and Dialogue: 16th International Conference, TSD 2013. Proceedings, Copyright © Springer Verlag, Berlin / Heidelberg, ISBN 978-3-642-40584-6, ISSN 0302-9743, pp. 68-75, 2013
+<p></p>
+</li>
+<li>Straková Jana, Straka Milan and Hajič Jan. <i><a href="http://www.aclweb.org/anthology/P/P14/P14-5003.pdf">Open-Source Tools for Morphology, Lemmatization, POS Tagging and Named Entity Recognition.</a></i> In Proceedings of 52nd Annual Meeting of the Association for Computational Linguistics: System Demonstrations, pages 13-18, Baltimore, Maryland, June 2014. Association for Computational Linguistics.
+</li>
+</ul>
+
+<a id="english-conll_model" name="english-conll_model"></a>
+<h3>5.1.6. English Model</h3>
+
+<p>
+English model is trained on [CoNLL-2003 NER annotations (Sang and De Meulder, 2003)
+<a href="https://www.aclweb.org/anthology/W03-0419/">https://www.aclweb.org/anthology/W03-0419/</a>] 
+of part of <a href="http://trec.nist.gov/data/reuters/reuters.html">Reuters Corpus</a>.
+The corpus uses coarse classification using four classes <code>PER</code>, <code>ORG</code>,
+<code>LOC</code> and <code>MISC</code>.
+</p>
+<p>
+The latest version 140408 of the English-CoNLL NameTag models can be downloaded from
+<a href="http://hdl.handle.net/11234/1-3118">LINDAT/CLARIN repository</a>.
+</p>
+<p>
+The model <code>english-conll-140408.ner</code> reaches 84.73% F1-measure on
+CoNLL2003 etest data. Model speed: ~20k words/s, model size: ~10MB.
+</p>
 
 <a id="run_ner" name="run_ner"></a>
 <h2>5.2. Running the Recognizer</h2>
