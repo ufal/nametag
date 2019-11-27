@@ -5,9 +5,9 @@ English NameTag Models
 
 English models are distributed under the
 [CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/] licence. They
-are trained on [CoNLL-2003 NER annotations (Sang and De Meulder, 2003)
-https://www.aclweb.org/anthology/W03-0419/] of part of [Reuters Corpus
-http://trec.nist.gov/data/reuters/reuters.html] and internally use [MorphoDiTa
+are trained on
+[CoNLL-2003 NER annotations (Sang and De Meulder, 2003) https://www.aclweb.org/anthology/W03-0419/]
+of part of [Reuters Corpus http://trec.nist.gov/data/reuters/reuters.html] and internally use [MorphoDiTa
 http://ufal.mff.cuni.cz/morphodita/] as a tagger and lemmatizer. English models
 work in NameTag version 1.0 or later.
 
@@ -46,11 +46,9 @@ apply.
 
 === English Model ===[english-conll_model]
 
-English model is trained on [CoNLL-2003 NER annotations (Sang and De Meulder, 2003)
-https://www.aclweb.org/anthology/W03-0419/] 
-of part of [Reuters Corpus http://trec.nist.gov/data/reuters/reuters.html].
-The corpus uses coarse classification using four classes ``PER``, ``ORG``,
-``LOC`` and ``MISC``.
+English model is trained on [CoNLL-2003 NER annotations (Sang and De Meulder, 2003) https://www.aclweb.org/anthology/W03-0419/] of part of
+[Reuters Corpus http://trec.nist.gov/data/reuters/reuters.html]. The corpus uses coarse
+classification using four classes ``PER``, ``ORG``, ``LOC`` and ``MISC``.
 
 The latest version 140408 of the English-CoNLL NameTag models can be downloaded from
 [LINDAT/CLARIN repository http://hdl.handle.net/11234/1-3118].
