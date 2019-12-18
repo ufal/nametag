@@ -31,6 +31,9 @@ otherwise standard library search process is used. The path to the C++ library
 can also be specified using static nametag_java.setLibraryPath(String path) call
 (before the first call inside the C++ library, of course).
 
+See also Java binding example usage
+(https://github.com/ufal/nametag/tree/master/bindings/java/examples).
+
 
 C++ Bindings API
 ================

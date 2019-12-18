@@ -19,6 +19,9 @@ The bindings is a straightforward conversion of the C++ bindings API. The
 bindings requires native C++ library libnametag_csharp (called nametag_csharp on
 Windows).
 
+See also C# binding example usage
+(https://github.com/ufal/nametag/tree/master/bindings/csharp/examples).
+
 
 C++ Bindings API
 ================

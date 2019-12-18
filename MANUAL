@@ -1147,6 +1147,9 @@ The bindings is a straightforward conversion of the C++ bindings API. The
 bindings requires native C++ library libnametag_csharp (called nametag_csharp on
 Windows).
 
+See also C# binding example usage
+(https://github.com/ufal/nametag/tree/master/bindings/csharp/examples).
+
 
 Java Bindings
 -------------
@@ -1164,6 +1167,9 @@ otherwise standard library search process is used. The path to the C++ library
 can also be specified using static nametag_java.setLibraryPath(String path) call
 (before the first call inside the C++ library, of course).
 
+See also Java binding example usage
+(https://github.com/ufal/nametag/tree/master/bindings/java/examples).
+
 
 Perl Bindings
 -------------
@@ -1177,6 +1183,9 @@ not have native Perl interface, see Ufal::NameTag::Forms for reference. Static
 methods and enumerations are available only through the module, not through
 object instance.
 
+See also Perl binding example usage
+(https://github.com/ufal/nametag/tree/master/bindings/perl/examples).
+
 
 Python Bindings
 ---------------
@@ -1187,6 +1196,9 @@ NameTag library bindings is available in the ufal.nametag
 The bindings is a straightforward conversion of the C++ bindings API. In Python
 2, strings can be both unicode and UTF-8 encoded str, and the library always
 produces unicode. In Python 3, strings must be only str.
+
+See also Python binding example usage
+(https://github.com/ufal/nametag/tree/master/bindings/python/examples).
 
 
 Contact

@@ -27,6 +27,9 @@ not have native Perl interface, see Ufal::NameTag::Forms for reference. Static
 methods and enumerations are available only through the module, not through
 object instance.
 
+See also Perl binding example usage
+(https://github.com/ufal/nametag/tree/master/bindings/perl/examples).
+
 
 C++ Bindings API
 ================
