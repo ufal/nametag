@@ -1,6 +1,6 @@
 # This file is part of NameTag <http://github.com/ufal/nametag/>.
 #
-# Copyright 2016 Institute of Formal and Applied Linguistics, Faculty of
+# Copyright 2019 Institute of Formal and Applied Linguistics, Faculty of
 # Mathematics and Physics, Charles University in Prague, Czech Republic.
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
