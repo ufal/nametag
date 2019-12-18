@@ -7,7 +7,7 @@ Installation
 Binary C# bindings are available in NameTag binary packages.
 
 To compile C# bindings manually, run make in the bindings/csharp directory,
-optionally with the options descriged in NameTag Installation.
+optionally with the options described in NameTag Installation.
 
 
 C# Bindings API
