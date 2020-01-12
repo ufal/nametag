@@ -7,7 +7,7 @@ Installation
 Binary C# bindings are available in NameTag binary packages.
 
 To compile C# bindings manually, run make in the bindings/csharp directory,
-optionally with the options descriged in NameTag Installation.
+optionally with the options described in NameTag Installation.
 
 
 C# Bindings API
@@ -18,6 +18,9 @@ NameTag library bindings is available in the Ufal.NameTag namespace.
 The bindings is a straightforward conversion of the C++ bindings API. The
 bindings requires native C++ library libnametag_csharp (called nametag_csharp on
 Windows).
+
+See also C# binding example usage
+(https://github.com/ufal/nametag/tree/master/bindings/csharp/examples).
 
 
 C++ Bindings API

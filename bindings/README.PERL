@@ -7,7 +7,7 @@ Installation
 The Perl bindings are available as Ufal-NameTag package on CPAN.
 
 To compile Perl bindings manually, run make in the bindings/perl directory,
-optionally with the options descriged in NameTag Installation. Perl 5.10 and
+optionally with the options described in NameTag Installation. Perl 5.10 and
 later is supported.
 
 Path to the include headers of the required Perl version must be specified in
@@ -26,6 +26,9 @@ The bindings is a straightforward conversion of the C++ bindings API. Vectors do
 not have native Perl interface, see Ufal::NameTag::Forms for reference. Static
 methods and enumerations are available only through the module, not through
 object instance.
+
+See also Perl binding example usage
+(https://github.com/ufal/nametag/tree/master/bindings/perl/examples).
 
 
 C++ Bindings API

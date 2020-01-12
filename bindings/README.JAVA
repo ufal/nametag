@@ -7,7 +7,7 @@ Installation
 Binary Java bindings are available in NameTag binary packages.
 
 To compile Java bindings manually, run make in the bindings/java directory,
-optionally with the options descriged in NameTag Installation. Java 6 and newer
+optionally with the options described in NameTag Installation. Java 6 and newer
 is supported.
 
 The Java installation specified in the environment variable JAVA_HOME is used.
@@ -30,6 +30,9 @@ Windows). If the library is found in the current directory, it is used,
 otherwise standard library search process is used. The path to the C++ library
 can also be specified using static nametag_java.setLibraryPath(String path) call
 (before the first call inside the C++ library, of course).
+
+See also Java binding example usage
+(https://github.com/ufal/nametag/tree/master/bindings/java/examples).
 
 
 C++ Bindings API
