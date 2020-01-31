@@ -60,9 +60,9 @@ int main(int argc, char* argv[]) {
 
   options::map options;
   if (!options::parse({{"connection_timeout", options::value::any},
-                       {"daemon",options::value::none},
+                       {"daemon", options::value::none},
                        {"log_file", options::value::any},
-                       {"log_request_max_size",options::value::any},
+                       {"log_request_max_size", options::value::any},
                        {"max_connections", options::value::any},
                        {"max_request_size", options::value::any},
                        {"threads", options::value::any},
