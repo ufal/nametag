@@ -6,6 +6,7 @@ Version 1.1.3-devel
   and support for loading additional gazetteers to an existing model.
 - Export recognizable named entities from the recognizer.
 - Export gazetteers from the recognizer (only GazetteersEnhanced).
+- Add several nametag_server options.
 
 
 Version 1.1.2 [01 Jul 17]
