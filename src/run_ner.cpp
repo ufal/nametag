@@ -72,25 +72,22 @@ void recognize_conll(istream& is, ostream& os, const ner& recognizer, tokenizer&
       recognizer.recognize(forms, entities);
       sort_entities(entities);
 
-      string entity_type;
-      unsigned in_entity = 0;
-      bool entity_start;
-      for (unsigned i = 0, e = 0; i < forms.size(); i++) {
-        if (!in_entity && e < entities.size() && entities[e].start == i) {
-          in_entity = entities[e].length;
-          entity_start = true;
-          entity_type = entities[e].type;
-          e++;
-        }
+      vector<named_entity> stack;
+      for (size_t i = 0, e = 0; i < forms.size(); i++) {
+        for (; e < entities.size() && entities[e].start == i; e++)
+          stack.push_back(entities[e]);
 
         os << forms[i] << '\t';
-        if (in_entity) {
-          os << (entity_start ? "B-" : "I-") << entity_type;
-          entity_start = false;
-          in_entity--;
+        if (stack.size()) {
+          for (size_t j = 0; j < stack.size(); j++)
+            os << (j ? "|" : "") << (stack[j].start == i ? "B-" : "I-") << stack[j].type;
         } else {
           os << 'O';
         }
+
+        for (size_t j = stack.size(); j--; )
+          if (stack[j].start + stack[j].length == i + 1)
+            stack.erase(stack.begin() + j);
         os << '\n';
       }
 
