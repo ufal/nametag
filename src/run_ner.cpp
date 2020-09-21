@@ -89,7 +89,7 @@ void recognize_conll(istream& is, ostream& os, const ner& recognizer, tokenizer&
           entity_start = false;
           in_entity--;
         } else {
-          os << '_';
+          os << 'O';
         }
         os << '\n';
       }

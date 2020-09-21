@@ -96,7 +96,7 @@ supported output formats are:
 
 - ``conll``: A CoNLL-like vertical format. Every word is on a line, followed by a tab and
   recognized entity label. An empty line denotes end of sentence. The entity labels are:
-  - ``_``: no entity
+  - ``O``: no entity
   - ``B-type``: the word is the first in the entity of type ``type``
   - ``I-type``: the word is a non-initial word in the entity of type ``type``
   -
@@ -110,8 +110,8 @@ supported output formats are:
 ```
 Václav	B-P
 Havel	I-P
-byl	_
-český	_
+byl	O
+český	O
 ...
 ```
 
