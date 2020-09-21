@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
       (argc < 2 && !options.count("version")))
     runtime_failure("Usage: " << argv[0] << " [options] recognizer_model [file[:output_file]]...\n"
                     "Options: --input=untokenized|vertical\n"
-                    "         --output=vertical|xml\n"
+                    "         --output=conll|vertical|xml\n"
                     "         --version\n"
                     "         --help");
   if (options.count("version"))

@@ -470,7 +470,7 @@ written to standard output.
 The full command syntax of run_ner is
   Usage: run_ner [options] recognizer_model [file[:output_file]]...
   Options: --input=untokenized|vertical
-           --output=vertical|xml
+           --output=conll|vertical|xml
 
 
 Input Formats
