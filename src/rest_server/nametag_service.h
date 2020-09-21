@@ -62,6 +62,7 @@ class nametag_service : public microrestd::rest_service {
   enum rest_output_mode_t {
     XML,
     VERTICAL,
+    CONLL,
   };
   struct rest_output_mode {
     rest_output_mode_t mode;

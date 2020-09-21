@@ -120,6 +120,7 @@ bool nametag_service::rest_response_generator::generate() {
 bool nametag_service::rest_output_mode::parse(const string& str, rest_output_mode& output) {
   if (str.compare("xml") == 0) return output.mode = XML, true;
   if (str.compare("vertical") == 0) return output.mode = VERTICAL, true;
+  if (str.compare("conll") == 0) return output.mode = CONLL, true;
   return false;
 }
 
@@ -167,7 +168,31 @@ bool nametag_service::handle_rest_recognize(microrestd::rest_request& req) {
       ner->recognize(forms, entities);
       sort_entities(entities);
 
-      if (output.mode == VERTICAL) {
+      if (output.mode == CONLL) {
+        vector<named_entity> stack;
+        for (size_t i = 0, e = 0; i < forms.size(); i++) {
+          for (; e < entities.size() && entities[e].start == i; e++)
+            stack.push_back(entities[e]);
+
+          json.value(sp(forms[i]), true);
+          json.value("\t", true);
+          if (stack.size()) {
+            for (size_t j = 0; j < stack.size(); j++) {
+              if (j) json.value("|", true);
+              json.value(stack[j].start == i ? "B-" : "I-", true);
+              json.value(stack[j].type, true);
+            }
+          } else {
+            json.value("O", true);
+          }
+
+          for (size_t j = stack.size(); j--; )
+            if (stack[j].start + stack[j].length == i + 1)
+              stack.erase(stack.begin() + j);
+          json.value("\n", true);
+        }
+        json.value("\n", true);
+      } else if (output.mode == VERTICAL) {
         for (auto&& entity : entities) {
           for (size_t i = entity.start; i < entity.start + entity.length; i++) {
             sprintf(token_number, "%zu", total_tokens + i + 1);
@@ -231,6 +256,7 @@ bool nametag_service::handle_rest_tokenize(microrestd::rest_request& req) {
 
   auto data = get_data(req, error); if (!data) return req.respond_error(error);
   rest_output_mode output(XML); if (!get_output_mode(req, output, error)) return req.respond_error(error);
+  if (output.mode == CONLL) return req.respond_error("Unsupported output mode 'conll'");
 
   class generator : public rest_response_generator {
    public:
@@ -254,6 +280,8 @@ bool nametag_service::handle_rest_tokenize(microrestd::rest_request& req) {
             if (unprinted < forms[i].str) json.value_xml_escape(sp(unprinted, forms[i].str - unprinted), true);
             if (!i) json.value("<sentence>", true);
             json.value("<token>", true).value_xml_escape(sp(forms[i]), true).value("</token>", true);
+            break;
+          case CONLL: // Keep the compiler happy
             break;
         }
         unprinted = forms[i].str + forms[i].len;
