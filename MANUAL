@@ -69,9 +69,9 @@ available:
 
 - Czech: czech-cnec-140304
   (http://hdl.handle.net/11858/00-097C-0000-0023-7D42-8) (documentation
-  (http://ufal.mff.cuni.cz/nametag/users-manual#czech-cnec))
+  (http://ufal.mff.cuni.cz/nametag/1/users-manual#czech-cnec))
 - English: english-conll-140408 (http://hdl.handle.net/11234/1-3118)
-  (documentation (http://ufal.mff.cuni.cz/nametag/users-manual#english-conll))
+  (documentation (http://ufal.mff.cuni.cz/nametag/1/users-manual#english-conll))
 
 
 License
@@ -110,7 +110,7 @@ packages do not contain compiled Python or Perl bindings, packages for those
 languages are available in standard package repositories, i.e. on PyPI and CPAN.
 
 To use NameTag, a language model is needed. Here is a list of available language
-models (http://ufal.mff.cuni.cz/nametag#language_models).
+models (http://ufal.mff.cuni.cz/nametag/1#language_models).
 
 If you want to compile NameTag manually, sources are available on on GitHub
 (http://github.com/ufal/nametag), both in the pre-compiled binary package
