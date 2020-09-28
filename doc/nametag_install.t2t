@@ -9,7 +9,7 @@ packages do not contain compiled Python or Perl bindings, packages for those
 languages are available in standard package repositories, i.e. on PyPI and CPAN.
 
 To use NameTag, a language model is needed.
-[Here is a list of available language models http://ufal.mff.cuni.cz/nametag#language_models].
+[Here is a list of available language models http://ufal.mff.cuni.cz/nametag/1/nametag#language_models].
 
 If you want to compile NameTag manually, sources are available on on
 [GitHub http://github.com/ufal/nametag], both in the

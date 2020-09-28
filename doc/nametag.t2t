@@ -31,12 +31,12 @@ languages are available in standard package repositories, i.e. on PyPI and CPAN.
 To use NameTag, a language model is needed. The language models are available
 from [LINDAT/CLARIN http://www.lindat.cz] infrastructure and described further
 in the
-%web% [NameTag User's Manual nametag/users-manual].
+%web% [NameTag User's Manual nametag/1/users-manual].
 %manual% [NameTag User's Manual #users_manual].
 Currently the following language models are available:
 
-- Czech: [czech-cnec-140304 http://hdl.handle.net/11858/00-097C-0000-0023-7D42-8] ([documentation http://ufal.mff.cuni.cz/nametag/users-manual#czech-cnec])
-- English: [english-conll-140408 http://hdl.handle.net/11234/1-3118] ([documentation http://ufal.mff.cuni.cz/nametag/users-manual#english-conll])
+- Czech: [czech-cnec-140304 http://hdl.handle.net/11858/00-097C-0000-0023-7D42-8] ([documentation http://ufal.mff.cuni.cz/nametag/1/users-manual#czech-cnec])
+- English: [english-conll-140408 http://hdl.handle.net/11234/1-3118] ([documentation http://ufal.mff.cuni.cz/nametag/1/users-manual#english-conll])
 
 
 == License ==[license]
@@ -64,19 +64,19 @@ recognition. The models for the Czech language are available with the tool.
 
 = NameTag Installation =[installation]
 
-%web% [NameTag Installation on separate page. nametag/install]
+%web% [NameTag Installation on separate page. nametag/1/install]
 %manual% %!include: nametag_install.t2t
 
 
 = NameTag User's Manual =[users_manual]
 
-%web% [NameTag User's Manual on separate page. nametag/users-manual]
+%web% [NameTag User's Manual on separate page. nametag/1/users-manual]
 %manual% %!include: nametag_user.t2t
 
 
 = NameTag API Reference =[api_reference]
 
-%web% [NameTag API Reference on separate page. nametag/api-reference]
+%web% [NameTag API Reference on separate page. nametag/1/api-reference]
 %manual% %!include: nametag_api.t2t
 
 
@@ -96,7 +96,7 @@ Authors:
 
 This work has been using language resources developed and/or stored and/or distributed by the LINDAT/CLARIN project of the Ministry of Education of the Czech Republic (project LM2010013).
 
-%web% Acknowledgements for individual language models are listed in [Nametag User's Manual page nametag/users-manual].
+%web% Acknowledgements for individual language models are listed in [Nametag User's Manual page nametag/1/users-manual].
 %manual% Acknowledgements for individual language models are listed in [NameTag User's Manual #users_manual].
 
 
