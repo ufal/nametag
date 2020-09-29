@@ -100,9 +100,8 @@ nametag_service::rest_response_generator::rest_response_generator(const model_in
   json.object();
   json.indent().key("model").indent().value(model->rest_id);
   json.indent().key("acknowledgements").indent().array();
-  json.indent().value("http://ufal.mff.cuni.cz/nametag#nametag_acknowledgements");
+  json.indent().value("http://ufal.mff.cuni.cz/nametag/1#nametag_acknowledgements");
   if (!model->acknowledgements.empty()) json.indent().value(model->acknowledgements);
-  json.indent().value("http://ufal.mff.cuni.cz/morphodita#morphodita_acknowledgements");
   json.indent().close().indent().key("result").indent();
 }
 
