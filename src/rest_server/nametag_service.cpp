@@ -240,7 +240,7 @@ bool nametag_service::handle_rest_recognize(microrestd::rest_request& req) {
     vector<string_piece> forms;
     vector<named_entity> entities;
     vector<size_t> entity_ends;
-    size_t total_tokens;
+    size_t total_tokens = 0;
     char token_number[sizeof(size_t) * 3/*ceil(log_10(256))*/];
   };
   return req.respond(json_mime, new generator(model, data, model->ner.get(), tokenizer.release(), output));
