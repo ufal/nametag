@@ -17,7 +17,7 @@ namespace nametag {
 namespace morphodita {
 
 version version::current() {
-  return {1, 9, 3, "devel"};
+  return {1, 10, 1, ""};
 }
 
 // Returns multi-line formated version and copyright string.
