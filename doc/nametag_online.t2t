@@ -1,10 +1,8 @@
 NameTag Online
-=================
+==============
 
-== Online Demo ==[online_demo]
+NameTag Web Application is available at http://lindat.mff.cuni.cz/services/nametag/
+using [LINDAT/CLARIN infrastructure http://lindat.cz].
 
-[LINDAT/CLARIN http://lindat.cz] hosts [NameTag Online Demo http://lindat.mff.cuni.cz/services/nametag/].
-
-== Web Service ==[web_service]
-
-[LINDAT/CLARIN http://lindat.cz] also hosts [NameTag Web Service http://lindat.mff.cuni.cz/services/nametag/api-reference.php].
+NameTag REST Web Service is also available, with the API documentation available at
+http://lindat.mff.cuni.cz/services/udpipe/api-reference.php.
