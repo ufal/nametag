@@ -88,8 +88,6 @@ Download the latest version of NameTag 2 models from
 
 https://ufal.mff.cuni.cz/nametag/2#models
 
-into "models" directory in the root of this repository.
-
 4.4 Get WEmbedding service
 
 NameTag 2 is using contextualized BERT embeddings computed by Transformers
@@ -113,8 +111,7 @@ Before you run NameTag 2 for NER prediction, please make sure you have:
 
   1. installed Python virtual environment (Section 4.2),
   2. downloaded the NameTag 2 models (Section 4.3),
-  3. you have a ip:port of a running BERT WEmbeddings service (e.g.,
-     localhost:8000).
+  3. you have a ip:port of a running BERT WEmbeddings service (Section 4.4)
 
 The main NameTag 2 script is called nametag2.py. Example NER prediction usage:
 
