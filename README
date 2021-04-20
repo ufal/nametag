@@ -55,7 +55,7 @@ AVX instructions for serving BERT embeddings (see below).
 
 4.1 Clone the NameTag 2 GIT repository:
 
-$ git clone ssh://gitolite@redmine.ms.mff.cuni.cz/nametag-2-0/nametag2.git
+$ git clone https://github.com/ufal/nametag -b nametag2
 
 The main NameTag 2 tagger is called nametag2.py. Running nametag2.py for NER
 prediction is described in Section 5. Training your own custom NER model is
