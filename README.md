@@ -9,7 +9,9 @@ Jana Straková, Milan Straka, Jan Hajič (2019): Neural Architectures for Nested
 NameTag 2 can be used either as a commandline tool (this repository) or by requesting NameTag webservice (http://lindat.mff.cuni.cz/services/nametag). You can also run your own NameTag server.
 
 Homepage: https://ufal.mff.cuni.cz/nametag
+
 Web service and demo: http://lindat.mff.cuni.cz/services/nametag/
+
 Contact: strakova@ufal.mff.cuni.cz
 
 ## License
