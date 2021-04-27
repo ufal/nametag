@@ -150,3 +150,27 @@ Example server usage:
 ```sh
 venv/bin/python nametag2_server.py 8001 localhost:8000 czech-cnec2.0-200831 czech-cnec2.0-200831 models/czech-cnec2.0-200831/ ack-text
 ```
+
+## Docker
+
+The only prerequisite is to setup the WEmbeddings service submodule and start the
+WEmbeddings server (see Get WEmbeddings service above). Docker will install the
+NameTag2 requirements and download the NameTag 2 models.
+
+Build the NameTag2 Docker image:
+
+```sh
+docker build -t nametag:2.0.0 .
+```
+
+On Linux
+
+```sh
+docker run --net host --rm nametag:2.0.0 --test_data=examples/en_input.conll --predict=nametag2-models-200831/english-conll-200831 --bert=127.0.0.1:8000
+```
+
+Other
+
+```sh
+docker run --rm nametag:2.0.0 --test_data=examples/en_input.conll --predict=nametag2-models-200831/english-conll-200831 --bert=host.docker.internal:8000
+```
