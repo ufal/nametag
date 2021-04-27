@@ -40,7 +40,7 @@ This Source Code Form is subject to the terms of the Mozilla Public License, v. 
 
 The software has been developed and tested on Linux. You'll need a machine with AVX instructions for serving BERT embeddings (see below).
 
-## Installation of the commandline NameTag 2
+## Installation
 
 ### Clone the NameTag 2 GIT repository
 
@@ -57,7 +57,7 @@ You will need Python virtual environment with TensorFlow 1.12 either on CPU or G
 #### TensorFlow on CPU
 
 Create a Python virtual environment with TensorFlow 1.12 called `venv-tf-1.12-cpu` in the root of this directory:
- 
+
 ```sh
 python3 -m venv venv-tf-1.12-cpu
 venv-tf-1.12-cpu/bin/pip3 install -r requirements.txt
@@ -77,9 +77,31 @@ Download the latest version of NameTag 2 models from https://ufal.mff.cuni.cz/na
 
 NameTag 2 is using contextualized BERT embeddings computed by Transformers (https://arxiv.org/abs/1910.03771, https://github.com/huggingface/transformers).
 
-To this end, we issused a webservice serving transformers BERT embeddings called WEmbedding service: https://github.com/ufal/wembedding_service.
+To this end, we issused a webservice serving transformers BERT embeddings called WEmbedding service: `https://github.com/ufal/wembedding_service`. Adding WEmbeddings service as a submodule, a clone command should be:
 
-For on demand BERT embeddings computation, you'll need to setup the WEmbeddings service on your computer. To setup the WEmbedding service, git clone https://github.com/ufal/wembedding_service as a submodule, then install Python venv using requirements.txt inside the submodule (see WEmbeddings repository README). This will allow you to run the WEmbeddings server which will serve the BERT embeddings to NameTag 2.
+```sh
+git clone --recurse-submodules
+```
+
+and/or at later stages (in existing clones):
+
+```sh
+git submodule update --init
+```
+
+Then install Python `venv` using `requirements.txt` inside the submodule (see also WEmbeddings repository `README`):
+
+```sh
+cd wembedding_service
+python3 -m venv venv
+venv/bin/python3 install -r requirements.txt
+```
+
+This will allow you to run the WEmbeddings server which will serve the BERT embeddings to NameTag 2:
+
+```sh
+venv/bin/python3 ./start_wembeddings_server.py 8000
+```
 
 ## Running NER prediction with NameTag 2
 
