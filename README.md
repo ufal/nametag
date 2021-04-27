@@ -6,11 +6,13 @@ It is a public release of the following publication:
 
 Jana Straková, Milan Straka, Jan Hajič (2019): Neural Architectures for Nested NER through Linearization. In: Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, pp. 5326-5331, Association for Computational Linguistics, Stroudsburg, PA, USA, ISBN 978-1-950737-48-2 (https://aclweb.org/anthology/papers/P/P19/P19-1527/)
 
-NameTag 2 can be used either as a commandline tool (this repository) or by requesting NameTag webservice (http://lindat.mff.cuni.cz/services/nametag). You can also run your own NameTag server.
+NameTag 2 can be used either as a commandline tool (see the instructions at https://github.com/ufal/nametag/tree/nametag2) or by requesting NameTag webservice (http://lindat.mff.cuni.cz/services/nametag). You can also run your own NameTag server.
 
 Homepage: https://ufal.mff.cuni.cz/nametag
 
 Web service and demo: http://lindat.mff.cuni.cz/services/nametag/
+
+Sources: https://github.com/ufal/nametag/tree/nametag2
 
 Contact: strakova@ufal.mff.cuni.cz
 
