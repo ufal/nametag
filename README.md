@@ -155,24 +155,43 @@ venv/bin/python nametag2_server.py 8001 localhost:8000 czech-cnec2.0-200831 czec
 
 ## Docker
 
-The only prerequisite is to setup the WEmbeddings service submodule and start the
-WEmbeddings server (see Get WEmbeddings service above). Docker will install the
-NameTag2 requirements and download the NameTag 2 models.
+Initialize the WEmbeddings service git submodule:
 
-Build the NameTag2 Docker image:
+```sh
+git clone --recurse-submodules
+```
+
+and/or at later stages (in existing clones):
+
+```sh
+git submodule update --init
+```
+
+Build the WEmbeddings Docker image:
+
+```sh
+cd wembedding_service
+docker build -t wembeddings
+```
+
+Create a user network and start WEmbedding service, connecting to the network:
+
+```sh
+docker network create wembeddings-network
+docker run --network wembeddings-network --name wembeddings -d --rm wembeddings 8000
+```
+
+Then build also the NameTag2 Docker image:
 
 ```sh
 docker build -t nametag:2.0.0 .
 ```
 
-On Linux
+Run NameTag2, connecting to the same network:
 
 ```sh
-docker run --net host --rm nametag:2.0.0 --test_data=examples/en_input.conll --predict=nametag2-models-200831/english-conll-200831 --bert=127.0.0.1:8000
+docker docker run --net wembeddings-network --name nametag2 --rm nametag:2.0.0 --test_data=examples/en_input.conll --predict=nametag2-models-200831/english-conll-200831 --bert=wembeddings:8000
 ```
 
-Other
-
-```sh
-docker run --rm nametag:2.0.0 --test_data=examples/en_input.conll --predict=nametag2-models-200831/english-conll-200831 --bert=host.docker.internal:8000
-```
+The first run after server startup will load the necessary models and will
+require some time.
