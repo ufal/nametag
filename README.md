@@ -48,8 +48,6 @@ The software has been developed and tested on Linux. You'll need a machine with 
 git clone https://github.com/ufal/nametag -b nametag2
 ```
 
-The main NameTag 2 tagger is called `nametag2.py`. Running `nametag2.py` for NER prediction is described in Section 5. Training your own custom NER model is described later.
-
 ### Get TensorFlow 1.12
 
 You will need Python virtual environment with TensorFlow 1.12 either on CPU or GPU.
