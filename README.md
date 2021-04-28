@@ -71,13 +71,13 @@ If you plan to scale up for larger experiments or greater speed, you can use the
 
 ### Download the NameTag 2 models
 
-Download the latest version of NameTag 2 models from https://ufal.mff.cuni.cz/nametag/2#models.
+Download the [latest version of NameTag 2 models](https://ufal.mff.cuni.cz/nametag/2#models).
 
 ### Get WEmbedding service
 
-NameTag 2 is using contextualized BERT embeddings computed by Transformers (https://arxiv.org/abs/1910.03771, https://github.com/huggingface/transformers).
+NameTag 2 is using contextualized BERT embeddings computed by [Transformers](https://arxiv.org/abs/1910.03771) from [Hugging Face](https://github.com/huggingface/transformers).
 
-To this end, we issused a webservice serving transformers BERT embeddings called WEmbedding service: `https://github.com/ufal/wembedding_service`. Adding WEmbeddings service as a submodule, a clone command should be:
+To this end, we issused a webservice serving transformers BERT embeddings called [WEmbedding service](https://github.com/ufal/wembedding_service). Adding WEmbeddings service as a submodule, a clone command should be:
 
 ```sh
 git clone --recurse-submodules
@@ -89,7 +89,7 @@ and/or at later stages (in existing clones):
 git submodule update --init
 ```
 
-Then install Python `venv` using `requirements.txt` inside the submodule (see also WEmbeddings repository `README`):
+Then install Python `venv` using `requirements.txt` inside the submodule (see also [WEmbeddings README](https://github.com/ufal/wembedding_service)):
 
 ```sh
 cd wembedding_service
