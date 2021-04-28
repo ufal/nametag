@@ -103,6 +103,8 @@ This will allow you to run the WEmbeddings server which will serve the BERT embe
 venv/bin/python3 ./start_wembeddings_server.py 8000
 ```
 
+The first request will take some time, as the models are loaded.
+
 ## Running NER prediction with NameTag 2
 
 Before you run NameTag 2 for NER prediction, please make sure you have:
@@ -121,7 +123,7 @@ Example usage with more documentation on input and output formats can be found i
 
 ## Training NameTag 2
 
-The main NameTag 2 script `nametag2.py` can be used for training a custom corpus. It will do so when provided the parameters `--train_data`. Optionally, `--dev_data` can be provided and many other training parameters that control the training.
+The main NameTag 2 script `nametag2.py` can be used for training a custom corpus. It will do so when provided the parameters `--train_data`. Optionally, `--dev_data` can be provided and other training parameters that control the training.
 
 The input data file format is a vertical file, one token and its label per line, separated by a tabulator; sentences delimited by newlines (such as a first and fourth column in a well-known CoNLL-2003 IOB shared task corpus). An example of such input file can be found in `nametag2.py` and in `examples/en_gold.conll`.
 
@@ -190,8 +192,7 @@ docker build -t nametag:2.0.0 .
 Run NameTag2, connecting to the same network:
 
 ```sh
-docker docker run --net wembeddings-network --name nametag2 --rm nametag:2.0.0 --test_data=examples/en_input.conll --predict=nametag2-models-200831/english-conll-200831 --bert=wembeddings:8000
+docker run --net wembeddings-network --name nametag2 --rm nametag:2.0.0 --test_data=examples/en_input.conll --predict=nametag2-models-200831/english-conll-200831 --bert=wembeddings:8000
 ```
 
-The first run after server startup will load the necessary models and will
-require some time.
+The first request will take some time, as the models are loaded.
