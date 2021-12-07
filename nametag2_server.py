@@ -77,8 +77,6 @@ SEP = "\t"
 
 
 class UDPipeTokenizer:
-
-    
     class Token:
         def __init__(self, token, spaces_before, spaces_after):
             self.token = token
@@ -394,6 +392,7 @@ class Models:
         # Check the default model exists
         assert self.default_model in self.models_by_names
 
+
 class NameTag2Server(socketserver.ThreadingTCPServer):
     class NameTag2ServerRequestHandler(http.server.BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.1"
@@ -587,6 +586,7 @@ class NameTag2Server(socketserver.ThreadingTCPServer):
         if isinstance(getattr(self, "_threads", None), list):
             if len(self._threads) >= 1024:
                 self._threads = [thread for thread in self._threads if thread.is_alive()]
+
 
 if __name__ == "__main__":
     import signal
