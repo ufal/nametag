@@ -28,7 +28,10 @@ The mandatory arguments are given in this order:
 
 Example server usage:
 
-$ venv/bin/python nametag2_server.py 8001 localhost:8000 czech-cnec2.0-200831 czech-cnec2.0-200831 models/czech-cnec2.0-200831/ ack-text
+$ venv/bin/python nametag2_server.py 8001 localhost:8000 czech \
+    czech-cnec2.0-200831:cs:ces:cze    nametag2-models-210916/czech-cnec2.0-200831   $common_ack#czech-cnec2_acknowledgements \
+    english-conll-200831:en:eng        nametag2-models-210916/english-conll-200831   $common_ack#english-conll_acknowledgements \
+    spanish-conll-200831:es:spa        nametag2-models-210916/spanish-conll-200831   $common_ack#spanish-conll_acknowledgements
 
 Sending requests to the NameTag 2 server
 ----------------------------------------
@@ -74,11 +77,14 @@ SEP = "\t"
 
 
 class UDPipeTokenizer:
+
+    
     class Token:
         def __init__(self, token, spaces_before, spaces_after):
             self.token = token
             self.spaces_before = spaces_before
             self.spaces_after = spaces_after
+
 
     def __init__(self, path):
         self._model = ufal.udpipe.Model.load(path)
@@ -90,6 +96,8 @@ class UDPipeTokenizer:
             tokenizer = self._model.newTokenizer(self._model.DEFAULT)
         elif mode == "vertical":
             tokenizer = ufal.udpipe.InputFormat.newVerticalInputFormat()
+        elif mode.startswith("conllu"):
+            tokenizer = ufal.udpipe.InputFormat.newConlluInputFormat()
         else:
             raise ValueError("Unknown tokenizer mode '{}'".format(model))
         if tokenizer is None:
@@ -99,17 +107,8 @@ class UDPipeTokenizer:
         processing_error = ufal.udpipe.ProcessingError()
         tokenizer.setText(text)
         while tokenizer.nextSentence(sentence, processing_error):
-            result, word, multiword_token = [], 1, 0
-            while word < len(sentence.words):
-                if multiword_token < len(sentence.multiwordTokens) and sentence.multiwordTokens[multiword_token].idFirst == word:
-                    token = sentence.multiwordTokens[multiword_token]
-                    word = sentence.multiwordTokens[multiword_token].idLast + 1
-                    multiword_token += 1
-                else:
-                    token = sentence.words[word]
-                    word += 1
-                result.append(self.Token(token.form, token.getSpacesBefore(), token.getSpacesAfter()))
-            yield result
+            yield sentence
+            sentence = ufal.udpipe.Sentence()
         if processing_error.occurred():
             raise RuntimeError("Cannot read input data: '{}'".format(processing_error.message))
 
@@ -133,6 +132,8 @@ class Models:
 
             if "max_labels_per_token" not in self.args:
                 self.args.max_labels_per_token = server_args.max_labels_per_token
+
+            self.args.batch_size = self._server_args.batch_size
  
             # Unpickle word mappings of train data
             with open("{}/mappings.pickle".format(path), mode="rb") as mappings_file:
@@ -184,13 +185,84 @@ class Models:
             return self.network.postprocess(text)
 
 
-        def conll_to_vertical(self, text, sentences, n_tokens_in_batch):
+        def conll_to_conllu(self, ner_output, sentences, encoding, n_nes_in_batches):
+
+            def _clean_misc(misc):
+                result = []
+                for field in misc.split("|"):
+                    if encoding == "conllu-ne":
+                        if not field.startswith("NE="):
+                            result.append(field)
+                return "|".join(result)
+
+            output = []
+            output_writer = ufal.udpipe.OutputFormat.newConlluOutputFormat()
+
+            n_sentences, n_words, n_multiwords, in_sentence = 0, 1, 0, False
+            open_ids = []
+            for line in (ner_output.split("\n")):
+                if not line:
+                    if in_sentence:
+                        output.append(output_writer.writeSentence(sentences[n_sentences]))
+                        n_sentences += 1
+                        n_words = 1
+                    in_sentence = False
+                else:
+                    in_sentence = True
+                    
+                    # This will work for properly nested entities,
+                    # hence model.postprocess is important before conll_to_conllu.
+                    if encoding == "conllu-ne":
+                        nes_encoded = []
+                        words_in_token = 1
+                        form, ne = line.split(SEP)
+                        if ne == "O":                           # all entities ended
+                            open_ids = []
+                        else:
+                            labels = ne.split("|")
+                            for i in range(len(labels)):
+                                if i < len(open_ids):
+                                    if labels[i].startswith("B-"):
+                                        # previous open entity ends here
+                                        # -> close it and all open nested entities
+                                        open_ids = open_ids[:i]
+                                        # open new entity
+                                        open_ids.append(n_nes_in_batches)
+                                        n_nes_in_batches += 1
+                                else: # no running entities, new entity starts here, just append
+                                    open_ids.append(n_nes_in_batches)
+                                    n_nes_in_batches += 1
+                            for i in range(len(labels)):    
+                                nes_encoded.append(labels[i][2:] + "_" + str(open_ids[i]))
+                                
+                        # Multiword token starts here -> consume more words
+                        if n_multiwords < len(sentences[n_sentences].multiwordTokens) and sentences[n_sentences].multiwordTokens[n_multiwords].idFirst == n_words:
+                            words_in_token = sentences[n_sentences].multiwordTokens[n_multiwords].idLast - sentences[n_sentences].multiwordTokens[n_multiwords].idFirst + 1
+                            sentences[n_sentences].multiwordTokens[n_multiwords].misc = _clean_misc(sentences[n_sentences].multiwordTokens[n_multiwords].misc)
+                            if sentences[n_sentences].multiwordTokens[n_multiwords].misc and nes_encoded:
+                                sentences[n_sentences].multiwordTokens[n_multiwords].misc += "|"
+                            if nes_encoded:
+                                sentences[n_sentences].multiwordTokens[n_multiwords].misc += "NE="
+
+                            sentences[n_sentences].multiwordTokens[n_multiwords].misc = sentences[n_sentences].multiwordTokens[n_multiwords].misc + "-".join(nes_encoded)
+                            n_multiwords += 1
+
+                        # Write NEs to MISC
+                        for i in range(words_in_token): # consume all words in multiword token
+                            sentences[n_sentences].words[n_words].misc = _clean_misc(sentences[n_sentences].words[n_words].misc)
+                            if sentences[n_sentences].words[n_words].misc and nes_encoded:
+                                sentences[n_sentences].words[n_words].misc += "|"
+                            if nes_encoded:
+                                sentences[n_sentences].words[n_words].misc += "NE="
+                            sentences[n_sentences].words[n_words].misc = sentences[n_sentences].words[n_words].misc + "-".join(nes_encoded)
+                            n_words += 1
+            return "".join(output), n_nes_in_batches
+
+
+        def conll_to_vertical(self, text, n_tokens_in_batch):
             output = []
             open_ids, open_forms, open_labels = [], [], []  # open entities on i-th line
             
-            # indexes to tokenizer's sentences
-            n_sentences = 0
-            n_tokens = 0
             in_sentence = False
 
             for i, line in enumerate(text.split("\n")):
@@ -199,14 +271,11 @@ class Models:
                         for j in range(len(open_ids)):          # print all open entities 
                             output.append((open_ids[j], open_labels[j], open_forms[j]))
                         open_ids, open_forms, open_labels = [], [], []
-                        n_sentences += 1
-                        n_tokens = 0
                         n_tokens_in_batch += 1
                     in_sentence = False
                 else:
                     in_sentence = True
                     form, ne = line.split(SEP)
-                    n_tokens += 1
                     n_tokens_in_batch += 1
                     if ne == "O":                           # all entities ended
                         for j in range(len(open_ids)):      # print all open entities
@@ -240,32 +309,33 @@ class Models:
             return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
 
 
-        def conll_to_xml(self, text, sentences):
+        def conll_to_xml(self, text, token_list):
             """Converts postprocessed (!) CoNLL output of the network.
             Postprocessing (model.postprocess) is important to enforce balanced
             bracketing and BIO format of the neural network output."""
 
-            output = "" # TODO appending to string is quadratic
+            output = []
             open_labels = []
             in_sentence = False
+            previous_spaces_after = ""
 
             # indexes to tokenizer's sentences
-            n_sentences = 0
             n_tokens = 0
 
             for line in text.split("\n"):
+
                 if not line:                            # end of sentence
                     for i in range(len(open_labels)):   # close all open entities 
-                        output += "</ne>"
+                        output.append("</ne>")
                     open_labels = []
                     if in_sentence:
-                        output += "</sentence>"         # close sentence
+                        output.append("</sentence>")    # close sentence
                         in_sentence = False
-                        n_sentences += 1
-                        n_tokens = 0
+                    output.append(previous_spaces_after)
+                    previous_spaces_after = ""
                 else:                                   # in sentence
                     if not in_sentence:                 # sentence starts
-                        output += "<sentence>"
+                        output.append("<sentence>")
                         in_sentence = True
 
                     cols = line.split(SEP)
@@ -274,9 +344,10 @@ class Models:
 
                     # This will work for properly nested entities,
                     # hence model.postprocess is important before conll_to_xml.
+                    opening_tags = []
                     if ne == "O":                           # all entities ended
                         for i in range(len(open_labels)):   # close all open entities
-                            output += "</ne>"
+                            output.append("</ne>")
                         open_labels = []
                     else:
                         labels = ne.split("|")
@@ -286,21 +357,23 @@ class Models:
                                     # previous open entity ends here
                                     # -> close it and all open nested entities
                                     for j in range(i, len(open_labels)):
-                                        output += "</ne>"
+                                        output.append("</ne>")
                                     open_labels = open_labels[:i]
                                     # open new entity
-                                    output += "<ne type=\"" + self.encode_entities(labels[i][2:]) + "\">"
+                                    opening_tags.append("<ne type=\"" + self.encode_entities(labels[i][2:]) + "\">")
                                     open_labels.append(labels[i][2:])
                             else: # no running entities, new entity starts here, just append
-                                output += "<ne type=\"" + self.encode_entities(labels[i][2:]) + "\">"
+                                opening_tags.append("<ne type=\"" + self.encode_entities(labels[i][2:]) + "\">")
                                 open_labels.append(labels[i][2:])
-
-                    output += self.encode_entities(sentences[n_sentences][n_tokens].spaces_before)
-                    output += "<token>" + self.encode_entities(form) + "</token>"
-                    output += self.encode_entities(sentences[n_sentences][n_tokens].spaces_after)
+   
+                    output.append(previous_spaces_after)
+                    output.append(self.encode_entities(token_list[n_tokens].spaces_before))
+                    output.append("".join(opening_tags))
+                    output.append("<token>" + self.encode_entities(form) + "</token>")
+                    previous_spaces_after = self.encode_entities(token_list[n_tokens].spaces_after)
                     n_tokens += 1
 
-            return output
+            return "".join(output)
 
 
     def __init__(self, server_args):
@@ -361,8 +434,15 @@ class NameTag2Server(socketserver.ThreadingTCPServer):
                 if content_length > request.server._server_args.max_request_size:
                     return request.respond_error("The payload size is too large.")
 
-                # multipart/form-data
-                if request.headers.get("Content-Type", "").startswith("multipart/form-data"):
+                # Content-Type
+                if url.path.startswith("/weblicht"):
+                    try:
+                        params["data"] = request.rfile.read(content_length).decode("utf-8")
+                    except:
+                        return request.respond_error("Payload not in UTF-8.")
+                    params["input"] = "conllu"
+                    params["output"] = "conllu-ne"
+                elif request.headers.get("Content-Type", "").startswith("multipart/form-data"):
                     try:
                         parser = email.parser.BytesFeedParser()
                         parser.feed(b"Content-Type: " + request.headers["Content-Type"].encode("ascii") + b"\r\n\r\n")
@@ -395,7 +475,8 @@ class NameTag2Server(socketserver.ThreadingTCPServer):
                 request.wfile.write(json.dumps(response, indent=1).encode("utf-8"))
 
             # Handle /tokenize and /recognize
-            elif url.path in [ "/recognize", "/tokenize" ]:
+
+            elif url.path in [ "/recognize", "/tokenize", "/weblicht/recognize" ]:
                 if "data" not in params:
                     return request.respond_error("The parameter 'data' is required.")
 
@@ -407,45 +488,67 @@ class NameTag2Server(socketserver.ThreadingTCPServer):
 
                 # Input
                 input_param = "untokenized" if url.path == "/tokenize" else params.get("input", "untokenized")
-                if input_param not in ["untokenized", "vertical"]:
+                if input_param not in ["untokenized", "vertical", "conllu"]:
                     return request.respond_error("The requested input '{}' does not exist.".format(input_param))
 
                 # Output
                 output_param = params.get("output", "xml")
-                if output_param not in ["xml", "vertical"] + (["conll"] if url.path == "/recognize" else []):
+                if output_param not in ["xml", "vertical"] + (["conll", "conllu-ne"] if url.path in ["/recognize", "/weblicht/recognize"] else []):
                     return request.respond_error("The requested output '{}' does not exist.".format(output_param))
 
-                batch, started_responding, n_tokens_in_batches = [], False, 0
+                batch, started_responding = [], False
+                n_tokens_in_batches, n_nes_in_batches = 0, 1
                 try:
                     for sentence in itertools.chain(model._tokenizer.tokenize(params["data"], input_param), ["EOF"]):
                         if sentence == "EOF" or len(batch) == request.server._server_args.batch_size:
-                            tokens = []
+                            # Skip multiwords, get tokens from sentences in current batch
+                            input_tokens, token_list = [], []
                             for batch_sentence in batch:
-                                for token in batch_sentence:
-                                    tokens.append(token.token)
-                                tokens.append("")
-                            tokens.append("")
-                            output = "\n".join(tokens)
-                            if url.path == "/recognize":
+                                word, multiword_token = 1, 0
+                                while word < len(batch_sentence.words):
+                                    if multiword_token < len(batch_sentence.multiwordTokens) and batch_sentence.multiwordTokens[multiword_token].idFirst == word:
+                                        token = batch_sentence.multiwordTokens[multiword_token]
+                                        word = batch_sentence.multiwordTokens[multiword_token].idLast + 1
+                                        multiword_token += 1
+                                    else:
+                                        token = batch_sentence.words[word]
+                                        word += 1
+                                    input_tokens.append(token.form)
+                                    token_list.append(model._tokenizer.Token(token.form, token.getSpacesBefore(), token.getSpacesAfter()))
+                                input_tokens.append("")
+                            output = "\n".join(input_tokens)
+                            
+                            if url.path == "/recognize" or url.path == "/weblicht/recognize":
                                 output = model.predict(output)
                                 output = model.postprocess(output)
                                 if output_param == "vertical":
-                                    output, n_tokens_in_batches = model.conll_to_vertical(output, batch, n_tokens_in_batches)
+                                    output, n_tokens_in_batches = model.conll_to_vertical(output, n_tokens_in_batches)
+                                if output_param == "conllu-ne":
+                                    output, n_nes_in_batches = model.conll_to_conllu(output, batch, "conllu-ne", n_nes_in_batches)
                             if output_param == "xml":
-                                output = model.conll_to_xml(output, batch)
+                                output = model.conll_to_xml(output, token_list)
+
                             if not started_responding:
                                 # The first batch is ready, we commit to generate output.
-                                request.respond("application/json")
-                                request.wfile.write(json.dumps({
-                                    "model": model.name,
-                                    "acknowledgements": ["http://ufal.mff.cuni.cz/nametag/2#acknowledgements", model.acknowledgements],
-                                    "result": "",
-                                }, indent=1)[:-3].encode("utf-8"))
+                                if url.path.startswith("/weblicht"):
+                                    request.respond("application/conllu")
+                                else:
+                                    request.respond("application/json")
+                                    request.wfile.write(json.dumps({
+                                        "model": model.name,
+                                        "acknowledgements": ["http://ufal.mff.cuni.cz/nametag/2#acknowledgements", model.acknowledgements],
+                                        "result": "",
+                                    }, indent=1)[:-3].encode("utf-8"))
                                 started_responding=True
-                            request.wfile.write(json.dumps(output, ensure_ascii=False)[1:-1].encode("utf-8"))
+
+                            if url.path.startswith("/weblicht"):
+                                request.wfile.write(output.encode("utf-8"))
+                            else:
+                                request.wfile.write(json.dumps(output, ensure_ascii=False)[1:-1].encode("utf-8"))
                             batch = []
                         batch.append(sentence)
-                    request.wfile.write(b'"\n}\n')
+                    if not url.path.startswith("/weblicht"):
+                        request.wfile.write(b'"\n}\n')
 
                 except:
                     import traceback
@@ -455,7 +558,10 @@ class NameTag2Server(socketserver.ThreadingTCPServer):
                     if not started_responding:
                         request.respond_error("An internal error occurred during processing.")
                     else:
-                        request.wfile.write(b'",\n"An internal error occurred during processing, producing incorrect JSON!"')
+                        if url.path.startswith("/weblicht"):
+                            request.wfile.write(b'\n\nAn internal error occurred during processing, producing incorrect CoNLL-U!')
+                        else:
+                            request.wfile.write(b'",\n"An internal error occurred during processing, producing incorrect JSON!"')
 
             else:
                 request.respond_error("No handler for the given URL '{}'".format(url.path), code=404)
@@ -492,7 +598,7 @@ if __name__ == "__main__":
     parser.add_argument("wembedding_server", type=str, help="Address of an WEmbedding server")
     parser.add_argument("default_model", type=str, help="Default model")
     parser.add_argument("models", type=str, nargs="+", help="Models to serve")
-    parser.add_argument("--batch_size", default=64, type=int, help="Batch size")
+    parser.add_argument("--batch_size", default=32, type=int, help="Batch size")
     parser.add_argument("--logfile", default=None, type=str, help="Log path")
     parser.add_argument("--max_labels_per_token", default=5, type=int, help="Maximum labels per token.")
     parser.add_argument("--max_request_size", default=4096*1024, type=int, help="Maximum request size")
