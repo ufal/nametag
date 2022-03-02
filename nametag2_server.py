@@ -24,7 +24,7 @@ The mandatory arguments are given in this order:
 - each following triple of arguments defines a model, of which
     - first argument is the model name
     - second argument is the model directory
-    - third argument are the acknowledgemets to append
+    - third argument are the acknowledgements to append
 
 Example server usage:
 
@@ -63,14 +63,12 @@ import os
 import pickle
 import socketserver
 import sys
-import threading
 import time
 import urllib.parse
 
 import nametag2_dataset
 import nametag2_network
 import ufal.udpipe
-import wembedding_service.wembeddings.wembeddings as wembeddings
 
 
 SEP = "\t"
@@ -97,7 +95,7 @@ class UDPipeTokenizer:
         elif mode.startswith("conllu"):
             tokenizer = ufal.udpipe.InputFormat.newConlluInputFormat()
         else:
-            raise ValueError("Unknown tokenizer mode '{}'".format(model))
+            raise ValueError("Unknown tokenizer mode '{}'".format(mode))
         if tokenizer is None:
             raise RuntimeError("Cannot create the tokenizer")
 
@@ -188,9 +186,8 @@ class Models:
             def _clean_misc(misc):
                 result = []
                 for field in misc.split("|"):
-                    if encoding == "conllu-ne":
-                        if not field.startswith("NE="):
-                            result.append(field)
+                    if encoding == "conllu-ne" and not field.startswith("NE="):
+                        result.append(field)
                 return "|".join(result)
 
             output = []
@@ -354,7 +351,7 @@ class Models:
                                 if labels[i].startswith("B-") or open_labels[i] != labels[i][2:]:
                                     # previous open entity ends here
                                     # -> close it and all open nested entities
-                                    for j in range(i, len(open_labels)):
+                                    for _ in range(i, len(open_labels)):
                                         output.append("</ne>")
                                     open_labels = open_labels[:i]
                                     # open new entity

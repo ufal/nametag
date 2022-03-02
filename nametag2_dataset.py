@@ -245,7 +245,6 @@ class NameTag2Dataset:
 
         # Word-level data
         batch_word_ids = []
-        batch_word_wes = []
         for f in range(self.FACTORS):
             factor = self._factors[f]
             if f == self.TAGS and seq2seq:
@@ -270,7 +269,6 @@ class NameTag2Dataset:
                     batch_charseq_ids.append(np.zeros([batch_size, max_sentence_len], np.int32))
                     charseqs_map = {}
                     charseqs = []
-                    charseq_lens = []
                     for i in range(batch_size):
                         for j, charseq_id in enumerate(factor.charseq_ids[batch_perm[i]]):
                             if charseq_id not in charseqs_map:

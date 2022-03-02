@@ -21,7 +21,7 @@ Before you run NameTag 2 for NER prediction, please make sure you have:
 
   1. installed Python virtual environment,
   2. downloaded the NameTag 2 models,
-  3. you have a ip:port of a running BERT WEmbeddings service (e.g.,
+  3. you have an ip:port of a running BERT WEmbeddings service (e.g.,
      localhost:8000).
 
 NER prediction example usage:
@@ -83,13 +83,10 @@ reuse them during training, speeding up the training process.
 
 import io
 import json
-import os
 import pickle
 import sys
-import time
 
 import numpy as np
-import tensorflow as tf
 
 import nametag2_dataset
 import nametag2_network
