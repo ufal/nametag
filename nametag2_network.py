@@ -26,7 +26,6 @@ Please see Network.postprocess for correct bracketing and BIO formatting of
 the output.
 """
 
-import os
 import sys
 import time
 

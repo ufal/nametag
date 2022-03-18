@@ -77,7 +77,7 @@ Download the [latest version of NameTag 2 models](https://ufal.mff.cuni.cz/namet
 
 NameTag 2 is using contextualized BERT embeddings computed by [Transformers](https://arxiv.org/abs/1910.03771) from [Hugging Face](https://github.com/huggingface/transformers).
 
-To this end, we issused a webservice serving transformers BERT embeddings called [WEmbedding service](https://github.com/ufal/wembedding_service). Adding WEmbeddings service as a submodule, a clone command should be:
+To this end, we issued a webservice serving transformers BERT embeddings called [WEmbedding service](https://github.com/ufal/wembedding_service). Adding WEmbeddings service as a submodule, a clone command should be:
 
 ```sh
 git clone --recurse-submodules
@@ -111,7 +111,7 @@ Before you run NameTag 2 for NER prediction, please make sure you have:
 
 1. installed Python virtual environment,
 2. downloaded the NameTag 2 models,
-3. you have a ip:port of a running BERT WEmbeddings service
+3. you have an ip:port of a running BERT WEmbeddings service
 
 The main NameTag 2 script is called `nametag2.py`. Example NER prediction usage:
 
@@ -147,7 +147,7 @@ The mandatory arguments are given in this order:
 - each following triple of arguments defines a model, of which
   - first argument is the model name
   - second argument is the model directory
-  - third argument are the acknowledgemets to append
+  - third argument are the acknowledgements to append
 
 Example server usage:
 
