@@ -54,6 +54,7 @@ Novák  I-P|B-ps
 """
 
 import argparse
+import collections
 import email.parser
 import http.server
 import itertools
@@ -533,11 +534,11 @@ class NameTag2Server(socketserver.ThreadingTCPServer):
                                     request.respond("application/conllu")
                                 else:
                                     request.respond("application/json")
-                                    request.wfile.write(json.dumps({
-                                        "model": model.name,
-                                        "acknowledgements": ["http://ufal.mff.cuni.cz/nametag/2#acknowledgements", model.acknowledgements],
-                                        "result": "",
-                                    }, indent=1)[:-3].encode("utf-8"))
+                                    request.wfile.write(json.dumps(collections.OrderedDict([
+                                        ("model", model.name),
+                                        ("acknowledgements", ["http://ufal.mff.cuni.cz/nametag/2#acknowledgements", model.acknowledgements]),
+                                        ("result", ""),
+                                    ]), indent=1)[:-3].encode("utf-8"))
                                 started_responding=True
 
                             if url.path.startswith("/weblicht"):
