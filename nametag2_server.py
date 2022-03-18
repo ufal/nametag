@@ -185,11 +185,7 @@ class Models:
         def conll_to_conllu(self, ner_output, sentences, encoding, n_nes_in_batches):
 
             def _clean_misc(misc):
-                result = []
-                for field in misc.split("|"):
-                    if encoding == "conllu-ne" and not field.startswith("NE="):
-                        result.append(field)
-                return "|".join(result)
+                return "|".join(field for field in misc.split("|") if not field.startswith("NE="))
 
             output = []
             output_writer = ufal.udpipe.OutputFormat.newConlluOutputFormat()
