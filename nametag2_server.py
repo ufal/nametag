@@ -503,7 +503,7 @@ class NameTag2Server(socketserver.ThreadingTCPServer):
                 batch, started_responding = [], False
                 n_tokens_in_batches, n_nes_in_batches = 0, 1
                 try:
-                    for sentence in itertools.chain(sentences, input_param), ["EOF"]):
+                    for sentence in itertools.chain(sentences, ["EOF"]):
                         if sentence == "EOF" or len(batch) == request.server._server_args.batch_size:
                             # Skip multiwords, get tokens from sentences in current batch
                             input_tokens, token_list = [], []
