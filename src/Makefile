@@ -29,7 +29,7 @@ $(call lib,libnametag): $(call obj,$(NAMETAG_OBJECTS))
 C_FLAGS += $(call include_dir,.)
 # executables
 $(call exe,rest_server/nametag_server): LD_FLAGS+=$(call use_library,$(if $(filter win-%,$(PLATFORM)),$(MICRORESTD_LIBRARIES_WIN),$(MICRORESTD_LIBRARIES_POSIX)))
-$(call exe,rest_server/nametag_server): $(call obj,$(NAMETAG_OBJECTS) rest_server/nametag_service $(addprefix rest_server/microrestd/,$(MICRORESTD_OBJECTS)))
+$(call exe,rest_server/nametag_server): $(call obj,$(NAMETAG_OBJECTS) rest_server/nametag_service unilib/unicode unilib/uninorms unilib/utf8 $(addprefix rest_server/microrestd/,$(MICRORESTD_OBJECTS)))
 $(call exe,run_ner): $(call obj, $(NAMETAG_OBJECTS))
 $(call exe,run_tokenizer): $(call obj, $(NAMETAG_OBJECTS))
 $(call exe,train_ner): $(call obj, $(NAMETAG_OBJECTS) classifier/network_classifier_encoder features/feature_templates_encoder ner/bilou_ner_trainer ner/entity_map_encoder utils/compressor_save)

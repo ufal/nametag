@@ -97,6 +97,7 @@ inline microrestd::string_piece sp(const char* str, size_t len) { return microre
 
 const char* nametag_service::json_mime = "application/json";
 const char* nametag_service::operation_not_supported = "Required operation is not supported by the chosen model.\n";
+const char* nametag_service::infclen_header = "X-Billing-Input-NFC-Len";
 
 nametag_service::rest_response_generator::rest_response_generator(const model_info* model, rest_output_mode output)
   : first(true), last(false), output(output) {
@@ -138,15 +139,15 @@ bool nametag_service::handle_rest_recognize(microrestd::rest_request& req) {
   auto model = load_rest_model(rest_id, error);
   if (!model) return req.respond_error(error);
 
-  auto data = get_data(req, error); if (!data) return req.respond_error(error);
+  string data; int infclen; if (!get_data(req, data, infclen, error)) return req.respond_error(error);
   unique_ptr<Tokenizer> tokenizer(get_tokenizer(req, model, error)); if (!tokenizer) return req.respond_error(error);
   rest_output_mode output(XML); if (!get_output_mode(req, output, error)) return req.respond_error(error);
 
   class generator : public rest_response_generator {
    public:
-    generator(const model_info* model, const char* data, const Ner* ner, Tokenizer* tokenizer, rest_output_mode output)
-        : rest_response_generator(model, output), ner(ner), tokenizer(tokenizer), unprinted(data) {
-      tokenizer->set_text(data);
+    generator(const model_info* model, string&& data, const Ner* ner, Tokenizer* tokenizer, rest_output_mode output)
+        : rest_response_generator(model, output), data(data), ner(ner), tokenizer(tokenizer), unprinted(this->data.c_str()) {
+      tokenizer->set_text(this->data);
     }
 
     void sort_entities(vector<named_entity>& entities) {
@@ -237,6 +238,7 @@ bool nametag_service::handle_rest_recognize(microrestd::rest_request& req) {
     }
 
    private:
+    string data;
     const Ner* ner;
     unique_ptr<Tokenizer> tokenizer;
     const char* unprinted;
@@ -246,7 +248,7 @@ bool nametag_service::handle_rest_recognize(microrestd::rest_request& req) {
     size_t total_tokens = 0;
     char token_number[sizeof(size_t) * 3/*ceil(log_10(256))*/];
   };
-  return req.respond(json_mime, new generator(model, data, model->ner.get(), tokenizer.release(), output));
+  return req.respond(json_mime, new generator(model, move(data), model->ner.get(), tokenizer.release(), output), {{infclen_header, to_string(infclen).c_str()}});
 }
 
 bool nametag_service::handle_rest_tokenize(microrestd::rest_request& req) {
@@ -256,15 +258,15 @@ bool nametag_service::handle_rest_tokenize(microrestd::rest_request& req) {
   if (!model) return req.respond_error(error);
   if (!model->can_tokenize) return req.respond_error(operation_not_supported);
 
-  auto data = get_data(req, error); if (!data) return req.respond_error(error);
+  string data; int infclen; if (!get_data(req, data, infclen, error)) return req.respond_error(error);
   rest_output_mode output(XML); if (!get_output_mode(req, output, error)) return req.respond_error(error);
   if (output.mode == CONLL) return req.respond_error("Unsupported output mode 'conll'");
 
   class generator : public rest_response_generator {
    public:
-    generator(const model_info* model, const char* data, rest_output_mode output, Tokenizer* tokenizer)
-        : rest_response_generator(model, output), tokenizer(tokenizer), unprinted(data) {
-      tokenizer->set_text(data);
+    generator(const model_info* model, string&& data, rest_output_mode output, Tokenizer* tokenizer)
+        : rest_response_generator(model, output), data(data), tokenizer(tokenizer), unprinted(this->data.c_str()) {
+      tokenizer->set_text(this->data);
     }
 
     bool next(bool /*first*/) {
@@ -295,11 +297,12 @@ bool nametag_service::handle_rest_tokenize(microrestd::rest_request& req) {
     }
 
    private:
+    string data;
     unique_ptr<Tokenizer> tokenizer;
     const char* unprinted;
     vector<string_piece> forms;
   };
-  return req.respond(json_mime, new generator(model, data, output, model->ner->new_tokenizer()));
+  return req.respond(json_mime, new generator(model, move(data), output, model->ner->new_tokenizer()), {{infclen_header, to_string(infclen).c_str()}});
 }
 
 // REST service helpers
@@ -311,7 +314,7 @@ const string& nametag_service::get_rest_model_id(microrestd::rest_request& req) 
   return model_it == req.params.end() ? empty : model_it->second;
 }
 
-bool morphodita_service::get_data(microrestd::rest_request& req, string& data, int& infclen, string& error) {
+bool nametag_service::get_data(microrestd::rest_request& req, string& data, int& infclen, string& error) {
   auto data_it = req.params.find("data");
   if (data_it == req.params.end()) return error.assign("Required argument 'data' is missing.\n"), false;
 
