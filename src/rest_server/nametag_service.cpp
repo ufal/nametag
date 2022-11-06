@@ -10,6 +10,9 @@
 #include <algorithm>
 
 #include "nametag_service.h"
+#include "unilib/unicode.h"
+#include "unilib/uninorms.h"
+#include "unilib/utf8.h"
 
 namespace ufal {
 namespace nametag {
@@ -308,11 +311,18 @@ const string& nametag_service::get_rest_model_id(microrestd::rest_request& req) 
   return model_it == req.params.end() ? empty : model_it->second;
 }
 
-const char* nametag_service::get_data(microrestd::rest_request& req, string& error) {
+bool morphodita_service::get_data(microrestd::rest_request& req, string& data, int& infclen, string& error) {
   auto data_it = req.params.find("data");
-  if (data_it == req.params.end()) return error.assign("Required argument 'data' is missing.\n"), nullptr;
+  if (data_it == req.params.end()) return error.assign("Required argument 'data' is missing.\n"), false;
 
-  return data_it->second.c_str();
+  u32string codepoints;
+  unilib::utf8::decode(data_it->second, codepoints);
+  unilib::uninorms::nfc(codepoints);
+  infclen = 0;
+  for (auto&& codepoint : codepoints)
+    infclen += !(unilib::unicode::category(codepoint) & (unilib::unicode::C | unilib::unicode::Z));
+  unilib::utf8::encode(codepoints, data);
+  return true;
 }
 
 tokenizer* nametag_service::get_tokenizer(microrestd::rest_request& req, const model_info* model, string& error) {
