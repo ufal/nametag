@@ -65,6 +65,7 @@ import pickle
 import socketserver
 import sys
 import time
+import unicodedata
 import urllib.parse
 
 import nametag2_dataset
@@ -391,12 +392,14 @@ class NameTag2Server(socketserver.ThreadingTCPServer):
     class NameTag2ServerRequestHandler(http.server.BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.1"
 
-        def respond(request, content_type, code=200):
+        def respond(request, content_type, code=200, additional_headers={}):
             request.close_connection = True
             request.send_response(code)
             request.send_header("Connection", "close")
             request.send_header("Content-Type", content_type)
             request.send_header("Access-Control-Allow-Origin", "*")
+            for key, value in additional_headers.items():
+                request.send_header(key, value)
             request.end_headers()
 
         def respond_error(request, message, code=400):
@@ -472,6 +475,7 @@ class NameTag2Server(socketserver.ThreadingTCPServer):
             elif url.path in [ "/recognize", "/tokenize", "/weblicht/recognize" ]:
                 if "data" not in params:
                     return request.respond_error("The parameter 'data' is required.")
+                params["data"] = unicodedata.normalize("NFC", params["data"])
 
                 # Model
                 model = params.get("model", request.server._models.default_model)
@@ -489,10 +493,17 @@ class NameTag2Server(socketserver.ThreadingTCPServer):
                 if output_param not in ["xml", "vertical"] + (["conll", "conllu-ne"] if url.path in ["/recognize", "/weblicht/recognize"] else []):
                     return request.respond_error("The requested output '{}' does not exist.".format(output_param))
 
+                try:
+                    # Convert the generator to a list to raise exceptions early
+                    sentences = list(model._tokenizer.tokenize(params["data"], input_param))
+                except:
+                    return request.respond_error("Cannot parse the input in the '{}' format.".format(input_param))
+                infclen = sum(sum(len(word.form) for word in sentence.words[1:]) for sentence in sentences)
+
                 batch, started_responding = [], False
                 n_tokens_in_batches, n_nes_in_batches = 0, 1
                 try:
-                    for sentence in itertools.chain(model._tokenizer.tokenize(params["data"], input_param), ["EOF"]):
+                    for sentence in itertools.chain(sentences, input_param), ["EOF"]):
                         if sentence == "EOF" or len(batch) == request.server._server_args.batch_size:
                             # Skip multiwords, get tokens from sentences in current batch
                             input_tokens, token_list = [], []
@@ -526,7 +537,7 @@ class NameTag2Server(socketserver.ThreadingTCPServer):
                                 if url.path.startswith("/weblicht"):
                                     request.respond("application/conllu")
                                 else:
-                                    request.respond("application/json")
+                                    request.respond("application/json", additional_headers={"X-Billing-Input-NFC-Len": str(infclen)})
                                     request.wfile.write(json.dumps(collections.OrderedDict([
                                         ("model", model.name),
                                         ("acknowledgements", ["http://ufal.mff.cuni.cz/nametag/2#acknowledgements", model.acknowledgements]),
