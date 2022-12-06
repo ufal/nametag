@@ -120,7 +120,7 @@ class Models:
             self.acknowledgements = acknowledgements
 
             self.network, self.args, self.train = None, None, None
-             
+
             # Load saved options from the model
             with open("{}/options.json".format(path), mode="r") as options_file:
                 self.args = argparse.Namespace(**json.load(options_file))
@@ -132,7 +132,7 @@ class Models:
                 self.args.max_labels_per_token = server_args.max_labels_per_token
 
             self.args.batch_size = self._server_args.batch_size
- 
+
             # Unpickle word mappings of train data
             with open("{}/mappings.pickle".format(path), mode="rb") as mappings_file:
                 self.train = pickle.load(mappings_file)
@@ -147,11 +147,11 @@ class Models:
                                    tag_eow=self.train.factors[self.train.TAGS].words_map["<eow>"],
                                    bert_dim=self.train.bert_dim(),
                                    predict_only=True)
- 
+
             # Load the checkpoint
             self.network.saver.restore(self.network.session, "{}/model".format(path.rstrip("/")))
             print("Loaded model {}".format(os.path.basename(path)), file=sys.stderr, flush=True)
-            
+
             # Load the tokenizer
             tokenizer_path = os.path.join(path, "udpipe.tokenizer")
             self._tokenizer = UDPipeTokenizer(tokenizer_path)
@@ -161,7 +161,7 @@ class Models:
 
         def predict(self, text):
             time_start = time.time()
-                
+
             # Create NameTag2Dataset
             dataset = nametag2_dataset.NameTag2Dataset(text=text,
                                                        train=self.train,
@@ -199,10 +199,11 @@ class Models:
                         output.append(output_writer.writeSentence(sentences[n_sentences]))
                         n_sentences += 1
                         n_words = 1
+                        n_multiwords = 0
                     in_sentence = False
                 else:
                     in_sentence = True
-                    
+
                     # This will work for properly nested entities,
                     # hence model.postprocess is important before conll_to_conllu.
                     if encoding == "conllu-ne":
@@ -225,9 +226,9 @@ class Models:
                                 else: # no running entities, new entity starts here, just append
                                     open_ids.append(n_nes_in_batches)
                                     n_nes_in_batches += 1
-                            for i in range(len(labels)):    
+                            for i in range(len(labels)):
                                 nes_encoded.append(labels[i][2:] + "_" + str(open_ids[i]))
-                                
+
                         # Multiword token starts here -> consume more words
                         if n_multiwords < len(sentences[n_sentences].multiwordTokens) and sentences[n_sentences].multiwordTokens[n_multiwords].idFirst == n_words:
                             words_in_token = sentences[n_sentences].multiwordTokens[n_multiwords].idLast - sentences[n_sentences].multiwordTokens[n_multiwords].idFirst + 1
@@ -255,7 +256,7 @@ class Models:
         def conll_to_vertical(self, text, n_tokens_in_batch):
             output = []
             open_ids, open_forms, open_labels = [], [], []  # open entities on i-th line
-            
+
             in_sentence = False
 
             for i, line in enumerate(text.split("\n")):
@@ -358,7 +359,7 @@ class Models:
                             else: # no running entities, new entity starts here, just append
                                 opening_tags.append("<ne type=\"" + self.encode_entities(labels[i][2:]) + "\">")
                                 open_labels.append(labels[i][2:])
-   
+
                     output.append(previous_spaces_after)
                     output.append(self.encode_entities(token_list[n_tokens].spaces_before))
                     output.append("".join(opening_tags))
@@ -521,7 +522,7 @@ class NameTag2Server(socketserver.ThreadingTCPServer):
                                     token_list.append(model._tokenizer.Token(token.form, token.getSpacesBefore(), token.getSpacesAfter()))
                                 input_tokens.append("")
                             output = "\n".join(input_tokens)
-                            
+
                             if url.path == "/recognize" or url.path == "/weblicht/recognize":
                                 output = model.predict(output)
                                 output = model.postprocess(output)
