@@ -18,7 +18,7 @@ all: $(BINDING_MODULE)
 
 $(call dynobj,nametag_python):C_FLAGS+=$(BINDING_C_FLAGS)
 $(BINDING_MODULE): $(call dynobj,nametag_python) $(BINDING_NAMETAG_OBJECTS)
-	$(call link_dynlib,$@,$^ $(BINDING_C_FLAGS), $(BINDING_LD_FLAGS) $(call version_script,nametag_python.map))
+	$(call link_dynlib,$@,$^ $(BINDING_C_FLAGS), $(BINDING_LD_FLAGS)
 
 nametag_python.cpp: nametag_python.i ../common/nametag.i
 	@$(call mkdir,ufal)
