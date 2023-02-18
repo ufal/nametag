@@ -22,8 +22,8 @@ Copyright 2016 by Institute of Formal and Applied Linguistics, Faculty of
 Mathematics and Physics, Charles University in Prague, Czech Republic.
 
 
-Online
-======
+Online Web Application and Web Service
+======================================
 
 NameTag Web Application is available at
 http://lindat.mff.cuni.cz/services/nametag/ using LINDAT/CLARIN infrastructure
@@ -40,12 +40,14 @@ Release
 Download
 --------
 
-NameTag releases are available on GitHub (http://github.com/ufal/nametag),
-either as a pre-compiled binary package, or source code only. The binary package
-contains Linux, Windows and OS X binaries, Java bindings binary, C# bindings
-binary and source code of NameTag and all language bindings. While the binary
-packages do not contain compiled Python or Perl bindings, packages for those
-languages are available in standard package repositories, i.e. on PyPI and CPAN.
+NameTag releases are available on GitHub (http://github.com/ufal/nametag), both
+as source code and as a pre-compiled binary package. The binary package contains
+Linux, Windows and OS X binaries, Java bindings binary, C# bindings binary, and
+source code of NameTag and all language bindings. While the binary packages do
+not contain compiled Python or Perl bindings, packages for those languages are
+available in standard package repositories, i.e., on PyPI
+(https://pypi.python.org/pypi/ufal.nametag/) and CPAN
+(https://metacpan.org/pod/Ufal::NameTag).
 
 - Latest release (http://github.com/ufal/nametag/releases/latest)
 - All releases (http://github.com/ufal/nametag/releases), Changelog
@@ -81,15 +83,6 @@ conditions.
 If you use this tool for scientific work, please give credit to us by
 referencing NameTag website (http://ufal.mff.cuni.cz/nametag) and Straková et
 al. 2014 (http://www.aclweb.org/anthology/P/P14/P14-5003.pdf).
-
-
-Platforms and Requirements
---------------------------
-
-NameTag is available as a standalone tool and as a library for Linux/Windows/OS
-X. It does not require any additional libraries. As any supervised machine
-learning tool, it needs trained linguistic models to perform named entity
-recognition. The models for the Czech language are available with the tool.
 
 
 NameTag Installation
