@@ -13,6 +13,7 @@
 #include "morphodita_tagger.h"
 #include "unilib/unicode.h"
 #include "unilib/utf8.h"
+#include "utils/path_from_utf8.h"
 
 namespace ufal {
 namespace nametag {
@@ -26,7 +27,7 @@ bool morphodita_tagger::load(istream& is) {
 bool morphodita_tagger::create_and_encode(const string& params, ostream& os) {
   if (params.empty()) return cerr << "Missing tagger_file argument to morphodita_tagger!" << endl, false;
 
-  ifstream in(params, ifstream::in | ifstream::binary);
+  ifstream in(path_from_utf8(params).c_str(), ifstream::in | ifstream::binary);
   if (!in.is_open()) return cerr << "Cannot open morphodita tagger file '" << params << "'!" << endl, false;
   if (!load(in)) return cerr << "Cannot load morphodita tagger from file '" << params << "'!" << endl, false;
 

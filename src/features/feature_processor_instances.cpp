@@ -15,6 +15,7 @@
 #include "unilib/unicode.h"
 #include "unilib/utf8.h"
 #include "utils/parse_int.h"
+#include "utils/path_from_utf8.h"
 #include "utils/split.h"
 #include "utils/url_detector.h"
 
@@ -58,7 +59,7 @@ class brown_clusters : public feature_processor {
     if (!feature_processor::parse(window, args, entities, total_features, pipeline)) return false;
     if (args.size() < 1) return cerr << "BrownCluster requires a cluster file as the first argument!" << endl, false;
 
-    ifstream in(args[0]);
+    ifstream in(path_from_utf8(args[0]).c_str());
     if (!in.is_open()) return cerr << "Cannot open Brown clusters file '" << args[0] << "'!" << endl, false;
 
     vector<size_t> substrings;
@@ -269,7 +270,7 @@ class gazetteers : public feature_processor {
 
     gazetteers_info.clear();
     for (auto&& arg : args) {
-      ifstream in(arg.c_str());
+      ifstream in(path_from_utf8(arg).c_str());
       if (!in.is_open()) return cerr << "Cannot open gazetteers file '" << arg << "'!" << endl, false;
 
       unsigned longest = 0;
@@ -638,7 +639,7 @@ class gazetteers_enhanced : public feature_processor {
       for (int mode = 0; mode < MODES_TOTAL; mode++) {
         file_name.assign(gazetteer_meta.basename).append(basename_suffixes[mode]);
 
-        ifstream file(file_name);
+        ifstream file(path_from_utf8(file_name).c_str());
         if (!file.is_open()) {
           if (mode == SOFT && files_must_exist)
             return cerr << "Cannot open gazetteers file '" << file_name << "'!" << endl, false;

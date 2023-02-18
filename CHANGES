@@ -7,6 +7,8 @@ Version 1.1.3-devel
 - Export recognizable named entities from the recognizer.
 - Export gazetteers from the recognizer (only GazetteersEnhanced).
 - Add several nametag_server options.
+- On Windows, the file paths are now UTF-8 encoded, instead of ANSI.
+  This change affects the API, binary arguments, and program outputs.
 
 
 Version 1.1.2 [01 Jul 17]

@@ -12,6 +12,7 @@
 #include "bilou_ner.h"
 #include "ner.h"
 #include "ner_ids.h"
+#include "utils/path_from_utf8.h"
 
 namespace ufal {
 namespace nametag {
@@ -33,7 +34,7 @@ ner* ner::load(istream& is) {
 }
 
 ner* ner::load(const char* fname) {
-  ifstream in(fname, ifstream::in | ifstream::binary);
+  ifstream in(path_from_utf8(fname).c_str(), ifstream::in | ifstream::binary);
   if (!in.is_open()) return nullptr;
 
   return load(in);

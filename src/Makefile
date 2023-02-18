@@ -33,8 +33,8 @@ $(call exe,rest_server/nametag_server): $(call obj,$(NAMETAG_OBJECTS) rest_serve
 $(call exe,run_ner): $(call obj, $(NAMETAG_OBJECTS))
 $(call exe,run_tokenizer): $(call obj, $(NAMETAG_OBJECTS))
 $(call exe,train_ner): $(call obj, $(NAMETAG_OBJECTS) classifier/network_classifier_encoder features/feature_templates_encoder ner/bilou_ner_trainer ner/entity_map_encoder utils/compressor_save)
-$(EXECUTABLES) $(SERVER):$(call exe,%): $$(call obj,% utils/options)
-	$(call link_exe,$@,$^,$(call win_subsystem,console))
+$(EXECUTABLES) $(SERVER):$(call exe,%): $$(call obj,% utils/options utils/win_wmain_utf8)
+	$(call link_exe,$@,$^,$(call win_subsystem,console,wmain))
 
 # cleaning
 .PHONY: clean

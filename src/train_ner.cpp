@@ -16,6 +16,7 @@
 #include "utils/options.h"
 #include "utils/parse_double.h"
 #include "utils/parse_int.h"
+#include "utils/path_from_utf8.h"
 #include "version/version.h"
 
 using namespace ufal::nametag;
@@ -68,12 +69,12 @@ int main(int argc, char* argv[]) {
         const char* heldout_file = argc == 11 ? nullptr : argv[11];
 
         // Open needed files
-        ifstream features(features_file);
+        ifstream features(path_from_utf8(features_file).c_str());
         if (!features.is_open()) runtime_failure("Cannot open features file '" << features_file << "'!");
 
         ifstream heldout;
         if (heldout_file) {
-          heldout.open(heldout_file);
+          heldout.open(path_from_utf8(heldout_file).c_str());
           if (!heldout.is_open()) runtime_failure("Cannot open heldout file '" << heldout_file << "'!");
         } else {
           heldout.setstate(ios::failbit);
