@@ -9,7 +9,7 @@
 
 include ../common/Makefile.common
 
-BINDING_MODULE=$(if $(filter macos-%,$(PLATFORM)),ufal_nametag.so,$(call dynlib,ufal_nametag))
+BINDING_MODULE=$(if $(filter macos-%,$(PLATFORM)),ufal/nametag/_nametag.so,$(call dynlib,ufal/nametag/_nametag))
 BINDING_C_FLAGS+=$(if $(PYTHON_INCLUDE),,$(error PYTHON_INCLUDE must be set to the directory containing Python.h))
 BINDING_C_FLAGS+=$(call include_dir,$(PYTHON_INCLUDE))
 BINDING_C_FLAGS+=$(if $(findstring -gcc-,$(PLATFORM))$(findstring -clang-,$(PLATFORM)),-w)
@@ -18,13 +18,15 @@ all: $(BINDING_MODULE)
 
 $(call dynobj,nametag_python):C_FLAGS+=$(BINDING_C_FLAGS)
 $(BINDING_MODULE): $(call dynobj,nametag_python) $(BINDING_NAMETAG_OBJECTS)
-	$(call link_dynlib,$@,$^ $(BINDING_C_FLAGS), $(BINDING_LD_FLAGS)
+	$(call link_dynlib,$@,$^ $(BINDING_C_FLAGS), $(BINDING_LD_FLAGS))
 
 nametag_python.cpp: nametag_python.i ../common/nametag.i
 	@$(call mkdir,ufal)
 	@$(call echo,>ufal/__init__.py)
-	swig $(SWIG_FLAGS) -python -outdir ufal -o $@ -interface ufal_nametag -builtin $<
+	@$(call mkdir,ufal/nametag)
+	swig $(SWIG_FLAGS) -python -outdir ufal/nametag -o $@ -builtin $<
+	@$(call mv,ufal/nametag/nametag.py,ufal/nametag/__init__.py)
 
 .PHONY: clean
 clean:
-	@$(call rm,.build ufal $(call all_dynlib,ufal_nametag) nametag_python.cpp)
+	@$(call rm,.build ufal nametag_python.cpp)
