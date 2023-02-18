@@ -1,5 +1,5 @@
-Version 1.1.3-devel
--------------------
+Version 1.2.0 [18 Feb 23]
+-------------------------
 - Add FormCapitalization feature template.
 - Add GazetteersEnhanced feature template, much improving gazetteers
   handling, including better matching, possibility of hard gazetteers
