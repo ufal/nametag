@@ -17,7 +17,7 @@ namespace nametag {
 entity_type entity_map::parse(const char* str, bool add_entity) const {
   auto it = str2id.find(str);
   if (it == str2id.end() && add_entity) {
-    it = str2id.emplace(str, id2str.size()).first;
+    it = str2id.emplace(str, (int)id2str.size()).first;
     id2str.emplace_back(str);
   }
   return it == str2id.end() ? entity_type_unknown : it->second;

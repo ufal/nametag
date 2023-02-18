@@ -75,7 +75,7 @@ bool network_classifier::train(unsigned features, unsigned outcomes, const vecto
       if (feature >= features) { if (verbose) cerr << "Heldout instances out of range!" << endl; return false; }
 
   mt19937 generator(42);
-  uniform_real_distribution<float> uniform(-0.1, 0.1);
+  uniform_real_distribution<float> uniform(-0.1f, 0.1f);
 
   // Compute indices from existing feature-outcome pairs
   indices.clear();

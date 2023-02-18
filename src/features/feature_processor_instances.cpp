@@ -87,7 +87,7 @@ class brown_clusters : public feature_processor {
         clusters.emplace_back();
         for (auto&& substring : substrings)
           if (substring == string::npos || substring < cluster.size())
-            clusters.back().emplace_back(prefixes_map.emplace(cluster.substr(0, substring), *total_features + (2*window + 1) * prefixes_map.size() + window).first->second);
+            clusters.back().emplace_back(prefixes_map.emplace(cluster.substr(0, substring), *total_features + (2*window + 1) * (int)prefixes_map.size() + window).first->second);
         it = cluster_map.emplace(cluster, id).first;
       }
       if (!map.emplace(form, it->second).second) return cerr << "Form '" << form << "' is present twice in Brown cluster file '" << args[0] << "'!" << endl, false;
@@ -287,7 +287,7 @@ class gazetteers : public feature_processor {
         for (unsigned i = 0; i < tokens.size(); i++) {
           if (i) gazetteer += ' ';
           gazetteer += tokens[i];
-          auto it = map.emplace(gazetteer, gazetteers_info.size()).first;
+          auto it = map.emplace(gazetteer, (int)gazetteers_info.size()).first;
           if (it->second == gazetteers_info.size()) gazetteers_info.emplace_back();
           auto& info = gazetteers_info[it->second];
           if (i + 1 < tokens.size())
