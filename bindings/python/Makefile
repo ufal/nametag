@@ -9,10 +9,10 @@
 
 include ../common/Makefile.common
 
-BINDING_MODULE=$(if $(filter osx-%,$(PLATFORM)),ufal_nametag.so,$(call dynlib,ufal_nametag))
+BINDING_MODULE=$(if $(filter macos-%,$(PLATFORM)),ufal_nametag.so,$(call dynlib,ufal_nametag))
 BINDING_C_FLAGS+=$(if $(PYTHON_INCLUDE),,$(error PYTHON_INCLUDE must be set to the directory containing Python.h))
 BINDING_C_FLAGS+=$(call include_dir,$(PYTHON_INCLUDE))
-BINDING_C_FLAGS+=$(if $(filter %-gcc %-clang,$(PLATFORM)),-w)
+BINDING_C_FLAGS+=$(if $(findstring -gcc-,$(PLATFORM))$(findstring -clang-,$(PLATFORM)),-w)
 
 all: $(BINDING_MODULE)
 
