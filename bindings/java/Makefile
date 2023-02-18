@@ -34,7 +34,7 @@ nametag_java.cpp: nametag_java.i ../common/nametag.i
 	swig $(SWIG_FLAGS) -java -package cz.cuni.mff.ufal.nametag -outdir $(call platform_name,cz/cuni/mff/ufal/nametag) -o $@ $<
 
 nametag.jar: nametag_java.cpp
-	javac -source 1.4 -Xlint:-options $(wildcard cz/cuni/mff/ufal/nametag/*.java)
+	javac -source 6 -Xlint:-options $(wildcard cz/cuni/mff/ufal/nametag/*.java)
 	jar cf $@ $(patsubst %.java,%.class,$(wildcard cz/cuni/mff/ufal/nametag/*.java))
 
 .PHONY: clean
