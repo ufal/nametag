@@ -1,0 +1,17 @@
+Revision history for ufal.nametag
+
+1.2.0.1 [18 Feb 23]
+        Update NameTag to version 1.2.0.
+
+1.1.2.1 [01 Jul 17]
+        Update NameTag to version 1.1.2.
+
+1.1.1.2 [05 May 16]
+        Update NameTag to version 1.1.1.
+        Change licence to MPL.
+        Add support for OS X and Visual Studio 2015.
+        Add basic tests.
+        Silence warnings during compilation.
+
+1.0.0.1 [10 Apr 2014]
+        First public release of bindings for NameTag 1.0.0.
