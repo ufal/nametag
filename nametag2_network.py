@@ -46,7 +46,7 @@ class Network:
         self.session = tf.Session(graph = graph, config=tf.ConfigProto(inter_op_parallelism_threads=threads,
                                                                        intra_op_parallelism_threads=threads))
 
-    def construct(self, args, num_forms, num_form_chars, 
+    def construct(self, args, num_forms, num_form_chars,
                   num_tags, tag_bos, tag_eow, bert_dim, predict_only):
         with self.session.graph.as_default():
 
@@ -62,7 +62,7 @@ class Network:
                 self.form_charseqs = tf.placeholder(tf.int32, [None, None], name="form_charseqs")
                 self.form_charseq_lens = tf.placeholder(tf.int32, [None], name="form_charseq_lens")
                 self.form_charseq_ids = tf.placeholder(tf.int32, [None,None], name="form_charseq_ids")
-                
+
             # RNN Cell
             if args.rnn_cell == "LSTM":
                 rnn_cell = tf.nn.rnn_cell.BasicLSTMCell
@@ -76,7 +76,7 @@ class Network:
             # Trainable embeddings for forms
             form_embeddings = tf.get_variable("form_embeddings", shape=[num_forms, args.we_dim], dtype=tf.float32)
             inputs.append(tf.nn.embedding_lookup(form_embeddings, self.form_ids))
-            
+
             # BERT
             if bert_dim:
                 inputs.append(self.bert_wes)
@@ -88,33 +88,33 @@ class Network:
                 character_embeddings = tf.get_variable("form_character_embeddings",
                                                         shape=[num_form_chars, args.cle_dim],
                                                         dtype=tf.float32)
-                
+
                 # Embed self.form_charseqs (list of unique form in the batch) using the character embeddings.
                 characters_embedded = tf.nn.embedding_lookup(character_embeddings, self.form_charseqs)
-                
+
                 # Use tf.nn.bidirectional.rnn to process embedded self.form_charseqs
                 # using a GRU cell of dimensionality args.cle_dim.
                 _, (state_fwd, state_bwd) = tf.nn.bidirectional_dynamic_rnn(
                         tf.nn.rnn_cell.GRUCell(args.cle_dim), tf.nn.rnn_cell.GRUCell(args.cle_dim),
                         characters_embedded, sequence_length=self.form_charseq_lens, dtype=tf.float32, scope="form_cle")
-                
+
                 # Sum the resulting fwd and bwd state to generate character-level form embedding (CLE)
                 # of unique forms in the batch.
                 cle = tf.concat([state_fwd, state_bwd], axis=1)
-                
+
                 # Generate CLEs of all form in the batch by indexing the just computed embeddings
                 # by self.form_charseq_ids (using tf.nn.embedding_lookup).
                 cle_embedded = tf.nn.embedding_lookup(cle, self.form_charseq_ids)
-                
+
                 # Concatenate the form embeddings (computed above in inputs) and the CLE (in this order).
                 inputs.append(cle_embedded)
 
             # Concatenate inputs
             inputs = tf.concat(inputs, axis=2)
-            
+
             # Dropout
             inputs_dropout = tf.layers.dropout(inputs, rate=args.dropout, training=self.is_training)
-            
+
             # Computation
             hidden_layer_dropout = inputs_dropout # first layer is input
             for i in range(args.rnn_layers):
@@ -150,7 +150,7 @@ class Network:
                 # Generate target embeddings for target chars, of shape [target_chars, args.char_dim].
                 tag_embeddings = tf.get_variable("tag_embeddings", shape=[num_tags, args.we_dim], dtype=tf.float32)
 
-                # Embed the target_seqs using the target embeddings. 
+                # Embed the target_seqs using the target embeddings.
                 tags_embedded = tf.nn.embedding_lookup(tag_embeddings, self.tags)
 
                 decoder_rnn_cell = rnn_cell(args.rnn_cell_dim)
@@ -158,7 +158,7 @@ class Network:
                 # Create a `decoder_layer` -- a fully connected layer with
                 # target_chars neurons used in the decoder to classify into target characters.
                 decoder_layer = tf.layers.Dense(num_tags)
-                
+
                 sentence_lens = self.sentence_lens
                 max_sentence_len = tf.reduce_max(sentence_lens)
                 tags = self.tags
@@ -231,10 +231,10 @@ class Network:
                         if args.decoding == "seq2seq":
                             predicted_eows = tf.zeros([self.batch_size], dtype=tf.int32)
                             labels_per_tokens = tf.zeros([self.batch_size], dtype=tf.int32)
-                            inputs = (inputs, predicted_eows, labels_per_tokens) 
+                            inputs = (inputs, predicted_eows, labels_per_tokens)
                         finished = sentence_lens <= 0
                         return finished, inputs, states
-                    
+
                     def step(self, time, inputs, states, name=None):
                         if args.decoding == "seq2seq":
                             inputs, predicted_eows, labels_per_tokens = inputs
@@ -267,7 +267,7 @@ class Network:
                         return outputs, states, next_input, finished
                 self.predictions, _, _ = tf.contrib.seq2seq.dynamic_decode(
                         DecoderPrediction(), maximum_iterations=3*tf.reduce_max(self.sentence_lens) + 10)
-                
+
             # Saver
             self.saver = tf.train.Saver(max_to_keep=1)
             if predict_only: return
@@ -314,7 +314,7 @@ class Network:
             if args.word_dropout:
                 mask = np.random.binomial(n=1, p=args.word_dropout, size=batch_dict["word_ids"][train.FORMS].shape)
                 batch_dict["word_ids"][train.FORMS] = (1 - mask) * batch_dict["word_ids"][train.FORMS] + mask * train.factors[train.FORMS].words_map["<unk>"]
-                
+
             self.session.run(self.reset_metrics)
             feeds = {self.sentence_lens: batch_dict["sentence_lens"],
                      self.form_ids: batch_dict["word_ids"][train.FORMS],
@@ -411,7 +411,7 @@ class Network:
 
         if evaluating:
             self.session.run([self.current_accuracy, self.summaries[dataset_name]])
-     
+
         forms = dataset.factors[dataset.FORMS].strings
         for s in range(len(forms)):
             j = 0
@@ -428,9 +428,9 @@ class Network:
             print("", file=prediction_file)
 
     def postprocess(self, text):
-        
+
         # Create a set of correctly bracketed, unique entities
-        
+
         forms, previous_labels, starts = [], [], []
         entities = dict()   # (start, end, label)
 
@@ -471,7 +471,7 @@ class Network:
                             entities[(starts[j], i, previous_labels[j][2:])] = j
                     previous_labels = labels
                     starts = starts[:len(labels)]
-        
+
         # Sort entities
         entities = sorted(entities.items(), key=lambda x: (x[0][0], -x[0][1], x[1]))
 
@@ -488,7 +488,7 @@ class Network:
                 output.append("{}\t{}\n".format(form, "|".join(label) if label else "O"))
             else:
                 output.append("\n")
-       
+
         if output and output[-1] == "\n":
             output.pop()
 

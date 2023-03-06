@@ -172,7 +172,7 @@ if __name__ == "__main__":
                       for key, value in sorted(logargs.items())))
         )
         os.makedirs(args.logdir, exist_ok=True)
-       
+
         # Check if directory exists if saving checkpoint
         if args.save_checkpoint:
             if os.path.isdir(args.save_checkpoint):
@@ -262,7 +262,7 @@ if __name__ == "__main__":
                 dev_score = 0
                 if args.dev_data:
                     network.evaluate("dev", dev, args)
-                    
+
                     # Undocumented external F1 evaluation option (see network.evaluate)
                     # dev_score = network.evaluate("dev", dev, args)
                     # print("Dev F1: {}".format(dev_score), file=sys.stderr, flush=True)
@@ -272,7 +272,7 @@ if __name__ == "__main__":
         # Test
         if args.test_data:
             network.evaluate("test", test, args)
-            
+
             # Undocumented external F1 evaluation option (see network.evaluate)
             # test_score = network.evaluate("test", test, args)
             # print("Test F1: {}".format(test_score), file=sys.stderr, flush=True)
