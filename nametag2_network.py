@@ -335,34 +335,33 @@ class Network:
         with open("{}/{}_system_predictions.conll".format(args.logdir, dataset_name), "w", encoding="utf-8") as prediction_file:
             self.predict(dataset_name, dataset, args, prediction_file, evaluating=True)
 
-        f1 = 0.0
+        f1 = None
 
-#       # The training graph only computes training and development accuracy.
-#       # To get a better idea about the direction of training, NER F1 score
-#       # can be computed for development data after each epoch by calling and
-#       # external commandline evaluation script and then parsing its output.
-#
-#        if args.corpus in ["english-conll", "german-conll", "dutch-conll", "spanish-conll"]:
-#            os.system("cd {} && ../../run_conlleval.sh {} {} {}_system_predictions.conll".format(args.logdir, dataset_name, args.__dict__[dataset_name + "_data"], dataset_name))
-#
-#           with open("{}/{}.eval".format(args.logdir,dataset_name), "r", encoding="utf-8") as result_file:
-#                for line in result_file:
-#                    line = line.strip("\n")
-#                    if line.startswith("accuracy:"):
-#                        f1 = float(line.split()[-1])
-#                        self.session.run(self.metrics_summarize["F1"][dataset_name], {self.metrics["F1"]: f1})
-#
-#        elif args.corpus in ["czech-cnec2.0"]:
-#            os.system("cd {} && ../../run_cnec2.0_eval_nested.sh {} {} {}_system_predictions.conll".format(args.logdir, dataset_name, args.__dict__[dataset_name + "_data"], dataset_name))
-#
-#            with open("{}/{}.eval".format(args.logdir,dataset_name), "r", encoding="utf-8") as result_file:
-#                for line in result_file:
-#                    line = line.strip("\n")
-#                    if line.startswith("Type:"):
-#                        cols = line.split()
-#                        precision, recall, f1 = map(float, [cols[1], cols[3], cols[5]])
-#                        for metric, value in [["precision", precision], ["recall", recall], ["F1", f1]]:
-#                            self.session.run(self.metrics_summarize[metric][dataset_name], {self.metrics[metric]: value})
+        # The training graph only computes training and development *accuracy*.
+        # To compute other evaluation, such as (nested) F1, external evaluation
+        # script for the given corpus is called here by a system call.
+
+        if args.corpus in ["english-conll", "german-conll", "dutch-conll", "spanish-conll", "ukrainian-languk"]:
+            os.system("cd {} && ../../run_conlleval.sh {} {} {}_system_predictions.conll".format(args.logdir, dataset_name, args.__dict__[dataset_name + "_data"], dataset_name))
+
+            with open("{}/{}.eval".format(args.logdir,dataset_name), "r", encoding="utf-8") as result_file:
+                for line in result_file:
+                    line = line.strip("\n")
+                    if line.startswith("accuracy:"):
+                        f1 = float(line.split()[-1])
+                        self.session.run(self.metrics_summarize["F1"][dataset_name], {self.metrics["F1"]: f1})
+
+        elif args.corpus in ["czech-cnec2.0"]:
+            os.system("cd {} && ../../run_cnec2.0_eval_nested.sh {} {} {}_system_predictions.conll".format(args.logdir, dataset_name, args.__dict__[dataset_name + "_data"], dataset_name))
+
+            with open("{}/{}.eval".format(args.logdir,dataset_name), "r", encoding="utf-8") as result_file:
+                for line in result_file:
+                    line = line.strip("\n")
+                    if line.startswith("Type:"):
+                        cols = line.split()
+                        precision, recall, f1 = map(float, [cols[1], cols[3], cols[5]])
+                        for metric, value in [["precision", precision], ["recall", recall], ["F1", f1]]:
+                            self.session.run(self.metrics_summarize[metric][dataset_name], {self.metrics[metric]: value})
 
         return f1
 

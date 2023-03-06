@@ -259,20 +259,13 @@ if __name__ == "__main__":
             for epoch in range(epochs):
                 print("Epoch: {}, learning rate: {}".format(epoch, learning_rate), file=sys.stderr, flush=True)
                 network.train_epoch(train, learning_rate, args)
-                dev_score = 0
                 if args.dev_data:
-                    network.evaluate("dev", dev, args)
-
-                    # Undocumented external F1 evaluation option (see network.evaluate)
-                    # dev_score = network.evaluate("dev", dev, args)
-                    # print("Dev F1: {}".format(dev_score), file=sys.stderr, flush=True)
+                    dev_score = network.evaluate("dev", dev, args)
+                    print("Dev score: {}".format(dev_score), file=sys.stderr, flush=True)
         # Save network
         if args.save_checkpoint:
             network.saver.save(network.session, "{}/model".format(args.save_checkpoint), write_meta_graph=False)
         # Test
         if args.test_data:
-            network.evaluate("test", test, args)
-
-            # Undocumented external F1 evaluation option (see network.evaluate)
-            # test_score = network.evaluate("test", test, args)
-            # print("Test F1: {}".format(test_score), file=sys.stderr, flush=True)
+            test_score = network.evaluate("test", test, args)
+            print("Test score: {}".format(test_score), file=sys.stderr, flush=True)
