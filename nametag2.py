@@ -120,6 +120,8 @@ if __name__ == "__main__":
     parser.add_argument("--dev_data", default=None, type=str, help="Dev data.")
     parser.add_argument("--dropout", default=0.5, type=float, help="Dropout rate.")
 
+    parser.add_argument("--early_stopping", default=False, action="store_true", help="Early stopping. Saves checkpoints if better on dev.")
+
     # E.g.: 10:1e-3,8:1e-4
     parser.add_argument("--epochs", default="10:1e-3", type=str, help="Epochs and learning rates.")
 
@@ -255,6 +257,7 @@ if __name__ == "__main__":
     # Train and predict
     else:
         # Train
+        prev_dev_score = 0.0
         for epochs, learning_rate in args.epochs:
             for epoch in range(epochs):
                 print("Epoch: {}, learning rate: {}".format(epoch, learning_rate), file=sys.stderr, flush=True)
@@ -262,8 +265,11 @@ if __name__ == "__main__":
                 if args.dev_data:
                     dev_score = network.evaluate("dev", dev, args)
                     print("Dev score: {}".format(dev_score), file=sys.stderr, flush=True)
+                    if args.save_checkpoint and args.early_stopping and dev_score > prev_dev_score:
+                        network.saver.save(network.session, "{}/model".format(args.save_checkpoint), write_meta_graph=False)
+                    prev_dev_score = dev_score
         # Save network
-        if args.save_checkpoint:
+        if args.save_checkpoint and not args.early_stopping:
             network.saver.save(network.session, "{}/model".format(args.save_checkpoint), write_meta_graph=False)
         # Test
         if args.test_data:
