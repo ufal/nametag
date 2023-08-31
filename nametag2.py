@@ -259,7 +259,7 @@ if __name__ == "__main__":
     # Train and predict
     else:
         # Train
-        prev_dev_score = 0.0
+        max_dev_score = 0.0
         for epochs, learning_rate in args.epochs:
             for epoch in range(epochs):
                 print("Epoch: {}, learning rate: {}".format(epoch, learning_rate), file=sys.stderr, flush=True)
@@ -267,9 +267,9 @@ if __name__ == "__main__":
                 if args.dev_data:
                     dev_score = network.evaluate("dev", dev, args)
                     print("Dev score: {}".format(dev_score), file=sys.stderr, flush=True)
-                    if args.save_checkpoint and args.early_stopping and dev_score > prev_dev_score:
+                    if args.save_checkpoint and args.early_stopping and dev_score > max_dev_score:
                         network.saver.save(network.session, "{}/model".format(args.save_checkpoint), write_meta_graph=False)
-                    prev_dev_score = dev_score
+                        max_dev_score = dev_score
         # Save network
         if args.save_checkpoint and not args.early_stopping:
             network.saver.save(network.session, "{}/model".format(args.save_checkpoint), write_meta_graph=False)
