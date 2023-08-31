@@ -126,6 +126,7 @@ if __name__ == "__main__":
     parser.add_argument("--epochs", default="10:1e-3", type=str, help="Epochs and learning rates.")
 
     parser.add_argument("--label_smoothing", default=0, type=float, help="Label smoothing.")
+    parser.add_argument("--logdir", default="logs", type=str, help="Logdir name.")
     parser.add_argument("--max_sentences", default=None, type=int, help="Limit number of training sentences (for debugging).")
     parser.add_argument("--max_labels_per_token", default=5, type=int, help="Maximum labels per token.")
     parser.add_argument("--name", default=None, type=str, help="Experiment name.")
@@ -167,7 +168,8 @@ if __name__ == "__main__":
         del logargs["word_dropout"]
         logargs["bert"] = 1 if args.bert_train else 0
 
-        args.logdir = "logs/{}-{}-{}".format(
+        args.logdir = "{}/{}-{}-{}".format(
+            args.logdir,
             os.path.basename(__file__),
             datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S"),
             ",".join(("{}={}".format(re.sub("(.)[^_]*_?", r"\1", key), re.sub("^.*/", "", value) if type(value) == str else value)
