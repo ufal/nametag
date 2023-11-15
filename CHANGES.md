@@ -4,13 +4,13 @@ Version 1.2.1-dev
 
 Version 1.2.0 [18 Feb 23]
 -------------------------
-- Add FormCapitalization feature template.
-- Add GazetteersEnhanced feature template, much improving gazetteers
+- Add `FormCapitalization` feature template.
+- Add `GazetteersEnhanced` feature template, much improving gazetteers
   handling, including better matching, possibility of hard gazetteers
   and support for loading additional gazetteers to an existing model.
 - Export recognizable named entities from the recognizer.
-- Export gazetteers from the recognizer (only GazetteersEnhanced).
-- Add several nametag_server options.
+- Export gazetteers from the recognizer (only `GazetteersEnhanced`).
+- Add several `nametag_server` options.
 - Update MorphoDita to 1.11.1.
 - On Windows, the file paths are now UTF-8 encoded, instead of ANSI.
   This change affects the API, binary arguments, and program outputs.
@@ -24,12 +24,12 @@ Version 1.1.2 [01 Jul 17]
 -------------------------
 - Allow specifying custom path to C++ library in Java.
 - Fix bug causing a memory leak on g++.
-- Add --log option to the REST server.
+- Add `--log` option to the REST server.
 
 
 Version 1.1.1 [05 May 16]
 -------------------------
-- Remove forgotten dllimport attribute (fixes compilation on Windows).
+- Remove forgotten `dllimport` attribute (fixes compilation on Windows).
 
 
 Version 1.1.0 [05 May 16]
