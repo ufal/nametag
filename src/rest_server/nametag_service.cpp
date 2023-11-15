@@ -248,7 +248,7 @@ bool nametag_service::handle_rest_recognize(microrestd::rest_request& req) {
     size_t total_tokens = 0;
     char token_number[sizeof(size_t) * 3/*ceil(log_10(256))*/];
   };
-  return req.respond(json_mime, new generator(model, move(data), model->ner.get(), tokenizer.release(), output), {{infclen_header, to_string(infclen).c_str()}});
+  return req.respond(json_mime, new generator(model, std::move(data), model->ner.get(), tokenizer.release(), output), {{infclen_header, to_string(infclen).c_str()}});
 }
 
 bool nametag_service::handle_rest_tokenize(microrestd::rest_request& req) {
@@ -302,7 +302,7 @@ bool nametag_service::handle_rest_tokenize(microrestd::rest_request& req) {
     const char* unprinted;
     vector<string_piece> forms;
   };
-  return req.respond(json_mime, new generator(model, move(data), output, model->ner->new_tokenizer()), {{infclen_header, to_string(infclen).c_str()}});
+  return req.respond(json_mime, new generator(model, std::move(data), output, model->ner->new_tokenizer()), {{infclen_header, to_string(infclen).c_str()}});
 }
 
 // REST service helpers

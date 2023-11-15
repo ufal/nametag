@@ -1,6 +1,6 @@
 Version 1.2.1-dev
 -----------------
-
+- Fix warnings on Clang 15 by qualifying `std::move`.
 
 Version 1.2.0 [18 Feb 23]
 -------------------------
