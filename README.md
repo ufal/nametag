@@ -1,10 +1,24 @@
 # NameTag 2
 
-This is a named entity recognition tool NameTag 2.
+This is a named entity recognition (NER) tool NameTag 2.
 
-It is a public release of the following publication:
+---
 
-Jana Straková, Milan Straka, Jan Hajič (2019): Neural Architectures for Nested NER through Linearization. In: Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, pp. 5326-5331, Association for Computational Linguistics, Stroudsburg, PA, USA, ISBN 978-1-950737-48-2 (https://aclweb.org/anthology/papers/P/P19/P19-1527/)
+<img src="figures/ner-seq2seq.svg" alt="NameTag 2 Architecture" align="right" style="width: 45%">
+
+<h3 align="center"><a href="https://aclanthology.org/P19-1527/">Neural Architectures for Nested NER through Linearization</a></h3>
+
+<p align="center">
+  <b>Jana Straková</b> and <b>Milan Straka</b> and <b>Jan Hajič</b><br>
+  Charles University<br>
+  Faculty of Mathematics and Physics<br>
+  Institute of Formal and Applied Lingustics<br>
+  Malostranské nám. 25, Prague, Czech Republic
+</p>
+
+**Abstract:** We propose two neural network architectures for nested named entity recognition (NER), a setting in which named entities may overlap and also be labeled with more than one label. We encode the nested labels using a linearized scheme. In our first proposed approach, the nested labels are modeled as multilabels corresponding to the Cartesian product of the nested labels in a standard LSTM-CRF architecture. In the second one, the nested NER is viewed as a sequence-to-sequence problem, in which the input sequence consists of the tokens and output sequence of the labels, using hard attention on the word whose label is being predicted. The proposed methods outperform the nested NER state of the art on four corpora: ACE-2004, ACE-2005, GENIA and Czech CNEC. We also enrich our architectures with the recently published contextual embeddings: ELMo, BERT and Flair, reaching further improvements for the four nested entity corpora. In addition, we report flat NER state-of-the-art results for CoNLL-2002 Dutch and Spanish and for CoNLL-2003 English.
+
+---
 
 NameTag 2 can be used either as a commandline tool (see the instructions at https://github.com/ufal/nametag/tree/nametag2) or by requesting NameTag webservice (http://lindat.mff.cuni.cz/services/nametag). You can also run your own NameTag server.
 
@@ -22,7 +36,7 @@ Copyright 2021 Institute of Formal and Applied Linguistics, Faculty of Mathemati
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-## Please cite as
+## Please Cite as
 
 ```
 @inproceedings{strakova-etal-2019-neural,
@@ -44,7 +58,7 @@ The software has been developed and tested on Linux. You'll need a machine with 
 
 ## Installation
 
-### Clone the NameTag 2 GIT repository
+### Clone the NameTag 2 GIT Repository
 
 ```sh
 git clone https://github.com/ufal/nametag -b nametag2
@@ -69,11 +83,11 @@ The `nametag2.py` script is then called using the Python installed in your virtu
 
 If you plan to scale up for larger experiments or greater speed, you can use the TensorFlow GPU version. You need to install Python virtual environment with GPU TensorFlow version.
 
-### Download the NameTag 2 models
+### Download the NameTag 2 Models
 
 Download the [latest version of NameTag 2 models](https://ufal.mff.cuni.cz/nametag/2#models).
 
-### Get WEmbedding service
+### Get WEmbedding Service
 
 NameTag 2 is using contextualized BERT embeddings computed by [Transformers](https://arxiv.org/abs/1910.03771) from [Hugging Face](https://github.com/huggingface/transformers).
 
@@ -105,7 +119,7 @@ venv/bin/python3 ./start_wembeddings_server.py 8000
 
 The first request will take some time, as the models are loaded.
 
-## Running NER prediction with NameTag 2
+## Running NER Prediction with NameTag 2
 
 Before you run NameTag 2 for NER prediction, please make sure you have:
 
@@ -135,7 +149,7 @@ venv-tf-1.12-cpu/bin/python3 nametag2.py --threads=4 --batch_size=4 --train_data
 
 While it is technically possible to compute the BERT embeddings on demand for each shuffled batch in each step, we strongly recommend to precompute the BERT embeddings as numpy arrays, one array per each token in your vertical CoNLL-like file and store these as npz files. The argument `--bert_train` and `--bert_dev` will load the precomputed BERT embeddings from the npz file and reuse them during training, speeding up the training process. 
 
-## NameTag 2 server
+## NameTag 2 Server
 
 See `nametag2_server.py`.
 
