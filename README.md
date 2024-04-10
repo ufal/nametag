@@ -40,15 +40,21 @@ This Source Code Form is subject to the terms of the Mozilla Public License, v. 
 
 ```
 @inproceedings{strakova-etal-2019-neural,
-    title = {{Neural Architectures for Nested {NER} through Linearization}},
-    author = {Jana Strakov{\'a} and Milan Straka and Jan Haji\v{c}},
-    booktitle = {Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics},
+    title = "Neural Architectures for Nested {NER} through Linearization",
+    author = "Strakov{\'a}, Jana  and
+      Straka, Milan  and
+      Hajic, Jan",
+    editor = "Korhonen, Anna  and
+      Traum, David  and
+      M{\`a}rquez, Llu{\'\i}s",
+    booktitle = "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
     month = jul,
-    year = {2019},
-    address = {Florence, Italy},
-    publisher = {Association for Computational Linguistics},
-    url = {https://www.aclweb.org/anthology/P19-1527},
-    pages = {5326--5331},
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P19-1527",
+    doi = "10.18653/v1/P19-1527",
+    pages = "5326--5331",
 }
 ```
 
