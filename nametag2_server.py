@@ -544,6 +544,11 @@ class NameTag2Server(socketserver.ThreadingTCPServer):
                                         ("acknowledgements", ["http://ufal.mff.cuni.cz/nametag/2#acknowledgements", model.acknowledgements]),
                                         ("result", ""),
                                     ]), indent=1)[:-3].encode("utf-8"))
+                                    if output_param == "conllu-ne":
+                                        request.wfile.write(json.dumps(
+                                            "# generator = NameTag 2, https://lindat.mff.cuni.cz/services/nametag\n"
+                                            "# nametag_model = {}\n"
+                                            "# nametag_model_licence = CC BY-NC-SA\n".format(model.name))[1:-1].encode("utf-8"))
                                 started_responding=True
 
                             if url.path.startswith("/weblicht"):
